@@ -43,7 +43,7 @@ export default function LoginForm() {
         <div style={{
             minHeight: '100vh',
             width: '100vw',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -52,27 +52,15 @@ export default function LoginForm() {
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            {/* Animated background elements */}
+            {/* Minimalistic background decoration */}
             <div style={{
                 position: 'absolute',
-                top: '-50%',
-                left: '-50%',
-                width: '200%',
-                height: '200%',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-                animation: 'float 20s ease-in-out infinite',
-                zIndex: 0
-            }} />
-            
-            <div style={{
-                position: 'absolute',
-                top: '50%',
-                right: '10%',
-                width: '100px',
-                height: '100px',
-                background: 'rgba(255,255,255,0.1)',
+                top: '10%',
+                right: '15%',
+                width: '200px',
+                height: '200px',
+                background: 'rgba(34, 197, 94, 0.08)',
                 borderRadius: '50%',
-                animation: 'pulse 4s ease-in-out infinite',
                 zIndex: 0
             }} />
             
@@ -80,77 +68,76 @@ export default function LoginForm() {
                 position: 'absolute',
                 bottom: '20%',
                 left: '10%',
-                width: '150px',
-                height: '150px',
-                background: 'rgba(255,255,255,0.05)',
+                width: '120px',
+                height: '120px',
+                background: 'rgba(22, 163, 74, 0.06)',
                 borderRadius: '50%',
-                animation: 'float 15s ease-in-out infinite reverse',
                 zIndex: 0
             }} />
 
             <div style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
-                borderRadius: '20px',
-                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
+                borderRadius: '24px',
+                boxShadow: '0 20px 40px rgba(34, 197, 94, 0.1), 0 8px 32px rgba(0, 0, 0, 0.05)',
                 padding: '3rem',
                 width: '100%',
-                maxWidth: '450px',
+                maxWidth: '420px',
                 minWidth: '320px',
                 position: 'relative',
                 zIndex: 1,
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(34, 197, 94, 0.1)',
                 boxSizing: 'border-box'
             }}>
                 {/* Header */}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
-                        width: '80px',
-                        height: '80px',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        borderRadius: '50%',
-                        margin: '0 auto 1rem',
+                        width: '72px',
+                        height: '72px',
+                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                        borderRadius: '20px',
+                        margin: '0 auto 1.5rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)'
+                        boxShadow: '0 8px 24px rgba(34, 197, 94, 0.2)'
                     }}>
-                        <span style={{ fontSize: '2rem', color: 'white' }}>🏥</span>
+                        <span style={{ fontSize: '2rem', color: 'white' }}>🩺</span>
                     </div>
                     <h1 style={{
-                        fontSize: '2rem',
-                        fontWeight: '700',
-                        color: '#2d3748',
+                        fontSize: '1.75rem',
+                        fontWeight: '600',
+                        color: '#374151',
                         margin: '0 0 0.5rem',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent'
+                        letterSpacing: '-0.025em'
                     }}>
-                        Medical Portal
+                        Welcome Back
                     </h1>
                     <p style={{
-                        color: '#718096',
-                        fontSize: '1rem',
-                        margin: 0
+                        color: '#6b7280',
+                        fontSize: '0.95rem',
+                        margin: 0,
+                        lineHeight: 1.5
                     }}>
-                        Sign in to access your medical records
+                        Sign in to your medical portal
                     </p>
                 </div>
 
                 {/* Error Message */}
                 {error && (
                     <div style={{
-                        background: 'linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%)',
-                        color: '#c53030',
+                        background: 'rgba(248, 113, 113, 0.1)',
+                        color: '#dc2626',
                         padding: '1rem',
                         borderRadius: '12px',
                         marginBottom: '1.5rem',
-                        border: '1px solid #feb2b2',
+                        border: '1px solid rgba(248, 113, 113, 0.2)',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem'
+                        gap: '0.75rem',
+                        fontSize: '0.9rem'
                     }}>
-                        <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                        <span style={{ fontSize: '1.1rem' }}>⚠️</span>
                         {error}
                     </div>
                 )}
@@ -160,21 +147,23 @@ export default function LoginForm() {
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{
                             display: 'block',
-                            marginBottom: '0.75rem',
-                            fontWeight: '600',
-                            color: '#2d3748',
-                            fontSize: '0.95rem'
+                            marginBottom: '0.5rem',
+                            fontWeight: '500',
+                            color: '#374151',
+                            fontSize: '0.9rem'
                         }}>
-                            <span style={{ marginRight: '0.5rem' }}>👤</span>
                             Username
                         </label>
                         <div style={{
                             position: 'relative',
-                            background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                            background: '#f9fafb',
                             borderRadius: '12px',
-                            border: '2px solid transparent',
-                            backgroundClip: 'padding-box',
-                            transition: 'all 0.3s ease'
+                            border: '1px solid #e5e7eb',
+                            transition: 'all 0.2s ease',
+                            ':focus-within': {
+                                borderColor: '#22c55e',
+                                boxShadow: '0 0 0 3px rgba(34, 197, 94, 0.1)'
+                            }
                         }}>
                             <input
                                 type="text"
@@ -184,27 +173,17 @@ export default function LoginForm() {
                                 disabled={loading}
                                 style={{
                                     width: '100%',
-                                    padding: '1rem 1rem 1rem 3rem',
+                                    padding: '0.875rem 1rem',
                                     border: 'none',
                                     borderRadius: '12px',
-                                    fontSize: '1rem',
+                                    fontSize: '0.95rem',
                                     background: 'transparent',
                                     outline: 'none',
                                     boxSizing: 'border-box',
-                                    color: '#2d3748'
+                                    color: '#374151'
                                 }}
                                 placeholder="Enter your username"
                             />
-                            <span style={{
-                                position: 'absolute',
-                                left: '1rem',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                fontSize: '1.2rem',
-                                color: '#a0aec0'
-                            }}>
-                                👤
-                            </span>
                         </div>
                     </div>
 
@@ -212,21 +191,19 @@ export default function LoginForm() {
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{
                             display: 'block',
-                            marginBottom: '0.75rem',
-                            fontWeight: '600',
-                            color: '#2d3748',
-                            fontSize: '0.95rem'
+                            marginBottom: '0.5rem',
+                            fontWeight: '500',
+                            color: '#374151',
+                            fontSize: '0.9rem'
                         }}>
-                            <span style={{ marginRight: '0.5rem' }}>🔒</span>
                             Password
                         </label>
                         <div style={{
                             position: 'relative',
-                            background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                            background: '#f9fafb',
                             borderRadius: '12px',
-                            border: '2px solid transparent',
-                            backgroundClip: 'padding-box',
-                            transition: 'all 0.3s ease'
+                            border: '1px solid #e5e7eb',
+                            transition: 'all 0.2s ease'
                         }}>
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -236,27 +213,17 @@ export default function LoginForm() {
                                 disabled={loading}
                                 style={{
                                     width: '100%',
-                                    padding: '1rem 3rem 1rem 3rem',
+                                    padding: '0.875rem 3rem 0.875rem 1rem',
                                     border: 'none',
                                     borderRadius: '12px',
-                                    fontSize: '1rem',
+                                    fontSize: '0.95rem',
                                     background: 'transparent',
                                     outline: 'none',
                                     boxSizing: 'border-box',
-                                    color: '#2d3748'
+                                    color: '#374151'
                                 }}
                                 placeholder="Enter your password"
                             />
-                            <span style={{
-                                position: 'absolute',
-                                left: '1rem',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                fontSize: '1.2rem',
-                                color: '#a0aec0'
-                            }}>
-                                🔒
-                            </span>
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
@@ -268,8 +235,8 @@ export default function LoginForm() {
                                     background: 'none',
                                     border: 'none',
                                     cursor: 'pointer',
-                                    fontSize: '1.2rem',
-                                    color: '#a0aec0',
+                                    fontSize: '1.1rem',
+                                    color: '#9ca3af',
                                     padding: '0.25rem'
                                 }}
                             >
@@ -284,53 +251,50 @@ export default function LoginForm() {
                         disabled={loading}
                         style={{
                             width: '100%',
-                            padding: '1rem',
+                            padding: '0.875rem',
                             background: loading 
-                                ? 'linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%)'
-                                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                ? '#d1d5db'
+                                : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '12px',
-                            fontSize: '1.1rem',
-                            fontWeight: '600',
+                            fontSize: '1rem',
+                            fontWeight: '500',
                             cursor: loading ? 'not-allowed' : 'pointer',
-                            transition: 'all 0.3s ease',
+                            transition: 'all 0.2s ease',
                             boxShadow: loading 
-                                ? '0 4px 15px rgba(160, 174, 192, 0.3)'
-                                : '0 8px 25px rgba(102, 126, 234, 0.3)',
+                                ? 'none'
+                                : '0 4px 12px rgba(34, 197, 94, 0.2)',
                             position: 'relative',
                             overflow: 'hidden'
                         }}
                         onMouseEnter={e => {
                             if (!loading) {
-                                e.target.style.transform = 'translateY(-2px)';
-                                e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.4)';
+                                e.target.style.transform = 'translateY(-1px)';
+                                e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.25)';
                             }
                         }}
                         onMouseLeave={e => {
                             if (!loading) {
                                 e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.2)';
                             }
                         }}
                     >
                         {loading ? (
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                                 <div style={{
-                                    width: '20px',
-                                    height: '20px',
+                                    width: '18px',
+                                    height: '18px',
                                     border: '2px solid rgba(255,255,255,0.3)',
                                     borderTop: '2px solid white',
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Logging in...
+                                Signing in...
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                                <span>🚀</span>
-                                Sign In
-                            </div>
+                            'Sign In'
                         )}
                     </button>
                 </form>
@@ -340,31 +304,31 @@ export default function LoginForm() {
                     textAlign: 'center', 
                     marginTop: '2rem',
                     paddingTop: '2rem',
-                    borderTop: '1px solid #e2e8f0'
+                    borderTop: '1px solid #e5e7eb'
                 }}>
-                    <p style={{ color: '#718096', marginBottom: '1rem' }}>
+                    <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.9rem' }}>
                         Don't have an account?
                     </p>
                     <a 
                         href="/register" 
                         style={{
-                            color: '#667eea',
+                            color: '#22c55e',
                             textDecoration: 'none',
-                            fontWeight: '600',
-                            fontSize: '1rem',
+                            fontWeight: '500',
+                            fontSize: '0.95rem',
                             padding: '0.75rem 1.5rem',
-                            borderRadius: '8px',
-                            background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
-                            border: '2px solid #e2e8f0',
-                            transition: 'all 0.3s ease',
+                            borderRadius: '10px',
+                            background: 'rgba(34, 197, 94, 0.05)',
+                            border: '1px solid rgba(34, 197, 94, 0.1)',
+                            transition: 'all 0.2s ease',
                             display: 'inline-block'
                         }}
                         onMouseEnter={e => {
-                            e.target.style.background = 'linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%)';
+                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
                             e.target.style.transform = 'translateY(-1px)';
                         }}
                         onMouseLeave={e => {
-                            e.target.style.background = 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)';
+                            e.target.style.background = 'rgba(34, 197, 94, 0.05)';
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
@@ -374,17 +338,6 @@ export default function LoginForm() {
             </div>
 
             <style jsx>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    33% { transform: translateY(-20px) rotate(1deg); }
-                    66% { transform: translateY(10px) rotate(-1deg); }
-                }
-                
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); opacity: 0.1; }
-                    50% { transform: scale(1.1); opacity: 0.2; }
-                }
-                
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
