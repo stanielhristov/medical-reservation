@@ -2,7 +2,6 @@ package com.reservation.medical_reservation.model.dto;
 
 import lombok.*;
 
-import java.util.Set;
 
 @Data
 @AllArgsConstructor

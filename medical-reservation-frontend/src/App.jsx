@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Public Pages
+import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -39,12 +40,19 @@ function App() {
             <Router>
                 <Routes>
                     {/* Public Routes */}
-                    <Route path="/" element={<HomePage />} />
+                    <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    
+                    {/* Authenticated Home Route */}
+                    <Route path="/home" element={
+                        <ProtectedRoute requiredRoles={['USER', 'DOCTOR', 'ADMIN']}>
+                            <HomePage />
+                        </ProtectedRoute>
+                    } />
 
                     {/* Patient Routes */}
                     <Route path="/patient/dashboard" element={

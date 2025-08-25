@@ -20,8 +20,8 @@
 	<description>Web-based appointment reservation system for medical services, built with Spring Boot, PostgreSQL, and OAuth2.</description>
 
 	<properties>
-		<java.version>21</java.version>
-		<lombok.version>1.18.30</lombok.version>
+		<java.version>17</java.version>
+		<lombok.version>1.18.34</lombok.version>
 		<maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
 	</properties>
 

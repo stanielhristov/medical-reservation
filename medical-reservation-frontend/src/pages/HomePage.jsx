@@ -7,25 +7,19 @@ export default function HomePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if user is logged in
-        const token = localStorage.getItem('token');
+        // Load user data from localStorage
         const userData = localStorage.getItem('user');
         
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         if (userData) {
             setUser(JSON.parse(userData));
         }
         setLoading(false);
-    }, [navigate]);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        navigate('/login');
+        navigate('/');
     };
 
     if (loading) {
@@ -64,7 +58,69 @@ export default function HomePage() {
     }
 
     if (!user) {
-        return null;
+        return (
+            <div style={{
+                minHeight: '100vh',
+                width: '100vw',
+                background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxSizing: 'border-box'
+            }}>
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '24px',
+                    padding: '3rem',
+                    textAlign: 'center',
+                    boxShadow: '0 20px 40px rgba(34, 197, 94, 0.1), 0 8px 32px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid rgba(34, 197, 94, 0.1)'
+                }}>
+                    <div style={{
+                        width: '80px',
+                        height: '80px',
+                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                        borderRadius: '20px',
+                        margin: '0 auto 2rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 8px 24px rgba(34, 197, 94, 0.2)'
+                    }}>
+                        <span style={{ fontSize: '2.5rem', color: 'white' }}>🔐</span>
+                    </div>
+                    <h2 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        margin: '0 0 1rem'
+                    }}>
+                        Authentication Required
+                    </h2>
+                    <p style={{ color: '#6b7280', margin: '0 0 2rem' }}>
+                        Please log in to access your dashboard.
+                    </p>
+                    <button
+                        onClick={() => navigate('/')}
+                        style={{
+                            padding: '0.875rem 2rem',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '1rem',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)'
+                        }}
+                    >
+                        Go to Landing Page
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
