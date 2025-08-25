@@ -9,6 +9,7 @@ import com.reservation.medical_reservation.repository.UserRepository;
 import com.reservation.medical_reservation.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public void registerUser(RegisterDTO registerDTO) {
         Optional<UserEntity> existingUser = userRepository.findByEmail(registerDTO.getEmail());
         if (existingUser.isPresent()) {

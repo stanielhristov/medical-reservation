@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class ScheduleDTO {
     private Long id;
     private Long doctorId;
+    private String doctorName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean available;

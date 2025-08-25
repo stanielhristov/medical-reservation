@@ -1,6 +1,5 @@
 package com.reservation.medical_reservation.model.entity;
 
-import com.reservation.medical_reservation.model.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,54 +9,48 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appointments")
+@Table(name = "medical_history")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentEntity extends BaseEntity{
+public class MedicalHistoryEntity extends BaseEntity {
+    
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private UserEntity patient;
-
+    
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private DoctorEntity doctor;
-
+    
     @ManyToOne
-    @JoinColumn(name = "service_id")
-    private ServiceEntity service;
-
+    @JoinColumn(name = "appointment_id")
+    private AppointmentEntity appointment;
+    
     @Column(nullable = false)
-    private LocalDateTime appointmentTime;
-
-    @Column(nullable = false)
-    private LocalDateTime endTime;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus status = AppointmentStatus.PENDING;
-
+    private String title;
+    
+    @Column(length = 2000)
+    private String description;
+    
     @Column(length = 1000)
-    private String notes;
-
+    private String diagnosis;
+    
+    @Column(length = 1000)
+    private String treatment;
+    
     @Column(length = 500)
-    private String cancellationReason;
-
+    private String medications;
+    
+    @Column
+    private String attachmentUrl;
+    
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
-
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

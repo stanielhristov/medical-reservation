@@ -1,6 +1,5 @@
 package com.reservation.medical_reservation.model.dto;
 
-import com.reservation.medical_reservation.model.enums.AppointmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,20 +7,21 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentDTO {
+@NoArgsConstructor
+public class MedicalHistoryDTO {
     private Long id;
     private Long patientId;
     private String patientName;
     private Long doctorId;
     private String doctorName;
     private String doctorSpecialization;
-    private Long serviceId;
-    private String serviceName;
-    private LocalDateTime appointmentTime;
-    private LocalDateTime endTime;
-    private AppointmentStatus status;
-    private String notes;
-    private String cancellationReason;
+    private Long appointmentId;
+    private String title;
+    private String description;
+    private String diagnosis;
+    private String treatment;
+    private String medications;
+    private String attachmentUrl;
+    private LocalDateTime createdAt;
 }
