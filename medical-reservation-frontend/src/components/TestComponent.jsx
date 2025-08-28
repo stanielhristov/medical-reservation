@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from '../api/axios.jsx'; // използвай своя axios инстанция
+import axios from '../api/axios.jsx';
 
 export default function TestComponent() {
     const [message, setMessage] = useState('');

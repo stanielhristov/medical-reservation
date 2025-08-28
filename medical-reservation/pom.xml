@@ -10,7 +10,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<groupId>com.reservation</groupId>
@@ -22,7 +22,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<lombok.version>1.18.34</lombok.version>
-		<maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -70,7 +70,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Lombok dependency с версия -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -89,8 +88,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		<!-- JWT Dependencies -->
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -133,6 +131,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.5.4</version>
 				<configuration>
 					<excludes>
 						<exclude>

@@ -3,6 +3,7 @@ package com.reservation.medical_reservation.controller;
 import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorDTO;
 import com.reservation.medical_reservation.model.dto.NotificationDTO;
+import com.reservation.medical_reservation.model.enums.AppointmentStatus;
 import com.reservation.medical_reservation.service.AppointmentService;
 import com.reservation.medical_reservation.service.DoctorService;
 import com.reservation.medical_reservation.service.NotificationService;
@@ -11,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/patient")
@@ -32,13 +35,22 @@ public class PatientController {
     @GetMapping("/doctors")
     public ResponseEntity<List<DoctorDTO>> getAvailableDoctors() {
         List<DoctorDTO> doctors = doctorService.getActiveDoctors();
-        return ResponseEntity.ok(doctors);
+        return ResponseEntity.ok(doctors != null ? doctors : List.of());
     }
 
     @GetMapping("/doctors/specialization/{specialization}")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialization(@PathVariable String specialization) {
+        if (specialization == null || specialization.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         List<DoctorDTO> doctors = doctorService.getDoctorsBySpecialization(specialization);
-        return ResponseEntity.ok(doctors);
+        return ResponseEntity.ok(doctors != null ? doctors : List.of());
+    }
+
+    @GetMapping("/doctors/specializations")
+    public ResponseEntity<List<String>> getAvailableSpecializations() {
+        List<String> specializations = doctorService.getAvailableSpecializations();
+        return ResponseEntity.ok(specializations != null ? specializations : List.of());
     }
 
     @GetMapping("/{patientId}/appointments")
@@ -79,5 +91,57 @@ public class PatientController {
     public ResponseEntity<Void> markNotificationAsRead(@PathVariable Long notificationId) {
         notificationService.markAsRead(notificationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{patientId}/dashboard")
+    public ResponseEntity<Map<String, Object>> getPatientDashboard(@PathVariable Long patientId) {
+        Map<String, Object> dashboard = new HashMap<>();
+        
+        // Next appointment
+        AppointmentDTO nextAppointment = appointmentService.getNextAppointmentByPatient(patientId);
+        dashboard.put("nextAppointment", nextAppointment);
+        
+        // Recent appointments (completed)
+        List<AppointmentDTO> recentAppointments = appointmentService.getPatientAppointments(patientId)
+                .stream()
+                .filter(apt -> apt.getStatus() == AppointmentStatus.COMPLETED)
+                .limit(5)
+                .toList();
+        dashboard.put("recentAppointments", recentAppointments);
+        
+        // Today's appointments
+        List<AppointmentDTO> todayAppointments = appointmentService.getPatientAppointmentsForToday(patientId);
+        dashboard.put("todayAppointments", todayAppointments);
+        
+        // Statistics
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("completedAppointments", appointmentService.countPatientAppointmentsByStatus(patientId, AppointmentStatus.COMPLETED));
+        stats.put("upcomingAppointments", appointmentService.getUpcomingAppointmentsByPatient(patientId).size());
+        stats.put("pendingAppointments", appointmentService.countPatientAppointmentsByStatus(patientId, AppointmentStatus.PENDING));
+        stats.put("unreadNotifications", notificationService.getUnreadNotifications(patientId).size());
+        
+        dashboard.put("statistics", stats);
+        
+        return ResponseEntity.ok(dashboard);
+    }
+
+    @GetMapping("/doctors/search")
+    public ResponseEntity<List<DoctorDTO>> searchDoctors(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String specialization) {
+        try {
+            List<DoctorDTO> doctors;
+            
+            if (specialization != null && !specialization.trim().isEmpty()) {
+                doctors = doctorService.searchDoctorsWithSpecialization(searchTerm, specialization);
+            } else {
+                doctors = doctorService.searchDoctors(searchTerm);
+            }
+            
+            return ResponseEntity.ok(doctors != null ? doctors : List.of());
+        } catch (Exception e) {
+            System.err.println("Error searching doctors: " + e.getMessage());
+            return ResponseEntity.ok(List.of()); // Return empty list on error
+        }
     }
 }

@@ -250,6 +250,44 @@ public class AppointmentServiceImpl implements AppointmentService {
         return conflictingAppointments.isEmpty();
     }
 
+    @Override
+    public List<AppointmentDTO> getDoctorAppointmentsForToday(Long doctorId) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+        
+        return appointmentRepository.findDoctorAppointmentsForToday(doctor, LocalDateTime.now())
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AppointmentDTO> getPatientAppointmentsForToday(Long patientId) {
+        UserEntity patient = userRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        
+        return appointmentRepository.findPatientAppointmentsForToday(patient, LocalDateTime.now())
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public long countDoctorAppointmentsByStatus(Long doctorId, AppointmentStatus status) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+        
+        return appointmentRepository.countDoctorAppointmentsByStatus(doctor, status);
+    }
+
+    @Override
+    public long countPatientAppointmentsByStatus(Long patientId, AppointmentStatus status) {
+        UserEntity patient = userRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        
+        return appointmentRepository.countPatientAppointmentsByStatus(patient, status);
+    }
+
     private AppointmentDTO convertToDTO(AppointmentEntity appointment) {
         AppointmentDTO dto = modelMapper.map(appointment, AppointmentDTO.class);
         dto.setPatientId(appointment.getPatient().getId());

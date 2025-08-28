@@ -5,4 +5,6 @@ import com.reservation.medical_reservation.model.dto.LoginDTO;
 
 public interface AuthService {
     AuthResponseDTO login(LoginDTO loginDTO);
+
+
 }

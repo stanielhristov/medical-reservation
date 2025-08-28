@@ -1,8 +1,10 @@
 package com.reservation.medical_reservation.service.Impl;
 
 import com.reservation.medical_reservation.model.dto.DoctorDTO;
+import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.DoctorEntity;
 import com.reservation.medical_reservation.repository.DoctorRepository;
+import com.reservation.medical_reservation.repository.AppointmentRepository;
 import com.reservation.medical_reservation.service.DoctorService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,12 @@ import java.util.List;
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final AppointmentRepository appointmentRepository;
     private final ModelMapper modelMapper;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, ModelMapper modelMapper) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, ModelMapper modelMapper) {
         this.doctorRepository = doctorRepository;
+        this.appointmentRepository = appointmentRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -91,6 +95,68 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
         doctor.setIsActive(false);
         doctorRepository.save(doctor);
+    }
+
+    @Override
+    public List<DoctorDTO> searchDoctors(String searchTerm) {
+        try {
+            if (searchTerm == null || searchTerm.trim().isEmpty()) {
+                return getActiveDoctors();
+            }
+            
+            List<DoctorEntity> doctors = doctorRepository.searchDoctors(searchTerm.trim());
+            return doctors.stream()
+                    .map(this::convertToDTO)
+                    .toList();
+        } catch (Exception e) {
+            System.err.println("Error searching doctors: " + e.getMessage());
+            return List.of(); // Return empty list on error
+        }
+    }
+
+    @Override
+    public List<DoctorDTO> searchDoctorsWithSpecialization(String searchTerm, String specialization) {
+        try {
+            if (searchTerm == null || searchTerm.trim().isEmpty()) {
+                if (specialization == null || specialization.trim().isEmpty()) {
+                    return getActiveDoctors();
+                } else {
+                    return getDoctorsBySpecialization(specialization);
+                }
+            }
+            
+            List<DoctorEntity> doctors = doctorRepository.searchDoctorsWithSpecialization(
+                    searchTerm.trim(), 
+                    specialization != null && !specialization.trim().isEmpty() ? specialization.trim() : null
+            );
+            return doctors.stream()
+                    .map(this::convertToDTO)
+                    .toList();
+        } catch (Exception e) {
+            System.err.println("Error searching doctors with specialization: " + e.getMessage());
+            return List.of(); // Return empty list on error
+        }
+    }
+
+    @Override
+    public List<String> getAvailableSpecializations() {
+        try {
+            return doctorRepository.findAllActiveSpecializations();
+        } catch (Exception e) {
+            System.err.println("Error getting available specializations: " + e.getMessage());
+            return List.of(); // Return empty list on error
+        }
+    }
+
+    @Override
+    public List<UserDTO> getDoctorPatients(Long doctorId) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+        
+        return appointmentRepository.findDoctorPatients(doctor)
+                .stream()
+                .map(patient -> modelMapper.map(patient, UserDTO.class))
+                .toList();
     }
 
     private DoctorDTO convertToDTO(DoctorEntity doctor) {

@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginForm() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,21 +17,23 @@ export default function LoginForm() {
         setLoading(true);
 
         try {
-            const data = await login({ username, password });
-            console.log('Login successful:', data);
+            const result = await login(email, password);
             
-            // Store token in localStorage if provided
-            if (data.token) {
-                localStorage.setItem('token', data.token);
+            if (result.success) {
+                console.log('Login successful');
+                
+                // Redirect based on user role
+                const role = result.role;
+                if (role === 'ADMIN') {
+                    navigate('/admin/dashboard');
+                } else if (role === 'DOCTOR') {
+                    navigate('/doctor/dashboard');
+                } else {
+                    navigate('/patient/dashboard');
+                }
+            } else {
+                setError(result.message || 'Login failed. Please check your credentials and try again.');
             }
-            
-            // Store user data if provided
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-            }
-            
-            // Redirect to home page or dashboard
-            navigate('/');
         } catch (err) {
             console.error('Login error:', err);
             setError(err.message || 'Login failed. Please check your credentials and try again.');
@@ -143,7 +146,7 @@ export default function LoginForm() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    {/* Username Field */}
+                    {/* Email Field */}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{
                             display: 'block',
@@ -152,7 +155,7 @@ export default function LoginForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Username
+                            Email
                         </label>
                         <div style={{
                             position: 'relative',
@@ -166,9 +169,9 @@ export default function LoginForm() {
                             }
                         }}>
                             <input
-                                type="text"
-                                value={username}
-                                onChange={e => setUsername(e.target.value)}
+                                type="email"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
                                 required
                                 disabled={loading}
                                 style={{
@@ -182,7 +185,7 @@ export default function LoginForm() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Enter your username"
+                                placeholder="Enter your email"
                             />
                         </div>
                     </div>
@@ -299,41 +302,184 @@ export default function LoginForm() {
                     </button>
                 </form>
 
-                {/* Footer */}
+                {/* Enhanced Footer */}
                 <div style={{ 
-                    textAlign: 'center', 
-                    marginTop: '2rem',
-                    paddingTop: '2rem',
-                    borderTop: '1px solid #e5e7eb'
+                    marginTop: '2.5rem',
+                    paddingTop: '2.5rem',
+                    borderTop: '1px solid rgba(34, 197, 94, 0.15)',
+                    position: 'relative'
                 }}>
-                    <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                        Don't have an account?
-                    </p>
-                    <a 
-                        href="/register" 
-                        style={{
-                            color: '#22c55e',
-                            textDecoration: 'none',
-                            fontWeight: '500',
+                    {/* Background decoration */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '-10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '80px',
+                        height: '80px',
+                        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        zIndex: 0
+                    }} />
+
+                    <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                        {/* Icon and heading */}
+                        <div style={{
+                            width: '56px',
+                            height: '56px',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            borderRadius: '16px',
+                            margin: '0 auto 1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 8px 24px rgba(34, 197, 94, 0.25)',
+                            position: 'relative'
+                        }}>
+                            <span style={{ fontSize: '1.75rem', color: 'white' }}>👥</span>
+                            <div style={{
+                                position: 'absolute',
+                                inset: '-2px',
+                                background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent)',
+                                borderRadius: '18px',
+                                zIndex: -1
+                            }} />
+                        </div>
+
+                        <h3 style={{
+                            fontSize: '1.25rem',
+                            fontWeight: '700',
+                            color: '#374151',
+                            margin: '0 0 0.75rem',
+                            letterSpacing: '-0.025em'
+                        }}>
+                            New to our platform?
+                        </h3>
+                        
+                        <p style={{ 
+                            color: '#6b7280', 
+                            marginBottom: '2rem', 
                             fontSize: '0.95rem',
-                            padding: '0.75rem 1.5rem',
-                            borderRadius: '10px',
-                            background: 'rgba(34, 197, 94, 0.05)',
-                            border: '1px solid rgba(34, 197, 94, 0.1)',
-                            transition: 'all 0.2s ease',
-                            display: 'inline-block'
-                        }}
-                        onMouseEnter={e => {
-                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
-                            e.target.style.transform = 'translateY(-1px)';
-                        }}
-                        onMouseLeave={e => {
-                            e.target.style.background = 'rgba(34, 197, 94, 0.05)';
-                            e.target.style.transform = 'translateY(0)';
-                        }}
-                    >
-                        Create Account
-                    </a>
+                            lineHeight: '1.5',
+                            maxWidth: '280px',
+                            margin: '0 auto 2rem'
+                        }}>
+                            Join thousands of patients who trust us with their healthcare management. Create your account to get started.
+                        </p>
+
+                        {/* Enhanced Create Account Button */}
+                        <a 
+                            href="/register" 
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                padding: '1rem 2rem',
+                                background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%)',
+                                color: '#22c55e',
+                                textDecoration: 'none',
+                                fontWeight: '600',
+                                fontSize: '1rem',
+                                borderRadius: '14px',
+                                border: '1px solid rgba(34, 197, 94, 0.2)',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.1)',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.15) 100%)';
+                                e.target.style.transform = 'translateY(-2px)';
+                                e.target.style.boxShadow = '0 8px 24px rgba(34, 197, 94, 0.2)';
+                                e.target.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%)';
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.1)';
+                                e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                            }}
+                        >
+                            <span style={{
+                                width: '20px',
+                                height: '20px',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                color: 'white'
+                            }}>✨</span>
+                            Create Account
+                        </a>
+
+                        {/* Additional info */}
+                        <div style={{
+                            marginTop: '2rem',
+                            padding: '1.5rem',
+                            background: 'rgba(34, 197, 94, 0.03)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(34, 197, 94, 0.08)'
+                        }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '2rem',
+                                flexWrap: 'wrap'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>🔒</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        Secure & Private
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>⚡</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        Quick Setup
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>📱</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        24/7 Access
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

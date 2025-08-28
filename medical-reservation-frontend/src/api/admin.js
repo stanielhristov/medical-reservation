@@ -1,0 +1,27 @@
+import axios from './axios';
+
+export const adminAPI = {
+    // User management
+    getAllUsers: () => axios.get('/admin/users'),
+    getUserById: (userId) => axios.get(`/admin/users/${userId}`),
+    updateUserRole: (userId, roleName) => 
+        axios.patch(`/admin/users/${userId}/role?roleName=${roleName}`),
+    deactivateUser: (userId) => axios.patch(`/admin/users/${userId}/deactivate`),
+    activateUser: (userId) => axios.patch(`/admin/users/${userId}/activate`),
+    deleteUser: (userId) => axios.delete(`/admin/users/${userId}`),
+
+    // Doctor requests
+    getAllDoctorRequests: () => axios.get('/admin/doctor-requests'),
+    getPendingDoctorRequests: () => axios.get('/admin/doctor-requests/pending'),
+    approveDoctorRequest: (requestId, adminId) => 
+        axios.patch(`/admin/doctor-requests/${requestId}/approve?adminId=${adminId}`),
+    rejectDoctorRequest: (requestId, adminId, reason) => 
+        axios.patch(`/admin/doctor-requests/${requestId}/reject?adminId=${adminId}&reason=${encodeURIComponent(reason)}`),
+
+    // Statistics
+    getStatistics: () => axios.get('/admin/statistics'),
+    getTotalUsers: () => axios.get('/admin/statistics/users'),
+    getTotalPatients: () => axios.get('/admin/statistics/patients'),
+    getTotalDoctors: () => axios.get('/admin/statistics/doctors'),
+    getTotalAppointments: () => axios.get('/admin/statistics/appointments'),
+};

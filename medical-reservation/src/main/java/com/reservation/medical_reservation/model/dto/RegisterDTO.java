@@ -28,7 +28,6 @@ public class RegisterDTO {
     // Common user fields
     private LocalDate dateOfBirth;
     private String address;
-    private String emergencyContact;
     private String emergencyPhone; // Only for doctors
     
     // Doctor-specific fields (validation handled in service layer based on role)

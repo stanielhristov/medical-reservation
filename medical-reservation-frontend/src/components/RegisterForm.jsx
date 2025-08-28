@@ -2,9 +2,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios.js';
 
-// Comprehensive world countries list - most common first, then alphabetical
+
 const COUNTRIES = [
-    // Most common countries first
     { code: 'US', name: 'United States', flag: '🇺🇸', phone: '+1' },
     { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', phone: '+44' },
     { code: 'CA', name: 'Canada', flag: '🇨🇦', phone: '+1' },
@@ -247,11 +246,83 @@ const COUNTRIES = [
     { code: 'ZW', name: 'Zimbabwe', flag: '🇿🇼', phone: '+263' }
 ];
 
-// Create country lookup map for O(1) access
+const MEDICAL_SPECIALIZATIONS = [
+    'Anesthesiology',
+    'Cardiology',
+    'Cardiovascular Surgery',
+    'Dermatology',
+    'Emergency Medicine',
+    'Endocrinology',
+    'Family Medicine',
+    'Gastroenterology',
+    'General Surgery',
+    'Geriatrics',
+    'Hematology',
+    'Infectious Disease',
+    'Internal Medicine',
+    'Nephrology',
+    'Neurology',
+    'Neurosurgery',
+    'Obstetrics and Gynecology',
+    'Oncology',
+    'Ophthalmology',
+    'Orthopedic Surgery',
+    'Otolaryngology (ENT)',
+    'Pathology',
+    'Pediatrics',
+    'Physical Medicine and Rehabilitation',
+    'Plastic Surgery',
+    'Psychiatry',
+    'Pulmonology',
+    'Radiology',
+    'Rheumatology',
+    'Sports Medicine',
+    'Urology',
+    'Vascular Surgery'
+];
+
 const COUNTRY_MAP = new Map(COUNTRIES.map(country => [country.code, country]));
 
+// Helper function to calculate age from date of birth
+const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return null;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    return age;
+};
+
+// Helper function to validate date of birth
+const validateDateOfBirth = (dateOfBirth) => {
+    if (!dateOfBirth) return { isValid: false, message: '' };
+    
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    const age = calculateAge(dateOfBirth);
+    
+    if (birthDate > today) {
+        return { isValid: false, message: 'Date of birth cannot be in the future' };
+    }
+    
+    if (age > 120) {
+        return { isValid: false, message: 'Please enter a valid date of birth' };
+    }
+    
+    if (age < 0) {
+        return { isValid: false, message: 'Please enter a valid date of birth' };
+    }
+    
+    return { isValid: true, message: '' };
+};
+
 export default function RegisterForm() {
-    // Basic form fields
+
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -259,19 +330,16 @@ export default function RegisterForm() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [role, setRole] = useState('USER');
     
-    // Common user fields
+
     const [dateOfBirth, setDateOfBirth] = useState('');
-    const [emergencyContact, setEmergencyContact] = useState('');
     const [emergencyPhone, setEmergencyPhone] = useState('');
-    
-    // Address fields
+
     const [street, setStreet] = useState('');
     const [city, setCity] = useState('');
     const [stateProvince, setStateProvince] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [addressCountry, setAddressCountry] = useState('US');
     
-    // Phone number country codes
     const [phoneCountry, setPhoneCountry] = useState('US');
     const [emergencyPhoneCountry, setEmergencyPhoneCountry] = useState('US');
     
@@ -288,9 +356,9 @@ export default function RegisterForm() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [dateError, setDateError] = useState('');
     const navigate = useNavigate();
 
-    // Optimized change handlers
     const handlePhoneNumberChange = useCallback((e) => {
         setPhoneNumber(e.target.value);
     }, []);
@@ -328,9 +396,21 @@ export default function RegisterForm() {
         setAddressCountry(countryCode);
     }, []);
 
+    const handleDateOfBirthChange = useCallback((e) => {
+        const newDate = e.target.value;
+        setDateOfBirth(newDate);
+        
+        const validation = validateDateOfBirth(newDate);
+        if (!validation.isValid) {
+            setDateError(validation.message);
+        } else {
+            setDateError('');
+        }
+    }, []);
+
     // Memoized phone input component for better performance
     const PhoneInput = useCallback(({ label, value, onChange, countryCode, onCountryChange, disabled, required = false, placeholder }) => {
-        const selectedCountry = useMemo(() => 
+        const selectedCountry = useMemo(() =>
             COUNTRY_MAP.get(countryCode) || COUNTRIES[0], 
             [countryCode]
         );
@@ -575,9 +655,14 @@ export default function RegisterForm() {
         setSuccess(null);
         setLoading(true);
 
-        // Password validation
         if (password !== confirmPassword) {
             setError('Passwords do not match');
+            setLoading(false);
+            return;
+        }
+
+        if (dateError) {
+            setError('Please fix the date of birth error before submitting');
             setLoading(false);
             return;
         }
@@ -588,7 +673,6 @@ export default function RegisterForm() {
             return;
         }
 
-        // Doctor-specific validation
         if (role === 'DOCTOR') {
             if (!specialization.trim()) {
                 setError('Specialization is required for doctor registration');
@@ -603,11 +687,9 @@ export default function RegisterForm() {
         }
 
         try {
-            // Format phone numbers with country codes using optimized lookup
             const selectedPhoneCountry = COUNTRY_MAP.get(phoneCountry) || COUNTRIES[0];
             const formattedPhoneNumber = phoneNumber ? `${selectedPhoneCountry.phone}${phoneNumber}` : null;
-            
-            // Format address from structured fields
+
             const selectedAddressCountry = COUNTRY_MAP.get(addressCountry) || COUNTRIES[0];
             const addressParts = [
                 street,
@@ -624,12 +706,11 @@ export default function RegisterForm() {
                 phoneNumber: formattedPhoneNumber,
                 password,
                 role,
-                dateOfBirth: dateOfBirth || null,
+                dateOfBirth: dateOfBirth,
                 address: formattedAddress,
-                emergencyContact: emergencyContact || null,
             };
 
-            // Add doctor-specific fields only if registering as doctor
+
             if (role === 'DOCTOR') {
                 const selectedEmergencyCountry = COUNTRY_MAP.get(emergencyPhoneCountry) || COUNTRIES[0];
                 const formattedEmergencyPhone = emergencyPhone ? `${selectedEmergencyCountry.phone}${emergencyPhone}` : null;
@@ -645,7 +726,7 @@ export default function RegisterForm() {
             const response = await axios.post('/auth/register', requestData);
 
             if (role === 'DOCTOR') {
-                setSuccess('Doctor registration submitted successfully! Your application is pending admin approval. You can login as a patient while waiting. Redirecting to login...');
+                setSuccess('Doctor registration successful! You now have doctor privileges. Redirecting to login...');
             } else {
                 setSuccess('Registration successful! Redirecting to login...');
             }
@@ -935,26 +1016,71 @@ export default function RegisterForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Date of Birth
+                            📅 Date of Birth
                         </label>
-                        <input
-                            type="date"
-                            value={dateOfBirth}
-                            onChange={e => setDateOfBirth(e.target.value)}
-                            disabled={loading}
-                            style={{
-                                width: '100%',
-                                padding: '0.875rem 1rem',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '12px',
-                                fontSize: '0.95rem',
-                                background: '#f9fafb',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                color: '#374151',
-                                transition: 'all 0.2s ease'
-                            }}
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type="date"
+                                value={dateOfBirth}
+                                onChange={handleDateOfBirthChange}
+                                disabled={loading}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.875rem 1rem',
+                                    border: dateError ? '2px solid #ef4444' : '1px solid #e5e7eb',
+                                    borderRadius: '12px',
+                                    fontSize: '0.95rem',
+                                    background: '#f9fafb',
+                                    outline: 'none',
+                                    boxSizing: 'border-box',
+                                    color: '#374151',
+                                    transition: 'all 0.2s ease',
+                                    paddingRight: '3rem'
+                                }}
+                                max={new Date().toISOString().split('T')[0]}
+                            />
+                            {dateOfBirth && calculateAge(dateOfBirth) !== null && (
+                                <div style={{
+                                    position: 'absolute',
+                                    right: '1rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: '#10b981',
+                                    color: 'white',
+                                    padding: '0.25rem 0.5rem',
+                                    borderRadius: '8px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '600',
+                                    pointerEvents: 'none'
+                                }}>
+                                    {calculateAge(dateOfBirth)} years
+                                </div>
+                            )}
+                        </div>
+                        {dateError && (
+                            <div style={{
+                                marginTop: '0.5rem',
+                                color: '#ef4444',
+                                fontSize: '0.875rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.25rem'
+                            }}>
+                                ⚠️ {dateError}
+                            </div>
+                        )}
+                        {dateOfBirth && !dateError && calculateAge(dateOfBirth) !== null && (
+                            <div style={{
+                                marginTop: '0.5rem',
+                                color: '#10b981',
+                                fontSize: '0.875rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.25rem'
+                            }}>
+                                ✓ Age: {calculateAge(dateOfBirth)} years old
+                            </div>
+                        )}
                     </div>
 
                     {/* Address Fields */}
@@ -972,37 +1098,7 @@ export default function RegisterForm() {
                         disabled={loading}
                     />
 
-                    {/* Emergency Contact Field */}
-                    <div style={{ marginBottom: '1.25rem' }}>
-                        <label style={{
-                            display: 'block',
-                            marginBottom: '0.5rem',
-                            fontWeight: '500',
-                            color: '#374151',
-                            fontSize: '0.9rem'
-                        }}>
-                            Emergency Contact Name
-                        </label>
-                        <input
-                            type="text"
-                            value={emergencyContact}
-                            onChange={e => setEmergencyContact(e.target.value)}
-                            disabled={loading}
-                            style={{
-                                width: '100%',
-                                padding: '0.875rem 1rem',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '12px',
-                                fontSize: '0.95rem',
-                                background: '#f9fafb',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                color: '#374151',
-                                transition: 'all 0.2s ease'
-                            }}
-                            placeholder="Enter emergency contact name"
-                        />
-                    </div>
+
 
                     {/* Emergency Phone - Only for Doctors */}
                     {role === 'DOCTOR' && (
@@ -1065,8 +1161,7 @@ export default function RegisterForm() {
                                 }}>
                                     Specialization <span style={{ color: '#dc2626' }}>*</span>
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     value={specialization}
                                     onChange={e => setSpecialization(e.target.value)}
                                     required={role === 'DOCTOR'}
@@ -1081,10 +1176,22 @@ export default function RegisterForm() {
                                         outline: 'none',
                                         boxSizing: 'border-box',
                                         color: '#374151',
-                                        transition: 'all 0.2s ease'
+                                        transition: 'all 0.2s ease',
+                                        appearance: 'none',
+                                        backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e")',
+                                        backgroundPosition: 'right 0.5rem center',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundSize: '1.5em 1.5em',
+                                        paddingRight: '2.5rem'
                                     }}
-                                    placeholder="e.g., Cardiology, Pediatrics, Internal Medicine"
-                                />
+                                >
+                                    <option value="">Select a specialization</option>
+                                    {MEDICAL_SPECIALIZATIONS.map(spec => (
+                                        <option key={spec} value={spec}>
+                                            {spec}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             {/* Education */}
@@ -1361,41 +1468,184 @@ export default function RegisterForm() {
                     </button>
                 </form>
 
-                {/* Footer */}
+                {/* Enhanced Footer */}
                 <div style={{ 
-                    textAlign: 'center', 
-                    marginTop: '2rem',
-                    paddingTop: '2rem',
-                    borderTop: '1px solid #e5e7eb'
+                    marginTop: '2.5rem',
+                    paddingTop: '2.5rem',
+                    borderTop: '1px solid rgba(34, 197, 94, 0.15)',
+                    position: 'relative'
                 }}>
-                    <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                        Already have an account?
-                    </p>
-                    <a 
-                        href="/login" 
-                        style={{
-                            color: '#22c55e',
-                            textDecoration: 'none',
-                            fontWeight: '500',
+                    {/* Background decoration */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '-10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '80px',
+                        height: '80px',
+                        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        zIndex: 0
+                    }} />
+
+                    <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                        {/* Icon and heading */}
+                        <div style={{
+                            width: '56px',
+                            height: '56px',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            borderRadius: '16px',
+                            margin: '0 auto 1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 8px 24px rgba(34, 197, 94, 0.25)',
+                            position: 'relative'
+                        }}>
+                            <span style={{ fontSize: '1.75rem', color: 'white' }}>🔐</span>
+                            <div style={{
+                                position: 'absolute',
+                                inset: '-2px',
+                                background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent)',
+                                borderRadius: '18px',
+                                zIndex: -1
+                            }} />
+                        </div>
+
+                        <h3 style={{
+                            fontSize: '1.25rem',
+                            fontWeight: '700',
+                            color: '#374151',
+                            margin: '0 0 0.75rem',
+                            letterSpacing: '-0.025em'
+                        }}>
+                            Already a Member?
+                        </h3>
+                        
+                        <p style={{ 
+                            color: '#6b7280', 
+                            marginBottom: '2rem', 
                             fontSize: '0.95rem',
-                            padding: '0.75rem 1.5rem',
-                            borderRadius: '10px',
-                            background: 'rgba(34, 197, 94, 0.05)',
-                            border: '1px solid rgba(34, 197, 94, 0.1)',
-                            transition: 'all 0.2s ease',
-                            display: 'inline-block'
-                        }}
-                        onMouseEnter={e => {
-                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
-                            e.target.style.transform = 'translateY(-1px)';
-                        }}
-                        onMouseLeave={e => {
-                            e.target.style.background = 'rgba(34, 197, 94, 0.05)';
-                            e.target.style.transform = 'translateY(0)';
-                        }}
-                    >
-                        Sign In
-                    </a>
+                            lineHeight: '1.5',
+                            maxWidth: '280px',
+                            margin: '0 auto 2rem'
+                        }}>
+                            Welcome back! Sign in to access your healthcare dashboard and manage your appointments.
+                        </p>
+
+                        {/* Enhanced Sign In Button */}
+                        <a 
+                            href="/login" 
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                padding: '1rem 2rem',
+                                background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%)',
+                                color: '#22c55e',
+                                textDecoration: 'none',
+                                fontWeight: '600',
+                                fontSize: '1rem',
+                                borderRadius: '14px',
+                                border: '1px solid rgba(34, 197, 94, 0.2)',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.1)',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.15) 100%)';
+                                e.target.style.transform = 'translateY(-2px)';
+                                e.target.style.boxShadow = '0 8px 24px rgba(34, 197, 94, 0.2)';
+                                e.target.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%)';
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.1)';
+                                e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                            }}
+                        >
+                            <span style={{
+                                width: '20px',
+                                height: '20px',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                color: 'white'
+                            }}>🚀</span>
+                            Sign In
+                        </a>
+
+                        {/* Additional info */}
+                        <div style={{
+                            marginTop: '2rem',
+                            padding: '1.5rem',
+                            background: 'rgba(34, 197, 94, 0.03)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(34, 197, 94, 0.08)'
+                        }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '2rem',
+                                flexWrap: 'wrap'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>⚡</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        Fast Access
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>🔒</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        Secure Login
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.75rem',
+                                        color: 'white'
+                                    }}>📋</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '500' }}>
+                                        Full Dashboard
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

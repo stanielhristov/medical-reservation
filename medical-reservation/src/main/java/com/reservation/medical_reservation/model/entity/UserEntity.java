@@ -33,9 +33,6 @@ public class UserEntity extends BaseEntity {
     private String address;
     
     @Column
-    private String emergencyContact;
-    
-    @Column
     private String emergencyPhone;
     
     @Column

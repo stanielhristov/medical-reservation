@@ -1,11 +1,13 @@
 package com.reservation.medical_reservation.service.Impl;
 
 import com.reservation.medical_reservation.model.dto.RegisterDTO;
+import com.reservation.medical_reservation.model.entity.DoctorEntity;
 import com.reservation.medical_reservation.model.entity.DoctorRequestEntity;
 import com.reservation.medical_reservation.model.entity.RoleEntity;
 import com.reservation.medical_reservation.model.entity.UserEntity;
 import com.reservation.medical_reservation.model.enums.DoctorRequestStatus;
 import com.reservation.medical_reservation.model.enums.RoleName;
+import com.reservation.medical_reservation.repository.DoctorRepository;
 import com.reservation.medical_reservation.repository.DoctorRequestRepository;
 import com.reservation.medical_reservation.repository.RoleRepository;
 import com.reservation.medical_reservation.repository.UserRepository;
@@ -24,13 +26,16 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final DoctorRequestRepository doctorRequestRepository;
+    private final DoctorRepository doctorRepository;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, 
-                          PasswordEncoder passwordEncoder, DoctorRequestRepository doctorRequestRepository) {
+                          PasswordEncoder passwordEncoder, DoctorRequestRepository doctorRequestRepository,
+                          DoctorRepository doctorRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.doctorRequestRepository = doctorRequestRepository;
+        this.doctorRepository = doctorRepository;
     }
 
 
@@ -42,41 +47,36 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User with this email already exists");
         }
 
-        // Create user entity with all common fields
         UserEntity user = new UserEntity();
         user.setFullName(registerDTO.getFullName());
         user.setEmail(registerDTO.getEmail());
         user.setPhoneNumber(registerDTO.getPhoneNumber());
         user.setDateOfBirth(registerDTO.getDateOfBirth());
         user.setAddress(registerDTO.getAddress());
-        user.setEmergencyContact(registerDTO.getEmergencyContact());
 
         String encodedPassword = passwordEncoder.encode(registerDTO.getPassword());
         user.setPassword(encodedPassword);
 
-        // Determine role - doctors register as USER initially and create a doctor request
-        RoleName roleName = "DOCTOR".equals(registerDTO.getRole()) ? RoleName.USER : RoleName.valueOf(registerDTO.getRole());
+        RoleName roleName = RoleName.valueOf(registerDTO.getRole());
         RoleEntity role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalStateException("Role " + roleName + " not found"));
 
         user.setRole(role);
 
-        // Set emergency phone only for doctors
         if ("DOCTOR".equals(registerDTO.getRole())) {
             user.setEmergencyPhone(registerDTO.getEmergencyPhone());
+
         }
 
-        // Save user first
         UserEntity savedUser = userRepository.save(user);
 
-        // If registering as doctor, create a doctor request
         if ("DOCTOR".equals(registerDTO.getRole())) {
+            createDoctorEntity(savedUser, registerDTO);
             createDoctorRequest(savedUser, registerDTO);
         }
     }
 
     private void createDoctorRequest(UserEntity user, RegisterDTO registerDTO) {
-        // Validate required doctor fields
         if (registerDTO.getSpecialization() == null || registerDTO.getSpecialization().trim().isEmpty()) {
             throw new IllegalArgumentException("Specialization is required for doctor registration");
         }
@@ -94,6 +94,26 @@ public class UserServiceImpl implements UserService {
         doctorRequest.setStatus(DoctorRequestStatus.PENDING);
 
         doctorRequestRepository.save(doctorRequest);
+    }
+
+    private void createDoctorEntity(UserEntity user, RegisterDTO registerDTO) {
+        if (registerDTO.getSpecialization() == null || registerDTO.getSpecialization().trim().isEmpty()) {
+            throw new IllegalArgumentException("Specialization is required for doctor registration");
+        }
+        if (registerDTO.getLicenseNumber() == null || registerDTO.getLicenseNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("License number is required for doctor registration");
+        }
+
+        DoctorEntity doctor = new DoctorEntity();
+        doctor.setUser(user);
+        doctor.setSpecialization(registerDTO.getSpecialization());
+        doctor.setBio(registerDTO.getBio());
+        doctor.setLicenseNumber(registerDTO.getLicenseNumber());
+        doctor.setEducation(registerDTO.getEducation());
+        doctor.setExperience(registerDTO.getExperience());
+        doctor.setIsActive(false);
+
+        doctorRepository.save(doctor);
     }
 
 }

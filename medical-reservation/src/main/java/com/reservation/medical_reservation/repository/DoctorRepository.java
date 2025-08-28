@@ -25,4 +25,18 @@ public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
     
     @Query("SELECT COUNT(d) FROM DoctorEntity d WHERE d.isActive = true")
     long countActiveDoctors();
+    
+    @Query("SELECT d FROM DoctorEntity d WHERE d.isActive = true AND " +
+           "(LOWER(d.user.fullName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(d.specialization) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+    List<DoctorEntity> searchDoctors(@Param("searchTerm") String searchTerm);
+    
+    @Query("SELECT d FROM DoctorEntity d WHERE d.isActive = true AND " +
+           "(LOWER(d.user.fullName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(d.specialization) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) AND " +
+           "(:specialization IS NULL OR LOWER(d.specialization) = LOWER(:specialization))")
+    List<DoctorEntity> searchDoctorsWithSpecialization(@Param("searchTerm") String searchTerm, @Param("specialization") String specialization);
+    
+    @Query("SELECT DISTINCT d.specialization FROM DoctorEntity d WHERE d.isActive = true ORDER BY d.specialization")
+    List<String> findAllActiveSpecializations();
 }

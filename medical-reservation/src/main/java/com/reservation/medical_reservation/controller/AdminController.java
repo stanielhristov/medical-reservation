@@ -22,7 +22,6 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    // User Management
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = adminService.getAllUsers();
@@ -61,7 +60,6 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // Doctor Request Management
     @GetMapping("/doctor-requests")
     public ResponseEntity<List<DoctorRequestDTO>> getAllDoctorRequests() {
         List<DoctorRequestDTO> requests = adminService.getAllDoctorRequests();
@@ -91,7 +89,6 @@ public class AdminController {
         return ResponseEntity.ok(updated);
     }
 
-    // Statistics
     @GetMapping("/statistics")
     public ResponseEntity<Map<String, Long>> getStatistics() {
         Map<String, Long> stats = new HashMap<>();

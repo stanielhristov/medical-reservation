@@ -161,23 +161,21 @@ public class AdminServiceImpl implements AdminService {
         request.setReviewedBy(admin);
         request.setReviewedAt(LocalDateTime.now());
 
-        // Create doctor entity
-        DoctorEntity doctor = new DoctorEntity();
-        doctor.setUser(request.getUser());
+        // Find existing doctor entity and activate it
+        DoctorEntity doctor = doctorRepository.findByUserId(request.getUser().getId())
+                .orElseThrow(() -> new IllegalStateException("Doctor entity not found for user"));
+        
+        // Update doctor entity with any changes from the request
         doctor.setSpecialization(request.getSpecialization());
         doctor.setBio(request.getBio());
         doctor.setLicenseNumber(request.getLicenseNumber());
         doctor.setEducation(request.getEducation());
         doctor.setExperience(request.getExperience());
-        doctor.setIsActive(true);
+        doctor.setIsActive(true); // Activate the doctor
 
         doctorRepository.save(doctor);
 
-        // Update user role to DOCTOR
-        RoleEntity doctorRole = roleRepository.findByName(RoleName.DOCTOR)
-                .orElseThrow(() -> new IllegalArgumentException("Doctor role not found"));
-        request.getUser().setRole(doctorRole);
-        userRepository.save(request.getUser());
+        // Note: User already has DOCTOR role from registration, no need to update role
 
         // Save updated request
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
@@ -211,6 +209,9 @@ public class AdminServiceImpl implements AdminService {
         request.setRejectionReason(reason);
         request.setReviewedBy(admin);
         request.setReviewedAt(LocalDateTime.now());
+
+        // Note: DoctorEntity remains inactive (isActive=false) when request is rejected
+        // This allows the user to potentially reapply in the future
 
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
 

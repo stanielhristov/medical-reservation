@@ -34,4 +34,19 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     
     @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND a.appointmentTime >= :startTime AND a.appointmentTime < :endTime")
     List<AppointmentEntity> findConflictingAppointments(@Param("doctor") DoctorEntity doctor, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+    
+    @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND DATE(a.appointmentTime) = DATE(:today) ORDER BY a.appointmentTime ASC")
+    List<AppointmentEntity> findDoctorAppointmentsForToday(@Param("doctor") DoctorEntity doctor, @Param("today") LocalDateTime today);
+    
+    @Query("SELECT a FROM AppointmentEntity a WHERE a.patient = :patient AND DATE(a.appointmentTime) = DATE(:today) ORDER BY a.appointmentTime ASC")
+    List<AppointmentEntity> findPatientAppointmentsForToday(@Param("patient") UserEntity patient, @Param("today") LocalDateTime today);
+    
+    @Query("SELECT COUNT(a) FROM AppointmentEntity a WHERE a.patient = :patient AND a.status = :status")
+    long countPatientAppointmentsByStatus(@Param("patient") UserEntity patient, @Param("status") AppointmentStatus status);
+    
+    @Query("SELECT COUNT(a) FROM AppointmentEntity a WHERE a.doctor = :doctor AND a.status = :status")
+    long countDoctorAppointmentsByStatus(@Param("doctor") DoctorEntity doctor, @Param("status") AppointmentStatus status);
+    
+    @Query("SELECT DISTINCT a.patient FROM AppointmentEntity a WHERE a.doctor = :doctor ORDER BY a.patient.fullName")
+    List<UserEntity> findDoctorPatients(@Param("doctor") DoctorEntity doctor);
 }
