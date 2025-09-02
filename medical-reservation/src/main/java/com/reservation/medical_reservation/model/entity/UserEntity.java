@@ -43,6 +43,12 @@ public class UserEntity extends BaseEntity {
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    
+    @Column
+    private String passwordResetToken;
+    
+    @Column
+    private LocalDateTime passwordResetTokenExpiration;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)

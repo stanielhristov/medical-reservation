@@ -1,8 +1,10 @@
 package com.reservation.medical_reservation.controller;
 
 import com.reservation.medical_reservation.model.dto.AuthResponseDTO;
+import com.reservation.medical_reservation.model.dto.ForgotPasswordDTO;
 import com.reservation.medical_reservation.model.dto.LoginDTO;
 import com.reservation.medical_reservation.model.dto.RegisterDTO;
+import com.reservation.medical_reservation.model.dto.ResetPasswordDTO;
 import com.reservation.medical_reservation.service.AuthService;
 import com.reservation.medical_reservation.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,18 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
-
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+        authService.forgotPassword(forgotPasswordDTO);
+        return ResponseEntity.ok("Password reset email sent successfully");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO) {
+        authService.resetPassword(resetPasswordDTO);
+        return ResponseEntity.ok("Password reset successfully");
     }
 }

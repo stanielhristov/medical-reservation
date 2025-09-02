@@ -19,3 +19,25 @@ export const logout = async () => {
         return { success: true };
     }
 };
+
+export const forgotPassword = async (email) => {
+    try {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || error.message);
+    }
+};
+
+export const resetPassword = async (token, newPassword, confirmPassword) => {
+    try {
+        const response = await api.post('/auth/reset-password', {
+            token,
+            newPassword,
+            confirmPassword
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || error.message);
+    }
+};
