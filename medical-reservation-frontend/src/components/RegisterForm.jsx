@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../api/axios.js';
+import { register } from '../api/auth.js';
 
 
 const COUNTRIES = [
@@ -723,7 +723,7 @@ export default function RegisterForm() {
                 requestData.experience = experience || null;
             }
 
-            const response = await axios.post('/auth/register', requestData);
+            const response = await register(requestData);
 
             if (role === 'DOCTOR') {
                 setSuccess('Doctor registration successful! You now have doctor privileges. Redirecting to login...');
@@ -735,7 +735,7 @@ export default function RegisterForm() {
                 navigate('/login');
             }, 3000);
         } catch (err) {
-            setError(err.response?.data || 'Registration failed. Please try again.');
+            setError(err.message || 'Registration failed. Please try again.');
         } finally {
             setLoading(false);
         }

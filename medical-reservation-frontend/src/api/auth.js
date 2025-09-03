@@ -30,6 +30,16 @@ export const forgotPassword = async (email) => {
     }
 };
 
+export const register = async (userData) => {
+    try {
+        const response = await api.post('/auth/register', userData);
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || error.response?.data || error.message;
+        throw new Error(errorMessage);
+    }
+};
+
 export const resetPassword = async (token, newPassword, confirmPassword) => {
     try {
         const response = await api.post('/auth/reset-password', {
