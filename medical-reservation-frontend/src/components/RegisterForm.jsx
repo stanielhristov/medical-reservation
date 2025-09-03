@@ -300,7 +300,7 @@ const calculateAge = (dateOfBirth) => {
 
 // Helper function to validate date of birth
 const validateDateOfBirth = (dateOfBirth) => {
-    if (!dateOfBirth) return { isValid: false, message: '' };
+    if (!dateOfBirth) return { isValid: false, message: 'Date of birth is required' };
     
     const birthDate = new Date(dateOfBirth);
     const today = new Date();
@@ -316,6 +316,10 @@ const validateDateOfBirth = (dateOfBirth) => {
     
     if (age < 0) {
         return { isValid: false, message: 'Please enter a valid date of birth' };
+    }
+    
+    if (age < 18) {
+        return { isValid: false, message: 'You must be at least 18 years old to register' };
     }
     
     return { isValid: true, message: '' };
@@ -657,6 +661,14 @@ export default function RegisterForm() {
 
         if (password !== confirmPassword) {
             setError('Passwords do not match');
+            setLoading(false);
+            return;
+        }
+
+        // Validate date of birth
+        const dateValidation = validateDateOfBirth(dateOfBirth);
+        if (!dateValidation.isValid) {
+            setError(dateValidation.message);
             setLoading(false);
             return;
         }
@@ -1016,13 +1028,14 @@ export default function RegisterForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            📅 Date of Birth
+                            📅 Date of Birth <span style={{ color: '#dc2626' }}>*</span>
                         </label>
                         <div style={{ position: 'relative' }}>
                             <input
                                 type="date"
                                 value={dateOfBirth}
                                 onChange={handleDateOfBirthChange}
+                                required
                                 disabled={loading}
                                 style={{
                                     width: '100%',
@@ -1037,7 +1050,7 @@ export default function RegisterForm() {
                                     transition: 'all 0.2s ease',
                                     paddingRight: '3rem'
                                 }}
-                                max={new Date().toISOString().split('T')[0]}
+                                max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
                             />
                             {dateOfBirth && calculateAge(dateOfBirth) !== null && (
                                 <div style={{
