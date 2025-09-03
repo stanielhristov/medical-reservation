@@ -12,6 +12,7 @@ public class DoctorDTO {
     private Long userId;
     private String fullName;
     private String email;
+    private String phoneNumber;
     private String specialization;
     private String bio;
     private String licenseNumber;

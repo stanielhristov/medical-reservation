@@ -35,6 +35,7 @@ import AdminAppointments from './pages/admin/AdminAppointments';
 // Common Components
 import Layout from './components/Layout';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+import EditProfilePage from './pages/EditProfilePage';
 
 function App() {
     return (
@@ -55,6 +56,13 @@ function App() {
                     <Route path="/home" element={
                         <ProtectedRoute requiredRoles={['USER', 'DOCTOR', 'ADMIN']}>
                             <HomePage />
+                        </ProtectedRoute>
+                    } />
+
+                    {/* Profile Routes */}
+                    <Route path="/profile/edit" element={
+                        <ProtectedRoute requiredRoles={['USER', 'DOCTOR', 'ADMIN']}>
+                            <Layout><EditProfilePage /></Layout>
                         </ProtectedRoute>
                     } />
 

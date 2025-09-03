@@ -104,6 +104,10 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Reset token has expired");
         }
 
+        if (passwordEncoder.matches(resetPasswordDTO.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("New password must be different from current password");
+        }
+
         user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
         user.setPasswordResetToken(null);
         user.setPasswordResetTokenExpiration(null);

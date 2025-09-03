@@ -13,7 +13,6 @@ const Layout = ({ children }) => {
     };
 
     const handleHomeNavigation = () => {
-        // Navigate to appropriate dashboard based on user role
         if (user?.role === 'ADMIN') {
             navigate('/admin/dashboard');
         } else if (user?.role === 'DOCTOR') {
@@ -54,39 +53,39 @@ const Layout = ({ children }) => {
                 zIndex: 0
             }} />
 
-            {/* Enhanced Navigation Header */}
+            {/* Minimalistic Navigation Header */}
             <nav style={{
-                background: 'rgba(255, 255, 255, 0.98)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 32px rgba(34, 197, 94, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04)',
-                borderBottom: '1px solid rgba(34, 197, 94, 0.15)',
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(12px)',
+                boxShadow: '0 2px 20px rgba(34, 197, 94, 0.08)',
+                borderBottom: '1px solid rgba(34, 197, 94, 0.1)',
                 position: 'relative',
                 zIndex: 1
             }}>
                 <div style={{
                     maxWidth: '1400px',
                     margin: '0 auto',
-                    padding: '0 2rem'
+                    padding: '0 1.5rem'
                 }}>
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        height: '80px'
+                        height: '60px'
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {/* Healthcare Portal Brand */}
+                            {/* Medical Cross Logo */}
                             <button
                                 onClick={handleHomeNavigation}
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '1rem',
+                                    gap: '0.75rem',
                                     background: 'none',
                                     border: 'none',
                                     cursor: 'pointer',
-                                    padding: '0.5rem',
-                                    borderRadius: '12px',
+                                    padding: '0.25rem',
+                                    borderRadius: '8px',
                                     transition: 'all 0.3s ease'
                                 }}
                                 onMouseEnter={e => {
@@ -96,51 +95,55 @@ const Layout = ({ children }) => {
                                     e.target.closest('button').style.background = 'none';
                                 }}
                             >
+                                {/* Medical Cross Icon */}
                                 <div style={{
-                                    width: '56px',
-                                    height: '56px',
-                                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                                    borderRadius: '16px',
+                                    width: '36px',
+                                    height: '36px',
+                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                    borderRadius: '8px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    boxShadow: '0 8px 24px rgba(34, 197, 94, 0.3)',
-                                    position: 'relative'
+                                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)',
+                                    position: 'relative',
+                                    border: '1px solid #047857'
                                 }}>
-                                    <span style={{ fontSize: '1.75rem', color: 'white' }}>🩺</span>
+                                    {/* Medical Cross */}
                                     <div style={{
-                                        position: 'absolute',
-                                        top: '-2px',
-                                        right: '-2px',
-                                        width: '16px',
-                                        height: '16px',
-                                        background: '#10b981',
-                                        borderRadius: '50%',
-                                        border: '2px solid white'
-                                    }} />
+                                        position: 'relative',
+                                        width: '20px',
+                                        height: '20px'
+                                    }}>
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '2px',
+                                            left: '8px',
+                                            width: '4px',
+                                            height: '16px',
+                                            background: 'white',
+                                            borderRadius: '1px'
+                                        }} />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '8px',
+                                            left: '2px',
+                                            width: '16px',
+                                            height: '4px',
+                                            background: 'white',
+                                            borderRadius: '1px'
+                                        }} />
+                                    </div>
                                 </div>
                                 <div>
                                     <h1 style={{
-                                        fontSize: '1.4rem',
-                                        fontWeight: '700',
+                                        fontSize: '1.1rem',
+                                        fontWeight: '600',
                                         color: '#374151',
-                                        margin: '0 0 0.25rem',
-                                        letterSpacing: '-0.025em'
-                                    }}>
-                                        Healthcare Portal
-                                    </h1>
-                                    <p style={{
-                                        fontSize: '0.8rem',
-                                        color: '#6b7280',
                                         margin: 0,
-                                        fontWeight: '500',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em'
+                                        letterSpacing: '-0.015em'
                                     }}>
-                                        {user?.role === 'ADMIN' ? 'ADMINISTRATIVE PANEL' : 
-                                         user?.role === 'DOCTOR' ? 'MEDICAL WORKSPACE' : 
-                                         'PATIENT DASHBOARD'}
-                                    </p>
+                                        Medical Reservation
+                                    </h1>
                                 </div>
                             </button>
                             
@@ -148,137 +151,385 @@ const Layout = ({ children }) => {
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.5rem',
-                                marginLeft: '3rem'
+                                gap: '0.25rem',
+                                marginLeft: '2rem'
                             }}>
-                                {navigationRoutes.map((route) => (
-                                    <Link
-                                        key={route.path}
-                                        to={route.path}
-                                        style={{
-                                            color: '#4b5563',
-                                            fontWeight: '500',
-                                            fontSize: '0.95rem',
-                                            padding: '0.75rem 1.25rem',
-                                            borderRadius: '12px',
-                                            textDecoration: 'none',
-                                            transition: 'all 0.3s ease',
-                                            position: 'relative',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem'
-                                        }}
-                                        onMouseEnter={e => {
-                                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
-                                            e.target.style.color = '#22c55e';
-                                            e.target.style.transform = 'translateY(-1px)';
-                                        }}
-                                        onMouseLeave={e => {
-                                            e.target.style.background = 'transparent';
-                                            e.target.style.color = '#4b5563';
-                                            e.target.style.transform = 'translateY(0)';
-                                        }}
-                                    >
-                                        <span style={{ fontSize: '1.1rem' }}>
-                                            {route.name === 'Dashboard' ? '🏠' :
-                                             route.name === 'Appointments' ? '📅' :
-                                             route.name === 'Doctors' ? '👨‍⚕️' :
-                                             route.name === 'Patients' ? '👥' :
-                                             route.name === 'Schedule' ? '🗓️' :
-                                             route.name === 'Medical History' ? '📋' :
-                                             route.name === 'Notifications' ? '🔔' :
-                                             route.name === 'Users' ? '👤' : '📊'}
-                                        </span>
-                                        {route.name}
-                                    </Link>
-                                ))}
+                                {navigationRoutes.map((route) => {
+                                    const getIcon = (routeName) => {
+                                        const iconStyle = {
+                                            width: '16px',
+                                            height: '16px',
+                                            background: '#6b7280',
+                                            borderRadius: '2px'
+                                        };
+                                        
+                                        switch(routeName) {
+                                            case 'Dashboard':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '4px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '6px', background: '#6b7280'}} />
+                                                    </div>
+                                                );
+                                            case 'Appointments':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '10px', height: '2px', background: '#6b7280'}} />
+                                                        <div style={{position: 'absolute', top: '6px', left: '2px', width: '10px', height: '2px', background: '#6b7280'}} />
+                                                    </div>
+                                                );
+                                            case 'Doctors':
+                                                return (
+                                                    <div style={{...iconStyle, background: '#6b7280', borderRadius: '50%', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '10px', left: '4px', width: '8px', height: '2px', background: 'white'}} />
+                                                        <div style={{position: 'absolute', top: '6px', left: '6px', width: '4px', height: '2px', background: 'white'}} />
+                                                    </div>
+                                                );
+                                            case 'Patients':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '8px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '1px', width: '6px', height: '4px', background: '#6b7280', borderRadius: '2px'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '7px', width: '6px', height: '4px', background: '#6b7280', borderRadius: '2px'}} />
+                                                    </div>
+                                                );
+                                            case 'Schedule':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '4px', left: '2px', width: '10px', height: '1px', background: '#6b7280'}} />
+                                                        <div style={{position: 'absolute', top: '7px', left: '2px', width: '10px', height: '1px', background: '#6b7280'}} />
+                                                        <div style={{position: 'absolute', top: '10px', left: '2px', width: '4px', height: '1px', background: '#6b7280'}} />
+                                                    </div>
+                                                );
+                                            case 'Medical History':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '2px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '1px', background: '#6b7280'}} />
+                                                        <div style={{position: 'absolute', top: '5px', left: '2px', width: '8px', height: '1px', background: '#6b7280'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '5px', height: '1px', background: '#6b7280'}} />
+                                                    </div>
+                                                );
+                                            case 'Notifications':
+                                                return (
+                                                    <div style={{...iconStyle, background: '#6b7280', borderRadius: '8px 8px 2px 2px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '8px', left: '6px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
+                                                    </div>
+                                                );
+                                            case 'Users':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '4px', width: '8px', height: '6px', background: '#6b7280', borderRadius: '4px 4px 0 0'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '12px', height: '6px', background: '#6b7280', borderRadius: '0 0 4px 4px'}} />
+                                                    </div>
+                                                );
+                                            default:
+                                                return <div style={{...iconStyle}} />;
+                                        }
+                                    };
+                                    
+                                    return (
+                                        <Link
+                                            key={route.path}
+                                            to={route.path}
+                                            style={{
+                                                color: '#4b5563',
+                                                fontWeight: '500',
+                                                fontSize: '0.9rem',
+                                                padding: '0.5rem 1rem',
+                                                borderRadius: '8px',
+                                                textDecoration: 'none',
+                                                transition: 'all 0.3s ease',
+                                                position: 'relative',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem'
+                                            }}
+                                            onMouseEnter={e => {
+                                                e.target.style.background = 'rgba(34, 197, 94, 0.1)';
+                                                e.target.style.color = '#22c55e';
+                                                // Change icon color on hover
+                                                const iconElements = e.target.querySelectorAll('div');
+                                                iconElements.forEach(el => {
+                                                    if (el.style.background && el.style.background.includes('#6b7280')) {
+                                                        el.style.background = el.style.background.replace('#6b7280', '#22c55e');
+                                                    }
+                                                    if (el.style.border && el.style.border.includes('#6b7280')) {
+                                                        el.style.border = el.style.border.replace('#6b7280', '#22c55e');
+                                                    }
+                                                });
+                                            }}
+                                            onMouseLeave={e => {
+                                                e.target.style.background = 'transparent';
+                                                e.target.style.color = '#4b5563';
+                                                // Reset icon color
+                                                const iconElements = e.target.querySelectorAll('div');
+                                                iconElements.forEach(el => {
+                                                    if (el.style.background && el.style.background.includes('#22c55e')) {
+                                                        el.style.background = el.style.background.replace('#22c55e', '#6b7280');
+                                                    }
+                                                    if (el.style.border && el.style.border.includes('#22c55e')) {
+                                                        el.style.border = el.style.border.replace('#22c55e', '#6b7280');
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            {getIcon(route.name)}
+                                            {route.name}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
                         
                         {/* User Info and Actions */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             {user && (
                                 <>
                                     {/* User Profile Card */}
                                     <div style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '1rem',
-                                        background: 'rgba(34, 197, 94, 0.08)',
-                                        padding: '0.75rem 1.25rem',
-                                        borderRadius: '16px',
-                                        border: '1px solid rgba(34, 197, 94, 0.2)',
-                                        backdropFilter: 'blur(10px)'
+                                        gap: '0.5rem',
+                                        background: 'rgba(34, 197, 94, 0.05)',
+                                        padding: '0.5rem 0.75rem',
+                                        borderRadius: '8px',
+                                        border: '1px solid rgba(34, 197, 94, 0.15)'
                                     }}>
                                         <div style={{
-                                            width: '40px',
-                                            height: '40px',
-                                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                                            borderRadius: '12px',
+                                            width: '24px',
+                                            height: '24px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                            borderRadius: '6px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
                                             position: 'relative'
                                         }}>
-                                            <span style={{ fontSize: '1.3rem', color: 'white' }}>
-                                                {user.role === 'ADMIN' ? '👑' :
-                                                 user.role === 'DOCTOR' ? '👨‍⚕️' : '👤'}
-                                            </span>
+                                            {/* User Icon */}
+                                            <div style={{
+                                                width: '12px',
+                                                height: '12px',
+                                                background: 'none',
+                                                position: 'relative'
+                                            }}>
+                                                {user.role === 'ADMIN' ? (
+                                                    // Crown icon
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: '2px',
+                                                        left: '2px',
+                                                        width: '8px',
+                                                        height: '6px',
+                                                        background: 'white',
+                                                        borderRadius: '2px 2px 0 0'
+                                                    }}>
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '-2px',
+                                                            left: '2px',
+                                                            width: '4px',
+                                                            height: '2px',
+                                                            background: 'white',
+                                                            borderRadius: '2px'
+                                                        }} />
+                                                    </div>
+                                                ) : user.role === 'DOCTOR' ? (
+                                                    // Medical cross icon
+                                                    <>
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '2px',
+                                                            left: '5px',
+                                                            width: '2px',
+                                                            height: '8px',
+                                                            background: 'white',
+                                                            borderRadius: '0.5px'
+                                                        }} />
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '5px',
+                                                            left: '2px',
+                                                            width: '8px',
+                                                            height: '2px',
+                                                            background: 'white',
+                                                            borderRadius: '0.5px'
+                                                        }} />
+                                                    </>
+                                                ) : (
+                                                    // User icon
+                                                    <>
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '2px',
+                                                            left: '4px',
+                                                            width: '4px',
+                                                            height: '3px',
+                                                            background: 'white',
+                                                            borderRadius: '2px 2px 0 0'
+                                                        }} />
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '6px',
+                                                            left: '2px',
+                                                            width: '8px',
+                                                            height: '4px',
+                                                            background: 'white',
+                                                            borderRadius: '0 0 2px 2px'
+                                                        }} />
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                         <div>
                                             <div style={{ 
                                                 color: '#374151', 
-                                                fontSize: '0.95rem',
-                                                fontWeight: '600',
-                                                margin: 0
+                                                fontSize: '0.85rem',
+                                                fontWeight: '500',
+                                                margin: 0,
+                                                lineHeight: '1.2'
                                             }}>
                                                 {user.fullName || user.email || 'User'}
-                                            </div>
-                                            <div style={{ 
-                                                color: '#22c55e', 
-                                                fontSize: '0.8rem',
-                                                fontWeight: '500',
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.05em',
-                                                margin: 0
-                                            }}>
-                                                {user.role}
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    {/* Enhanced Logout Button */}
+                                    {/* Edit Profile Button */}
                                     <button 
-                                        onClick={handleLogout}
+                                        onClick={() => navigate('/profile/edit')}
                                         style={{
-                                            padding: '0.875rem 1.5rem',
-                                            background: 'rgba(248, 113, 113, 0.1)',
-                                            color: '#dc2626',
-                                            border: '1px solid rgba(248, 113, 113, 0.3)',
-                                            borderRadius: '14px',
+                                            padding: '0.5rem',
+                                            background: 'rgba(34, 197, 94, 0.1)',
+                                            color: '#16a34a',
+                                            border: '1px solid rgba(34, 197, 94, 0.2)',
+                                            borderRadius: '6px',
                                             cursor: 'pointer',
-                                            fontWeight: '600',
-                                            fontSize: '0.9rem',
+                                            fontSize: '0.8rem',
                                             transition: 'all 0.3s ease',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: '0.5rem',
-                                            backdropFilter: 'blur(10px)'
+                                            justifyContent: 'center',
+                                            width: '32px',
+                                            height: '32px'
                                         }}
+                                        title="Edit Profile"
                                         onMouseEnter={e => {
-                                            e.target.style.background = 'rgba(248, 113, 113, 0.2)';
-                                            e.target.style.transform = 'translateY(-2px)';
-                                            e.target.style.boxShadow = '0 6px 20px rgba(248, 113, 113, 0.2)';
+                                            e.target.style.background = 'rgba(34, 197, 94, 0.15)';
                                         }}
                                         onMouseLeave={e => {
-                                            e.target.style.background = 'rgba(248, 113, 113, 0.1)';
-                                            e.target.style.transform = 'translateY(0)';
-                                            e.target.style.boxShadow = 'none';
+                                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
                                         }}
                                     >
-                                        <span style={{ fontSize: '1.1rem' }}>🚪</span>
-                                        Logout
+                                        {/* User Profile Settings icon */}
+                                        <div style={{
+                                            width: '14px',
+                                            height: '14px',
+                                            position: 'relative'
+                                        }}>
+                                            {/* User head */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '1px',
+                                                left: '4px',
+                                                width: '6px',
+                                                height: '4px',
+                                                background: '#16a34a',
+                                                borderRadius: '3px 3px 0 0'
+                                            }} />
+                                            {/* User body */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '6px',
+                                                left: '2px',
+                                                width: '10px',
+                                                height: '6px',
+                                                background: '#16a34a',
+                                                borderRadius: '0 0 5px 5px'
+                                            }} />
+                                            {/* Settings gear overlay */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '9px',
+                                                left: '9px',
+                                                width: '4px',
+                                                height: '4px',
+                                                border: '1px solid #16a34a',
+                                                borderRadius: '50%',
+                                                background: 'white'
+                                            }} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '10px',
+                                                left: '10px',
+                                                width: '2px',
+                                                height: '2px',
+                                                background: '#16a34a',
+                                                borderRadius: '50%'
+                                            }} />
+                                        </div>
+                                    </button>
+                                    
+                                    {/* Logout Button */}
+                                    <button 
+                                        onClick={handleLogout}
+                                        style={{
+                                            padding: '0.5rem',
+                                            background: 'rgba(239, 68, 68, 0.1)',
+                                            color: '#dc2626',
+                                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.8rem',
+                                            transition: 'all 0.3s ease',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            width: '32px',
+                                            height: '32px'
+                                        }}
+                                        title="Logout"
+                                        onMouseEnter={e => {
+                                            e.target.style.background = 'rgba(239, 68, 68, 0.15)';
+                                        }}
+                                        onMouseLeave={e => {
+                                            e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                                        }}
+                                    >
+                                        {/* Logout icon */}
+                                        <div style={{
+                                            width: '14px',
+                                            height: '14px',
+                                            position: 'relative'
+                                        }}>
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '2px',
+                                                left: '1px',
+                                                width: '8px',
+                                                height: '10px',
+                                                border: '2px solid #dc2626',
+                                                borderRight: 'none',
+                                                borderRadius: '4px 0 0 4px'
+                                            }} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '6px',
+                                                left: '7px',
+                                                width: '4px',
+                                                height: '2px',
+                                                background: '#dc2626',
+                                                borderRadius: '1px'
+                                            }} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '5px',
+                                                left: '10px',
+                                                width: '2px',
+                                                height: '2px',
+                                                borderTop: '2px solid #dc2626',
+                                                borderRight: '2px solid #dc2626',
+                                                transform: 'rotate(45deg)'
+                                            }} />
+                                        </div>
                                     </button>
                                 </>
                             )}

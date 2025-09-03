@@ -21,18 +21,14 @@ const PatientDashboard = () => {
                 return;
             }
 
-            // Fetch real dashboard data from the backend
             const dashboardData = await getPatientDashboard(user.id);
             
-            // Set next appointment (can be null if no upcoming appointments)
             setNextAppointment(dashboardData.nextAppointment || null);
             
-            // Set recent appointments
             setRecentAppointments(dashboardData.recentAppointments || []);
             
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-            // Set empty data on error
             setNextAppointment(null);
             setRecentAppointments([]);
         } finally {
@@ -161,23 +157,91 @@ const PatientDashboard = () => {
                         <div style={{
                             width: '120px',
                             height: '120px',
-                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            background: '#10b981',
                             borderRadius: '24px',
                             margin: '0 auto 2.5rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            boxShadow: '0 16px 40px rgba(34, 197, 94, 0.3)',
+                            boxShadow: '0 16px 40px rgba(16, 185, 129, 0.3)',
+                            border: '3px solid #047857',
                             position: 'relative'
                         }}>
-                            <span style={{ fontSize: '3.5rem', color: 'white' }}>🩺</span>
+                            {/* Perfect Medical Cross */}
                             <div style={{
-                                position: 'absolute',
-                                inset: '-4px',
-                                background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent)',
-                                borderRadius: '28px',
-                                zIndex: -1
-                            }} />
+                                width: '60px',
+                                height: '60px',
+                                position: 'relative',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                {/* Vertical bar of cross - perfectly centered */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '50%',
+                                    width: '10px',
+                                    height: '40px',
+                                    background: 'white',
+                                    borderRadius: '3px',
+                                    transform: 'translateX(-50%)',
+                                    boxShadow: '0 3px 12px rgba(0,0,0,0.15)'
+                                }} />
+                                {/* Horizontal bar of cross - perfectly centered */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '10px',
+                                    width: '40px',
+                                    height: '10px',
+                                    background: 'white',
+                                    borderRadius: '3px',
+                                    transform: 'translateY(-50%)',
+                                    boxShadow: '0 3px 12px rgba(0,0,0,0.15)'
+                                }} />
+                                {/* Small medical pulse line accent */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '15px',
+                                    left: '50%',
+                                    width: '20px',
+                                    height: '2px',
+                                    background: 'rgba(220, 252, 231, 0.9)',
+                                    transform: 'translateX(-50%)',
+                                    borderRadius: '1px'
+                                }} />
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '15px',
+                                    left: '50%',
+                                    width: '2px',
+                                    height: '6px',
+                                    background: 'rgba(220, 252, 231, 0.9)',
+                                    transform: 'translateX(-2px)',
+                                    borderRadius: '1px'
+                                }} />
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '15px',
+                                    left: '50%',
+                                    width: '2px',
+                                    height: '4px',
+                                    background: 'rgba(220, 252, 231, 0.9)',
+                                    transform: 'translateX(2px)',
+                                    borderRadius: '1px'
+                                }} />
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '15px',
+                                    left: '50%',
+                                    width: '2px',
+                                    height: '8px',
+                                    background: 'rgba(220, 252, 231, 0.9)',
+                                    transform: 'translateX(6px)',
+                                    borderRadius: '1px'
+                                }} />
+                            </div>
                         </div>
                         
                         <h1 style={{

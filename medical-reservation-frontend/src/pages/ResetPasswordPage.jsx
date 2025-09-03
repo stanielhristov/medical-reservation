@@ -9,6 +9,7 @@ export default function ResetPasswordPage() {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -43,11 +44,9 @@ export default function ResetPasswordPage() {
 
         try {
             await resetPassword(token, newPassword, confirmPassword);
-            // Show success message and redirect to login
-            alert('Password reset successfully! You will be redirected to login.');
-            navigate('/login');
+            setShowSuccessModal(true);
         } catch (err) {
-            setError(err.message || 'Failed to reset password. Please try again.');
+            setError(err.message || 'Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -328,10 +327,125 @@ export default function ResetPasswordPage() {
                 </form>
             </div>
 
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 1000,
+                    backdropFilter: 'blur(4px)'
+                }}>
+                    <div style={{
+                        background: 'white',
+                        borderRadius: '20px',
+                        padding: '2.5rem',
+                        maxWidth: '400px',
+                        width: '90%',
+                        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
+                        textAlign: 'center',
+                        position: 'relative',
+                        border: '1px solid rgba(34, 197, 94, 0.1)'
+                    }}>
+                        {/* Success Icon */}
+                        <div style={{
+                            width: '80px',
+                            height: '80px',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            borderRadius: '50%',
+                            margin: '0 auto 1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)'
+                        }}>
+                            <span style={{ 
+                                fontSize: '2.5rem', 
+                                color: 'white',
+                                animation: 'bounceIn 0.6s ease-out'
+                            }}>✓</span>
+                        </div>
+
+                        <h2 style={{
+                            fontSize: '1.5rem',
+                            fontWeight: '600',
+                            color: '#374151',
+                            margin: '0 0 1rem',
+                            letterSpacing: '-0.025em'
+                        }}>
+                            Password Reset Successful!
+                        </h2>
+
+                        <p style={{
+                            color: '#6b7280',
+                            fontSize: '1rem',
+                            margin: '0 0 2rem',
+                            lineHeight: 1.5
+                        }}>
+                            Your password has been successfully updated. You will be redirected to the login page.
+                        </p>
+
+                        <button
+                            onClick={() => {
+                                setShowSuccessModal(false);
+                                navigate('/login');
+                            }}
+                            style={{
+                                width: '100%',
+                                padding: '0.875rem',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '12px',
+                                fontSize: '1rem',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.transform = 'translateY(-1px)';
+                                e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.25)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.2)';
+                            }}
+                        >
+                            Continue to Login
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <style jsx>{`
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
+                }
+                
+                @keyframes bounceIn {
+                    0% {
+                        opacity: 0;
+                        transform: scale(0.3);
+                    }
+                    50% {
+                        opacity: 1;
+                        transform: scale(1.05);
+                    }
+                    70% {
+                        transform: scale(0.9);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
                 }
             `}</style>
         </div>

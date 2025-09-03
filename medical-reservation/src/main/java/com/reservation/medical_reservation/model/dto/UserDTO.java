@@ -17,8 +17,10 @@ public class UserDTO {
     private LocalDate dateOfBirth;
     private String address;
     private String emergencyPhone;
+    private String emergencyContact; 
     private Boolean isActive;
     private LocalDateTime lastLogin;
     private LocalDateTime createdAt;
     private String role;
+    private String phone; 
 }

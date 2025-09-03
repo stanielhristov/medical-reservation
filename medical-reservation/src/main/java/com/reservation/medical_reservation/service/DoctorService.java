@@ -17,9 +17,7 @@ public interface DoctorService {
     List<DoctorDTO> searchDoctors(String searchTerm);
     List<DoctorDTO> searchDoctorsWithSpecialization(String searchTerm, String specialization);
 
-    // Get available specializations
     List<String> getAvailableSpecializations();
 
-    // Patient management
     List<com.reservation.medical_reservation.model.dto.UserDTO> getDoctorPatients(Long doctorId);
 }

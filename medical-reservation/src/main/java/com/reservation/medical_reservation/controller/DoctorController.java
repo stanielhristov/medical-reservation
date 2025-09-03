@@ -119,16 +119,13 @@ public class DoctorController {
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> getDoctorDashboard(@PathVariable Long doctorId) {
         Map<String, Object> dashboard = new HashMap<>();
-        
-        // Today's appointments
+
         List<AppointmentDTO> todayAppointments = appointmentService.getDoctorAppointmentsForToday(doctorId);
         dashboard.put("todayAppointments", todayAppointments);
-        
-        // Upcoming appointments
+
         List<AppointmentDTO> upcomingAppointments = appointmentService.getUpcomingAppointmentsByDoctor(doctorId);
         dashboard.put("upcomingAppointments", upcomingAppointments);
-        
-        // Statistics
+
         Map<String, Object> stats = new HashMap<>();
         stats.put("todayAppointmentsCount", todayAppointments.size());
         stats.put("upcomingPatientsCount", upcomingAppointments.size());
@@ -152,7 +149,7 @@ public class DoctorController {
     public ResponseEntity<List<MedicalHistoryDTO>> getPatientMedicalHistory(
             @PathVariable Long doctorId, 
             @PathVariable Long patientId) {
-        // Get patient medical history records created by this doctor
+
         List<MedicalHistoryDTO> medicalHistory = medicalHistoryService.getPatientMedicalHistory(patientId);
         return ResponseEntity.ok(medicalHistory);
     }
