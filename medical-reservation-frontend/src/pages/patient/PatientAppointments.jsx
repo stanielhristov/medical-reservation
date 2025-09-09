@@ -207,12 +207,7 @@ const PatientAppointments = () => {
 
     return (
         <div style={{
-            minHeight: '100vh',
-            width: '100vw',
-            background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 30%, #bfdbfe 70%, #93c5fd 100%)',
-            position: 'relative',
-            overflow: 'hidden',
-            boxSizing: 'border-box'
+            position: 'relative'
         }}>
             {/* Background decorations */}
             <div style={{
@@ -239,13 +234,9 @@ const PatientAppointments = () => {
 
             {/* Main Content */}
             <main style={{
-                maxWidth: '1400px',
-                margin: '0 auto',
-                padding: '2.5rem 2rem',
+                padding: '2.5rem 0',
                 position: 'relative',
-                zIndex: 1,
-                width: '100%',
-                boxSizing: 'border-box'
+                zIndex: 1
             }}>
                 {/* Header Section */}
                 <section style={{

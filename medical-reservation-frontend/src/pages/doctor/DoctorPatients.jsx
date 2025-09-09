@@ -264,12 +264,7 @@ const DoctorPatients = () => {
 
     return (
         <div style={{
-            minHeight: '100vh',
-            width: '100vw',
-            background: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 30%, #99f6e4 70%, #5eead4 100%)',
-            position: 'relative',
-            overflow: 'hidden',
-            boxSizing: 'border-box'
+            position: 'relative'
         }}>
             {/* Background decorations */}
             <div style={{
@@ -296,13 +291,9 @@ const DoctorPatients = () => {
 
             {/* Main Content */}
             <main style={{
-                maxWidth: '1400px',
-                margin: '0 auto',
-                padding: '2.5rem 2rem',
+                padding: '2.5rem 0',
                 position: 'relative',
-                zIndex: 1,
-                width: '100%',
-                boxSizing: 'border-box'
+                zIndex: 1
             }}>
                 {/* Header Section */}
                 <section style={{
