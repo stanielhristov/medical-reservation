@@ -102,12 +102,14 @@ const EditProfilePage = () => {
         setMessage({ type: '', text: '' });
 
         try {
-            await updateUserProfile(user.id, profileData);
+            // Create a copy of profileData without email for security
+            const { email, ...profileDataWithoutEmail } = profileData;
+            await updateUserProfile(user.id, profileDataWithoutEmail);
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
             
-            // Update user context if email or fullName changed
-            if (profileData.email !== user.email || profileData.fullName !== user.fullName) {
-                const updatedUser = { ...user, email: profileData.email, fullName: profileData.fullName };
+            // Update user context only if fullName changed (email cannot change)
+            if (profileData.fullName !== user.fullName) {
+                const updatedUser = { ...user, fullName: profileData.fullName };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
             }
         } catch (error) {
@@ -173,6 +175,10 @@ const EditProfilePage = () => {
     const handleInputChange = (e, formType) => {
         const { name, value } = e.target;
         if (formType === 'profile') {
+            // Prevent email changes for security reasons
+            if (name === 'email') {
+                return;
+            }
             setProfileData(prev => ({ ...prev, [name]: value }));
         } else if (formType === 'doctor') {
             setDoctorProfileData(prev => ({ ...prev, [name]: value }));
@@ -594,39 +600,121 @@ const EditProfilePage = () => {
                                 
                                 <div>
                                     <label style={{
-                                        display: 'block',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
                                         marginBottom: '0.5rem',
-                                        color: '#374151',
+                                        color: '#6b7280',
                                         fontWeight: '600',
                                         fontSize: '0.95rem'
                                     }}>
-                                        Email *
+                                        Email
+                                        {/* Lock icon to indicate security restriction */}
+                                        <div style={{
+                                            width: '14px',
+                                            height: '14px',
+                                            position: 'relative',
+                                            opacity: '0.7'
+                                        }}>
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '2px',
+                                                left: '3px',
+                                                width: '8px',
+                                                height: '5px',
+                                                border: '1.5px solid #6b7280',
+                                                borderBottom: 'none',
+                                                borderRadius: '3px 3px 0 0'
+                                            }} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '6px',
+                                                left: '1px',
+                                                width: '12px',
+                                                height: '6px',
+                                                background: '#6b7280',
+                                                borderRadius: '1px'
+                                            }} />
+                                        </div>
+                                        <span style={{
+                                            fontSize: '0.8rem',
+                                            color: '#9ca3af',
+                                            fontWeight: '400',
+                                            fontStyle: 'italic'
+                                        }}>
+                                        </span>
                                     </label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={profileData.email}
-                                        onChange={(e) => handleInputChange(e, 'profile')}
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '1rem',
-                                            border: '2px solid rgba(34, 197, 94, 0.2)',
+                                    <div style={{ position: 'relative' }}>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={profileData.email}
+                                            readOnly
+                                            disabled
+                                            style={{
+                                                width: '100%',
+                                                padding: '1rem',
+                                                border: '2px solid rgba(107, 114, 128, 0.15)',
+                                                borderRadius: '12px',
+                                                fontSize: '1rem',
+                                                transition: 'all 0.3s ease',
+                                                background: 'linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
+                                                color: '#4b5563',
+                                                cursor: 'not-allowed',
+                                                outline: 'none',
+                                                boxShadow: 'inset 0 2px 4px rgba(107, 114, 128, 0.05)',
+                                                position: 'relative'
+                                            }}
+                                        />
+                                        {/* Security overlay pattern */}
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            left: '0',
+                                            right: '0',
+                                            bottom: '0',
+                                            background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(107, 114, 128, 0.02) 2px, rgba(107, 114, 128, 0.02) 4px)',
                                             borderRadius: '12px',
-                                            fontSize: '1rem',
-                                            transition: 'all 0.3s ease',
-                                            background: 'rgba(255, 255, 255, 0.8)',
-                                            outline: 'none'
-                                        }}
-                                        onFocus={(e) => {
-                                            e.target.style.borderColor = '#22c55e';
-                                            e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                                        }}
-                                        onBlur={(e) => {
-                                            e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
-                                            e.target.style.boxShadow = 'none';
-                                        }}
-                                    />
+                                            pointerEvents: 'none'
+                                        }} />
+                                    </div>
+                                    <p style={{
+                                        fontSize: '0.75rem',
+                                        color: '#9ca3af',
+                                        margin: '0.25rem 0 0 0',
+                                        fontStyle: 'italic',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.25rem'
+                                    }}>
+                                        {/* Shield icon */}
+                                        <div style={{
+                                            width: '10px',
+                                            height: '12px',
+                                            position: 'relative'
+                                        }}>
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '0',
+                                                left: '1px',
+                                                width: '8px',
+                                                height: '10px',
+                                                border: '1px solid #9ca3af',
+                                                borderRadius: '4px 4px 0 4px',
+                                                background: 'rgba(156, 163, 175, 0.1)'
+                                            }} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '3px',
+                                                left: '3px',
+                                                width: '4px',
+                                                height: '2px',
+                                                background: '#9ca3af',
+                                                borderRadius: '1px'
+                                            }} />
+                                        </div>
+                                        Email cannot be changed
+                                    </p>
                                 </div>
                                 
                                 <div>

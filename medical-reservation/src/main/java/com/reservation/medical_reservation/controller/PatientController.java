@@ -141,7 +141,7 @@ public class PatientController {
             return ResponseEntity.ok(doctors != null ? doctors : List.of());
         } catch (Exception e) {
             System.err.println("Error searching doctors: " + e.getMessage());
-            return ResponseEntity.ok(List.of()); // Return empty list on error
+            return ResponseEntity.ok(List.of());
         }
     }
 }

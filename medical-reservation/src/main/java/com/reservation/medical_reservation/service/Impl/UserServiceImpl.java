@@ -134,12 +134,11 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUserProfile(Long userId, UserDTO userDTO) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-        
-        // Update user fields
+
         user.setFullName(userDTO.getFullName());
-        user.setEmail(userDTO.getEmail());
-        
-        // Handle phone field mapping - frontend sends 'phone', backend uses 'phoneNumber'
+        // Email updates are not allowed for security reasons
+        // user.setEmail(userDTO.getEmail()); // Commented out to prevent email changes
+
         if (userDTO.getPhone() != null) {
             user.setPhoneNumber(userDTO.getPhone());
         } else if (userDTO.getPhoneNumber() != null) {
@@ -148,8 +147,7 @@ public class UserServiceImpl implements UserService {
         
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setAddress(userDTO.getAddress());
-        
-        // Handle emergency contact - frontend sends 'emergencyContact', backend uses 'emergencyPhone'
+
         if (userDTO.getEmergencyContact() != null) {
             user.setEmergencyPhone(userDTO.getEmergencyContact());
         } else if (userDTO.getEmergencyPhone() != null) {
@@ -165,18 +163,15 @@ public class UserServiceImpl implements UserService {
     public void changePassword(Long userId, ChangePasswordDTO changePasswordDTO) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-        
-        // Verify current password
+
         if (!passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
-        
-        // Check if new password is different from current password
+
         if (passwordEncoder.matches(changePasswordDTO.getNewPassword(), user.getPassword())) {
             throw new IllegalArgumentException("New password must be different from current password");
         }
-        
-        // Encode and set new password
+
         String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
         user.setPassword(encodedNewPassword);
         
@@ -197,11 +192,11 @@ public class UserServiceImpl implements UserService {
         userDTO.setFullName(user.getFullName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setPhone(user.getPhoneNumber()); // For frontend compatibility
+        userDTO.setPhone(user.getPhoneNumber());
         userDTO.setDateOfBirth(user.getDateOfBirth());
         userDTO.setAddress(user.getAddress());
         userDTO.setEmergencyPhone(user.getEmergencyPhone());
-        userDTO.setEmergencyContact(user.getEmergencyPhone()); // For frontend compatibility
+        userDTO.setEmergencyContact(user.getEmergencyPhone());
         userDTO.setIsActive(user.getIsActive());
         userDTO.setLastLogin(user.getLastLogin());
         userDTO.setCreatedAt(user.getCreatedAt());
