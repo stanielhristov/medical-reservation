@@ -136,8 +136,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         user.setFullName(userDTO.getFullName());
-        // Email updates are not allowed for security reasons
-        // user.setEmail(userDTO.getEmail()); // Commented out to prevent email changes
 
         if (userDTO.getPhone() != null) {
             user.setPhoneNumber(userDTO.getPhone());

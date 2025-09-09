@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }) => {
                         token: token
                     });
                     
-                    // Set axios default header
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 } else {
                     // Token expired
