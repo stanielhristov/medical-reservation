@@ -15,4 +15,5 @@ public interface DoctorRequestRepository extends JpaRepository<DoctorRequestEnti
     List<DoctorRequestEntity> findByStatusOrderByCreatedAtDesc(DoctorRequestStatus status);
     List<DoctorRequestEntity> findAllByOrderByCreatedAtDesc();
     boolean existsByUser(UserEntity user);
+    List<DoctorRequestEntity> findByReviewedBy(UserEntity reviewedBy);
 }

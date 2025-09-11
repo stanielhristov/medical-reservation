@@ -44,6 +44,15 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
+        // Check if user account is active
+        if (!user.getIsActive()) {
+            throw new IllegalArgumentException("Your account has been deactivated. Please contact support for assistance.");
+        }
+
+        // Update last login timestamp
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+
         String token = jwtTokenProvider.generateToken(
                 user.getEmail(),
                 user.getRole().getName().toString(),
@@ -114,5 +123,14 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         emailService.sendPasswordResetConfirmationEmail(user.getEmail(), user.getFullName());
+    }
+
+    public void deactivateUser(UserEntity user) {
+        if (!user.getIsActive()) {
+            throw new IllegalArgumentException("User is not active");
+        }
+
+        user.setIsActive(false);
+        userRepository.save(user);
     }
 }

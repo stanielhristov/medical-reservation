@@ -1,6 +1,5 @@
 package com.reservation.medical_reservation.config;
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +9,11 @@ public class ModelMapperConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setPropertyCondition(context -> {
+            return !context.getMapping().getLastDestinationProperty().getName().equals("role");
+        });
+        return mapper;
     }
 }
 

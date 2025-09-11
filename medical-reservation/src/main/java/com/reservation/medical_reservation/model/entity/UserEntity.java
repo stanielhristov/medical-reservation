@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,8 +35,8 @@ public class UserEntity extends BaseEntity {
     
     @Column
     private String emergencyPhone;
-    
-    @Column
+
+    @Column(nullable = false)
     private Boolean isActive = true;
     
     @Column

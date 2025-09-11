@@ -24,6 +24,7 @@ public class AdminServiceImpl implements AdminService {
     private final DoctorRequestRepository doctorRequestRepository;
     private final AppointmentRepository appointmentRepository;
     private final RoleRepository roleRepository;
+    private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
@@ -32,6 +33,7 @@ public class AdminServiceImpl implements AdminService {
                           DoctorRequestRepository doctorRequestRepository,
                           AppointmentRepository appointmentRepository,
                           RoleRepository roleRepository,
+                          NotificationRepository notificationRepository,
                           NotificationService notificationService,
                           ModelMapper modelMapper) {
         this.userRepository = userRepository;
@@ -39,6 +41,7 @@ public class AdminServiceImpl implements AdminService {
         this.doctorRequestRepository = doctorRequestRepository;
         this.appointmentRepository = appointmentRepository;
         this.roleRepository = roleRepository;
+        this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
         this.modelMapper = modelMapper;
     }
@@ -47,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> modelMapper.map(user, UserDTO.class))
+                .map(this::convertUserToDTO)
                 .toList();
     }
 
@@ -55,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
     public UserDTO getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return modelMapper.map(user, UserDTO.class);
+        return convertUserToDTO(user);
     }
 
     @Override
@@ -70,7 +73,6 @@ public class AdminServiceImpl implements AdminService {
         user.setRole(role);
         UserEntity updated = userRepository.save(user);
 
-        // Send notification to user
         notificationService.createNotification(
                 user,
                 "Role Updated",
@@ -78,7 +80,7 @@ public class AdminServiceImpl implements AdminService {
                 NotificationType.SYSTEM_NOTIFICATION
         );
 
-        return modelMapper.map(updated, UserDTO.class);
+        return convertUserToDTO(updated);
     }
 
     @Override
@@ -87,10 +89,13 @@ public class AdminServiceImpl implements AdminService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
+        if (!user.getIsActive()) {
+            throw new IllegalArgumentException("User is already deactivated");
+        }
+        
         user.setIsActive(false);
         userRepository.save(user);
 
-        // Send notification
         notificationService.createNotification(
                 user,
                 "Account Deactivated",
@@ -105,10 +110,13 @@ public class AdminServiceImpl implements AdminService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
+        if (user.getIsActive()) {
+            throw new IllegalArgumentException("User is already active");
+        }
+        
         user.setIsActive(true);
         userRepository.save(user);
 
-        // Send notification
         notificationService.createNotification(
                 user,
                 "Account Activated",
@@ -122,8 +130,34 @@ public class AdminServiceImpl implements AdminService {
     public void deleteUser(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
-        // Note: In a real application, you might want to soft delete and handle related data properly
+
+        if (user.getRole().getName().toString().equals("ADMIN")) {
+            throw new IllegalArgumentException("Cannot delete admin users. Please deactivate instead.");
+        }
+
+        if (appointmentRepository.existsByPatientId(userId)) {
+            throw new IllegalArgumentException("Cannot delete user with existing appointments. Please deactivate instead.");
+        }
+
+        doctorRepository.findByUserId(userId).ifPresent(doctor -> {
+            long doctorAppointmentCount = appointmentRepository.findByDoctorOrderByAppointmentTimeDesc(doctor).size();
+            if (doctorAppointmentCount > 0) {
+                throw new IllegalArgumentException("Cannot delete doctor with existing appointments. Please deactivate instead.");
+            }
+            doctorRepository.delete(doctor);
+        });
+
+        doctorRequestRepository.findByUser(user).ifPresent(doctorRequestRepository::delete);
+
+        List<DoctorRequestEntity> reviewedRequests = doctorRequestRepository.findByReviewedBy(user);
+        for (DoctorRequestEntity request : reviewedRequests) {
+            request.setReviewedBy(null);
+            doctorRequestRepository.save(request);
+        }
+
+        List<NotificationEntity> userNotifications = notificationRepository.findByUserOrderByCreatedAtDesc(user);
+        notificationRepository.deleteAll(userNotifications);
+
         userRepository.delete(user);
     }
 
@@ -156,33 +190,31 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
-        // Update request status
-        request.setStatus(DoctorRequestStatus.APPROVED);
-        request.setReviewedBy(admin);
-        request.setReviewedAt(LocalDateTime.now());
+        Long userId = request.getUser().getId();
 
-        // Find existing doctor entity and activate it
-        DoctorEntity doctor = doctorRepository.findByUserId(request.getUser().getId())
+        DoctorEntity doctor = doctorRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Doctor entity not found for user"));
-        
-        // Update doctor entity with any changes from the request
+
         doctor.setSpecialization(request.getSpecialization());
         doctor.setBio(request.getBio());
         doctor.setLicenseNumber(request.getLicenseNumber());
         doctor.setEducation(request.getEducation());
         doctor.setExperience(request.getExperience());
-        doctor.setIsActive(true); // Activate the doctor
+        doctor.setIsActive(true);
 
         doctorRepository.save(doctor);
 
-        // Note: User already has DOCTOR role from registration, no need to update role
+        request.setStatus(DoctorRequestStatus.APPROVED);
+        request.setReviewedBy(admin);
+        request.setReviewedAt(LocalDateTime.now());
 
-        // Save updated request
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
 
-        // Send notification to user
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+        
         notificationService.createNotification(
-                request.getUser(),
+                user,
                 "Doctor Application Approved",
                 "Congratulations! Your doctor application has been approved. You can now access the doctor dashboard.",
                 NotificationType.SYSTEM_NOTIFICATION
@@ -204,20 +236,20 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
-        // Update request status
+        Long userId = request.getUser().getId();
+
         request.setStatus(DoctorRequestStatus.REJECTED);
         request.setRejectionReason(reason);
         request.setReviewedBy(admin);
         request.setReviewedAt(LocalDateTime.now());
 
-        // Note: DoctorEntity remains inactive (isActive=false) when request is rejected
-        // This allows the user to potentially reapply in the future
-
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
 
-        // Send notification to user
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+
         notificationService.createNotification(
-                request.getUser(),
+                user,
                 "Doctor Application Rejected",
                 "Your doctor application has been rejected. Reason: " + reason,
                 NotificationType.SYSTEM_NOTIFICATION
@@ -257,6 +289,15 @@ public class AdminServiceImpl implements AdminService {
         if (request.getReviewedBy() != null) {
             dto.setReviewedByName(request.getReviewedBy().getFullName());
         }
+        
+        return dto;
+    }
+    
+    private UserDTO convertUserToDTO(UserEntity user) {
+        UserDTO dto = modelMapper.map(user, UserDTO.class);
+
+        dto.setRole(user.getRole().getName().toString());
+        dto.setIsActive(user.getIsActive());
         
         return dto;
     }

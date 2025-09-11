@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { getActiveDoctors, getAvailableSpecializations } from '../../api/doctors';
 
 const PatientDoctors = () => {
     const { user } = useAuth();
@@ -7,118 +8,61 @@ const PatientDoctors = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSpecialization, setSelectedSpecialization] = useState('');
     const [doctors, setDoctors] = useState([]);
+    const [specializations, setSpecializations] = useState(['All Specializations']);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-    const specializations = [
-        'All Specializations',
-        'Cardiology',
-        'Dermatology', 
-        'General Practice',
-        'Neurology',
-        'Orthopedics',
-        'Pediatrics',
-        'Psychiatry',
-        'Radiology'
-    ];
-
     useEffect(() => {
         fetchDoctors();
+        fetchSpecializations();
     }, []);
 
     const fetchDoctors = async () => {
         try {
-            // Mock data - replace with actual API call
-            setDoctors([
-                {
-                    id: 1,
-                    name: "Dr. Sarah Johnson",
-                    specialization: "Cardiology",
-                    experience: "15 years",
-                    rating: 4.9,
-                    reviews: 234,
-                    location: "Medical Center East",
-                    nextAvailable: "Today 2:30 PM",
-                    image: "👩‍⚕️",
-                    about: "Specialized in cardiac surgery and interventional cardiology with over 15 years of experience.",
-                    education: "MD from Johns Hopkins University",
-                    consultationFee: "$150"
-                },
-                {
-                    id: 2,
-                    name: "Dr. Michael Chen",
-                    specialization: "Dermatology", 
-                    experience: "12 years",
-                    rating: 4.8,
-                    reviews: 189,
-                    location: "Skin Care Clinic",
-                    nextAvailable: "Tomorrow 10:00 AM",
-                    image: "👨‍⚕️",
-                    about: "Expert in dermatological treatments and cosmetic procedures.",
-                    education: "MD from Harvard Medical School",
-                    consultationFee: "$120"
-                },
-                {
-                    id: 3,
-                    name: "Dr. Emily Rodriguez",
-                    specialization: "General Practice",
-                    experience: "8 years",
-                    rating: 4.7,
-                    reviews: 156,
-                    location: "Community Health Center",
-                    nextAvailable: "Today 4:00 PM",
-                    image: "👩‍⚕️",
-                    about: "Family medicine specialist focusing on preventive care and wellness.",
-                    education: "MD from Stanford University",
-                    consultationFee: "$100"
-                },
-                {
-                    id: 4,
-                    name: "Dr. James Wilson",
-                    specialization: "Orthopedics",
-                    experience: "20 years",
-                    rating: 4.9,
-                    reviews: 312,
-                    location: "Sports Medicine Institute",
-                    nextAvailable: "Thursday 9:00 AM",
-                    image: "👨‍⚕️",
-                    about: "Orthopedic surgeon specializing in sports injuries and joint replacement.",
-                    education: "MD from Mayo Clinic",
-                    consultationFee: "$200"
-                },
-                {
-                    id: 5,
-                    name: "Dr. Lisa Martinez",
-                    specialization: "Pediatrics",
-                    experience: "10 years", 
-                    rating: 4.8,
-                    reviews: 198,
-                    location: "Children's Medical Center",
-                    nextAvailable: "Wednesday 1:30 PM",
-                    image: "👩‍⚕️",
-                    about: "Pediatrician with expertise in childhood development and adolescent care.",
-                    education: "MD from UCLA",
-                    consultationFee: "$110"
-                },
-                {
-                    id: 6,
-                    name: "Dr. David Kim",
-                    specialization: "Neurology",
-                    experience: "18 years",
-                    rating: 4.9,
-                    reviews: 267,
-                    location: "Neurological Institute",
-                    nextAvailable: "Friday 11:00 AM",
-                    image: "👨‍⚕️",
-                    about: "Neurologist specializing in brain disorders and neurological conditions.",
-                    education: "MD from Johns Hopkins University",
-                    consultationFee: "$180"
-                }
-            ]);
+            const doctorsData = await getActiveDoctors();
+
+            const transformedDoctors = doctorsData.map(doctor => ({
+                id: doctor.id,
+                name: doctor.fullName,
+                specialization: doctor.specialization,
+                experience: doctor.experience || "N/A",
+                rating: doctor.rating || 0,
+                reviews: doctor.totalRatings || 0,
+                location: "Medical Center",
+                nextAvailable: "Contact for availability",
+                image: "👨‍⚕️",
+                about: doctor.bio || "Experienced healthcare professional",
+                education: doctor.education || "Licensed Medical Professional",
+                consultationFee: "$120"
+            }));
+            
+            setDoctors(transformedDoctors);
         } catch (error) {
             console.error('Error fetching doctors:', error);
+            setDoctors([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchSpecializations = async () => {
+        try {
+            const availableSpecializations = await getAvailableSpecializations();
+            setSpecializations(['All Specializations', ...availableSpecializations]);
+        } catch (error) {
+            console.error('Error fetching specializations:', error);
+            // Keep default specializations on error
+            setSpecializations([
+                'All Specializations',
+                'Cardiology',
+                'Dermatology', 
+                'General Practice',
+                'Neurology',
+                'Orthopedics',
+                'Pediatrics',
+                'Psychiatry',
+                'Radiology'
+            ]);
         }
     };
 
@@ -663,7 +607,6 @@ const PatientDoctors = () => {
                             <button
                                 onClick={() => {
                                     setShowBookingModal(false);
-                                    // Here you would navigate to booking page or open booking flow
                                     alert(`Booking appointment with ${selectedDoctor.name}`);
                                 }}
                                 style={{

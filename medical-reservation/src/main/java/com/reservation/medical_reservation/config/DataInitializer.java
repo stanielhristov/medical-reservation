@@ -45,7 +45,6 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeAdminUser() {
-
         if (!userRepository.findByEmail("admin@medicalreservation.com").isPresent()) {
             RoleEntity adminRole = roleRepository.findByName(RoleName.ADMIN)
                     .orElseThrow(() -> new RuntimeException("Admin role not found"));

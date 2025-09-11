@@ -22,9 +22,9 @@ export const getRoleRoutes = (role) => {
         case 'ADMIN':
             return [
                 { path: '/admin/dashboard', name: 'Dashboard' },
-                { path: '/admin/users', name: 'User Management' },
-                { path: '/admin/doctors', name: 'Doctor Management' },
-                { path: '/admin/appointments', name: 'Appointments Overview' }
+                { path: '/admin/users', name: 'Users' },
+                { path: '/admin/doctors', name: 'Doctors' },
+                { path: '/admin/appointments', name: 'Appointments' }
             ];
         case 'DOCTOR':
             return [

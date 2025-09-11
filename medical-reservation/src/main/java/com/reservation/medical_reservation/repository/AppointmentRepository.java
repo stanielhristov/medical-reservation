@@ -19,6 +19,7 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     List<AppointmentEntity> findByDoctorOrderByAppointmentTimeDesc(DoctorEntity doctor);
     List<AppointmentEntity> findByPatientAndStatusOrderByAppointmentTimeDesc(UserEntity patient, AppointmentStatus status);
     List<AppointmentEntity> findByDoctorAndStatusOrderByAppointmentTimeDesc(DoctorEntity doctor, AppointmentStatus status);
+    boolean existsByPatientId(Long patientId);
     
     @Query("SELECT a FROM AppointmentEntity a WHERE a.patient = :patient AND a.appointmentTime > :now ORDER BY a.appointmentTime ASC")
     List<AppointmentEntity> findUpcomingAppointmentsByPatient(@Param("patient") UserEntity patient, @Param("now") LocalDateTime now);
@@ -49,4 +50,7 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     
     @Query("SELECT DISTINCT a.patient FROM AppointmentEntity a WHERE a.doctor = :doctor ORDER BY a.patient.fullName")
     List<UserEntity> findDoctorPatients(@Param("doctor") DoctorEntity doctor);
+    
+    @Query("SELECT COUNT(a) FROM AppointmentEntity a WHERE a.patient.id = :patientId")
+    long countByPatientId(@Param("patientId") Long patientId);
 }
