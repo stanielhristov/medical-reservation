@@ -4,6 +4,7 @@ import { getActiveDoctors, getAvailableSpecializations } from '../../api/doctors
 import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../../api/ratings';
 import StarRating from '../../components/StarRating';
 import RatingModal from '../../components/RatingModal';
+import RatingCommentsModal from '../../components/RatingCommentsModal';
 
 const PatientDoctors = () => {
     const { user } = useAuth();
@@ -19,6 +20,8 @@ const PatientDoctors = () => {
     const [userRating, setUserRating] = useState(null);
     const [ratingLoading, setRatingLoading] = useState(false);
     const [doctorRatingStats, setDoctorRatingStats] = useState({});
+    const [showCommentsModal, setShowCommentsModal] = useState(false);
+    const [selectedDoctorForComments, setSelectedDoctorForComments] = useState(null);
 
     useEffect(() => {
         fetchDoctors();
@@ -160,6 +163,11 @@ const PatientDoctors = () => {
         } finally {
             setRatingLoading(false);
         }
+    };
+
+    const handleShowComments = (doctor) => {
+        setSelectedDoctorForComments(doctor);
+        setShowCommentsModal(true);
     };
 
     if (loading) {
@@ -464,13 +472,42 @@ const PatientDoctors = () => {
                                         alignItems: 'center',
                                         gap: '1rem'
                                     }}>
-                                        <StarRating
-                                            rating={doctor.rating}
-                                            totalRatings={doctor.reviews}
-                                            interactive={false}
-                                            size="medium"
-                                            showValue={true}
-                                        />
+                                        <div
+                                            onClick={() => handleShowComments(doctor)}
+                                            style={{
+                                                cursor: 'pointer',
+                                                padding: '0.25rem',
+                                                borderRadius: '8px',
+                                                transition: 'all 0.2s ease',
+                                                background: 'transparent'
+                                            }}
+                                            onMouseEnter={e => {
+                                                e.target.style.background = 'rgba(34, 197, 94, 0.1)';
+                                                e.target.style.transform = 'scale(1.02)';
+                                            }}
+                                            onMouseLeave={e => {
+                                                e.target.style.background = 'transparent';
+                                                e.target.style.transform = 'scale(1)';
+                                            }}
+                                            title="Click to view patient reviews"
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <StarRating
+                                                    rating={doctor.rating}
+                                                    totalRatings={doctor.reviews}
+                                                    interactive={false}
+                                                    size="medium"
+                                                    showValue={true}
+                                                />
+                                                <span style={{
+                                                    fontSize: '0.8rem',
+                                                    color: '#6b7280',
+                                                    opacity: 0.7
+                                                }}>
+                                                    💬
+                                                </span>
+                                            </div>
+                                        </div>
                                         <button
                                             onClick={() => handleRateDoctor(doctor)}
                                             style={{
@@ -739,6 +776,16 @@ const PatientDoctors = () => {
                     </div>
                 </div>
             )}
+
+            {/* Rating Comments Modal */}
+            <RatingCommentsModal
+                isOpen={showCommentsModal}
+                onClose={() => {
+                    setShowCommentsModal(false);
+                    setSelectedDoctorForComments(null);
+                }}
+                doctor={selectedDoctorForComments}
+            />
 
             {/* Rating Modal */}
             <RatingModal
