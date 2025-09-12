@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getActiveDoctors, getAvailableSpecializations } from '../../api/doctors';
+import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../../api/ratings';
+import StarRating from '../../components/StarRating';
+import RatingModal from '../../components/RatingModal';
 
 const PatientDoctors = () => {
     const { user } = useAuth();
@@ -11,6 +14,11 @@ const PatientDoctors = () => {
     const [specializations, setSpecializations] = useState(['All Specializations']);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [selectedDoctorForRating, setSelectedDoctorForRating] = useState(null);
+    const [userRating, setUserRating] = useState(null);
+    const [ratingLoading, setRatingLoading] = useState(false);
+    const [doctorRatingStats, setDoctorRatingStats] = useState({});
 
     useEffect(() => {
         fetchDoctors();
@@ -21,19 +29,46 @@ const PatientDoctors = () => {
         try {
             const doctorsData = await getActiveDoctors();
 
-            const transformedDoctors = doctorsData.map(doctor => ({
-                id: doctor.id,
-                name: doctor.fullName,
-                specialization: doctor.specialization,
-                experience: doctor.experience || "N/A",
-                rating: doctor.rating || 0,
-                reviews: doctor.totalRatings || 0,
-                location: "Medical Center",
-                nextAvailable: "Contact for availability",
-                image: "👨‍⚕️",
-                about: doctor.bio || "Experienced healthcare professional",
-                education: doctor.education || "Licensed Medical Professional",
-                consultationFee: "$120"
+            const transformedDoctors = await Promise.all(doctorsData.map(async (doctor) => {
+                // Fetch rating stats for each doctor
+                try {
+                    const ratingStats = await getDoctorRatingStats(doctor.id);
+                    setDoctorRatingStats(prev => ({
+                        ...prev,
+                        [doctor.id]: ratingStats
+                    }));
+                    
+                    return {
+                        id: doctor.id,
+                        name: doctor.fullName,
+                        specialization: doctor.specialization,
+                        experience: doctor.experience || "N/A",
+                        rating: ratingStats.averageRating || 0,
+                        reviews: ratingStats.totalRatings || 0,
+                        location: "Medical Center",
+                        nextAvailable: "Contact for availability",
+                        image: "👨‍⚕️",
+                        about: doctor.bio || "Experienced healthcare professional",
+                        education: doctor.education || "Licensed Medical Professional",
+                        consultationFee: "$120"
+                    };
+                } catch (error) {
+                    console.error(`Error fetching rating stats for doctor ${doctor.id}:`, error);
+                    return {
+                        id: doctor.id,
+                        name: doctor.fullName,
+                        specialization: doctor.specialization,
+                        experience: doctor.experience || "N/A",
+                        rating: doctor.rating || 0,
+                        reviews: doctor.totalRatings || 0,
+                        location: "Medical Center",
+                        nextAvailable: "Contact for availability",
+                        image: "👨‍⚕️",
+                        about: doctor.bio || "Experienced healthcare professional",
+                        education: doctor.education || "Licensed Medical Professional",
+                        consultationFee: "$120"
+                    };
+                }
             }));
             
             setDoctors(transformedDoctors);
@@ -78,6 +113,53 @@ const PatientDoctors = () => {
     const handleBookAppointment = (doctor) => {
         setSelectedDoctor(doctor);
         setShowBookingModal(true);
+    };
+
+    const handleRateDoctor = async (doctor) => {
+        setSelectedDoctorForRating(doctor);
+        
+        // Check if user already has a rating for this doctor
+        try {
+            const existingRating = await getMyRatingForDoctor(doctor.id);
+            setUserRating(existingRating);
+        } catch (error) {
+            console.error('Error fetching user rating:', error);
+            setUserRating(null);
+        }
+        
+        setShowRatingModal(true);
+    };
+
+    const handleSubmitRating = async (ratingData) => {
+        setRatingLoading(true);
+        try {
+            if (userRating) {
+                // Update existing rating
+                await updateRating(userRating.id, {
+                    rating: ratingData.rating,
+                    comment: ratingData.comment
+                });
+            } else {
+                // Create new rating
+                await createRating({
+                    doctorId: ratingData.doctorId,
+                    rating: ratingData.rating,
+                    comment: ratingData.comment
+                });
+            }
+            
+            // Refresh doctor data to show updated ratings
+            await fetchDoctors();
+            
+            setShowRatingModal(false);
+            setSelectedDoctorForRating(null);
+            setUserRating(null);
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            alert('Failed to submit rating. Please try again.');
+        } finally {
+            setRatingLoading(false);
+        }
     };
 
     if (loading) {
@@ -374,19 +456,49 @@ const PatientDoctors = () => {
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '1rem',
+                                    justifyContent: 'space-between',
                                     marginBottom: '1rem'
                                 }}>
                                     <div style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '0.5rem'
+                                        gap: '1rem'
                                     }}>
-                                        <span style={{ color: '#f59e0b', fontSize: '1.2rem' }}>⭐</span>
-                                        <span style={{ fontWeight: '600', color: '#374151' }}>{doctor.rating}</span>
-                                        <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                                            ({doctor.reviews} reviews)
-                                        </span>
+                                        <StarRating
+                                            rating={doctor.rating}
+                                            totalRatings={doctor.reviews}
+                                            interactive={false}
+                                            size="medium"
+                                            showValue={true}
+                                        />
+                                        <button
+                                            onClick={() => handleRateDoctor(doctor)}
+                                            style={{
+                                                background: doctorRatingStats[doctor.id]?.userHasRated 
+                                                    ? 'rgba(59, 130, 246, 0.1)' 
+                                                    : 'rgba(34, 197, 94, 0.1)',
+                                                color: doctorRatingStats[doctor.id]?.userHasRated 
+                                                    ? '#3b82f6' 
+                                                    : '#059669',
+                                                border: `1px solid ${doctorRatingStats[doctor.id]?.userHasRated 
+                                                    ? 'rgba(59, 130, 246, 0.3)' 
+                                                    : 'rgba(34, 197, 94, 0.3)'}`,
+                                                borderRadius: '6px',
+                                                padding: '0.4rem 0.8rem',
+                                                fontSize: '0.8rem',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={e => {
+                                                e.target.style.transform = 'scale(1.05)';
+                                            }}
+                                            onMouseLeave={e => {
+                                                e.target.style.transform = 'scale(1)';
+                                            }}
+                                        >
+                                            {doctorRatingStats[doctor.id]?.userHasRated ? 'Update Rating' : 'Rate Doctor'}
+                                        </button>
                                     </div>
                                     <div style={{
                                         padding: '0.5rem 1rem',
@@ -627,6 +739,20 @@ const PatientDoctors = () => {
                     </div>
                 </div>
             )}
+
+            {/* Rating Modal */}
+            <RatingModal
+                isOpen={showRatingModal}
+                onClose={() => {
+                    setShowRatingModal(false);
+                    setSelectedDoctorForRating(null);
+                    setUserRating(null);
+                }}
+                doctor={selectedDoctorForRating}
+                existingRating={userRating}
+                onSubmit={handleSubmitRating}
+                loading={ratingLoading}
+            />
 
             <style jsx>{`
                 @keyframes spin {

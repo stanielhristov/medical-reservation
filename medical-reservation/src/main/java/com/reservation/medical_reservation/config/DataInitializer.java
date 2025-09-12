@@ -1,10 +1,8 @@
 package com.reservation.medical_reservation.config;
 
-import com.reservation.medical_reservation.model.entity.RoleEntity;
-import com.reservation.medical_reservation.model.entity.UserEntity;
+import com.reservation.medical_reservation.model.entity.*;
 import com.reservation.medical_reservation.model.enums.RoleName;
-import com.reservation.medical_reservation.repository.RoleRepository;
-import com.reservation.medical_reservation.repository.UserRepository;
+import com.reservation.medical_reservation.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,13 +15,19 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
+    private final DoctorRatingRepository doctorRatingRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(RoleRepository roleRepository, 
                           UserRepository userRepository,
+                          DoctorRepository doctorRepository,
+                          DoctorRatingRepository doctorRatingRepository,
                           PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
+        this.doctorRepository = doctorRepository;
+        this.doctorRatingRepository = doctorRatingRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -64,4 +68,5 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Default admin password: admin123");
         }
     }
+
 } 

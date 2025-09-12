@@ -95,8 +95,7 @@ const AdminUsers = () => {
             closeConfirmModal();
         } catch (err) {
             console.error(`Error performing ${action}:`, err);
-            
-            // Get more specific error message
+
             let errorMessage = `Failed to ${action} user. Please try again.`;
             if (err.response?.data?.message) {
                 errorMessage = err.response.data.message;

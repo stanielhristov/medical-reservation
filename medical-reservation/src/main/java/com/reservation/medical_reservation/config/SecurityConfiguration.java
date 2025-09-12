@@ -43,9 +43,11 @@ public class SecurityConfiguration {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/public/**", 
-                                "/api/test"
+                                "/api/test/**"
                         ).permitAll()
                         .requestMatchers("/api/doctors", "/api/doctors/**").hasAnyRole("USER", "DOCTOR", "ADMIN")
+                        .requestMatchers("/api/ratings/doctor/*/stats").permitAll()
+                        .requestMatchers("/api/ratings/**").hasAnyRole("USER", "DOCTOR", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctor/**").hasAnyRole("DOCTOR", "ADMIN")
                         .requestMatchers("/api/patient/**").hasAnyRole("USER", "ADMIN")
@@ -59,7 +61,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "http://127.0.0.1:*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating System Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input, select { padding: 8px; margin: 5px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 3px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>🌟 Doctor Rating System Test</h1>
+    
+    <!-- Authentication Section -->
+    <div class="section">
+        <h2>1. Authentication Test</h2>
+        <input type="email" id="email" placeholder="Email" value="admin@medicalreservation.com">
+        <input type="password" id="password" placeholder="Password" value="admin123">
+        <p><strong>Note:</strong> Use admin credentials to test. The admin user can rate doctors too!</p>
+        <button onclick="login()">Login</button>
+        <button onclick="checkAuth()">Check Auth Status</button>
+        <button onclick="logout()">Logout</button>
+        <div id="authResult" class="result"></div>
+    </div>
+
+    <!-- Rating Test Section -->
+    <div class="section">
+        <h2>2. Rating System Test</h2>
+        <input type="number" id="doctorId" placeholder="Doctor ID" value="1">
+        <select id="rating">
+            <option value="">Select Rating</option>
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+        </select>
+        <input type="text" id="comment" placeholder="Comment (optional)">
+        <button onclick="createRating()">Submit Rating</button>
+        <button onclick="getMyRating()">Get My Rating</button>
+        <button onclick="getRatingStats()">Get Stats</button>
+        <div id="ratingResult" class="result"></div>
+    </div>
+
+    <!-- Doctors List Section -->
+    <div class="section">
+        <h2>3. Doctors List Test</h2>
+        <button onclick="getDoctors()">Get All Doctors</button>
+        <div id="doctorsResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        
+        // Helper function to make authenticated requests
+        async function apiRequest(endpoint, options = {}) {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` }),
+                ...options.headers
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    ...options,
+                    headers
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Request Error:', error);
+                throw error;
+            }
+        }
+        
+        // Authentication functions
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('authResult');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify({
+                        id: data.userId,
+                        email: data.email,
+                        fullName: data.fullName,
+                        role: data.role
+                    }));
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Login successful!<br>Role: ${data.role}<br>User ID: ${data.userId}`;
+                } else {
+                    const error = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Login failed: ${error}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        async function checkAuth() {
+            const resultDiv = document.getElementById('authResult');
+            try {
+                const data = await apiRequest('/test/auth-info');
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Auth Check:<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Auth check failed: ${error.message}`;
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.getElementById('authResult').innerHTML = 'Logged out';
+        }
+        
+        // Rating functions
+        async function createRating() {
+            const doctorId = document.getElementById('doctorId').value;
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
+            const resultDiv = document.getElementById('ratingResult');
+            
+            if (!doctorId || !rating) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter doctor ID and rating';
+                return;
+            }
+            
+            try {
+                const data = await apiRequest('/ratings', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        doctorId: parseInt(doctorId),
+                        rating: parseInt(rating),
+                        comment: comment || null
+                    })
+                });
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Rating created!<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Rating failed: ${error.message}`;
+            }
+        }
+        
+        async function getMyRating() {
+            const doctorId = document.getElementById('doctorId').value;
+            const resultDiv = document.getElementById('ratingResult');
+            
+            if (!doctorId) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter doctor ID';
+                return;
+            }
+            
+            try {
+                const data = await apiRequest(`/ratings/doctor/${doctorId}/my-rating`);
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Your rating:<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                if (error.message.includes('404')) {
+                    resultDiv.className = 'result';
+                    resultDiv.innerHTML = '📝 You haven\'t rated this doctor yet';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${error.message}`;
+                }
+            }
+        }
+        
+        async function getRatingStats() {
+            const doctorId = document.getElementById('doctorId').value;
+            const resultDiv = document.getElementById('ratingResult');
+            
+            if (!doctorId) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter doctor ID';
+                return;
+            }
+            
+            try {
+                const data = await apiRequest(`/ratings/doctor/${doctorId}/stats`);
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Rating stats:<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        async function getDoctors() {
+            const resultDiv = document.getElementById('doctorsResult');
+            try {
+                const data = await apiRequest('/doctors');
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Doctors (${data.length} found):<br><pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>`;
+                if (data.length > 3) {
+                    resultDiv.innerHTML += `<p>... and ${data.length - 3} more doctors</p>`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                document.getElementById('authResult').innerHTML = `Already logged in as: ${userData.fullName} (${userData.role})`;
+            }
+        };
+    </script>
+</body>
+</html>
