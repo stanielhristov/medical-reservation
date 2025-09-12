@@ -2,7 +2,7 @@ import axiosInstance from './axios';
 
 export const createRating = async (ratingData) => {
     try {
-        const response = await axiosInstance.post('/api/ratings', ratingData);
+        const response = await axiosInstance.post('/ratings', ratingData);
         return response.data;
     } catch (error) {
         console.error('Error creating rating:', error);
@@ -12,7 +12,7 @@ export const createRating = async (ratingData) => {
 
 export const updateRating = async (ratingId, ratingData) => {
     try {
-        const response = await axiosInstance.put(`/api/ratings/${ratingId}`, ratingData);
+        const response = await axiosInstance.put(`/ratings/${ratingId}`, ratingData);
         return response.data;
     } catch (error) {
         console.error('Error updating rating:', error);
@@ -22,7 +22,7 @@ export const updateRating = async (ratingId, ratingData) => {
 
 export const deleteRating = async (ratingId) => {
     try {
-        await axiosInstance.delete(`/api/ratings/${ratingId}`);
+        await axiosInstance.delete(`/ratings/${ratingId}`);
     } catch (error) {
         console.error('Error deleting rating:', error);
         throw error;
@@ -31,7 +31,7 @@ export const deleteRating = async (ratingId) => {
 
 export const getDoctorRatings = async (doctorId) => {
     try {
-        const response = await axiosInstance.get(`/api/ratings/doctor/${doctorId}`);
+        const response = await axiosInstance.get(`/ratings/doctor/${doctorId}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching doctor ratings:', error);
@@ -41,7 +41,7 @@ export const getDoctorRatings = async (doctorId) => {
 
 export const getDoctorRatingStats = async (doctorId) => {
     try {
-        const response = await axiosInstance.get(`/api/ratings/doctor/${doctorId}/stats`);
+        const response = await axiosInstance.get(`/ratings/doctor/${doctorId}/stats`);
         return response.data;
     } catch (error) {
         console.error('Error fetching doctor rating stats:', error);
@@ -51,7 +51,7 @@ export const getDoctorRatingStats = async (doctorId) => {
 
 export const getMyRatingForDoctor = async (doctorId) => {
     try {
-        const response = await axiosInstance.get(`/api/ratings/doctor/${doctorId}/my-rating`);
+        const response = await axiosInstance.get(`/ratings/doctor/${doctorId}/my-rating`);
         return response.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -64,7 +64,7 @@ export const getMyRatingForDoctor = async (doctorId) => {
 
 export const getMyRatings = async () => {
     try {
-        const response = await axiosInstance.get('/api/ratings/my-ratings');
+        const response = await axiosInstance.get('/ratings/my-ratings');
         return response.data;
     } catch (error) {
         console.error('Error fetching my ratings:', error);
