@@ -1,0 +1,180 @@
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { getActiveDoctors, getAvailableSpecializations } from '../api/doctors';
+import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../api/ratings';
+
+export const usePatientDoctors = (user) => {
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSpecialization, setSelectedSpecialization] = useState('');
+    const [doctors, setDoctors] = useState([]);
+    const [specializations, setSpecializations] = useState(['All Specializations']);
+    const [showBookingModal, setShowBookingModal] = useState(false);
+    const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [selectedDoctorForRating, setSelectedDoctorForRating] = useState(null);
+    const [userRating, setUserRating] = useState(null);
+    const [ratingLoading, setRatingLoading] = useState(false);
+    const [doctorRatingStats, setDoctorRatingStats] = useState({});
+    const [showCommentsModal, setShowCommentsModal] = useState(false);
+    const [selectedDoctorForComments, setSelectedDoctorForComments] = useState(null);
+
+    useEffect(() => {
+        fetchDoctors();
+        fetchSpecializations();
+    }, []);
+
+    const fetchDoctors = useCallback(async () => {
+        try {
+            const doctorsData = await getActiveDoctors();
+
+            const transformedDoctors = await Promise.all(doctorsData.map(async (doctor) => {
+                try {
+                    const ratingStats = await getDoctorRatingStats(doctor.id);
+                    setDoctorRatingStats(prev => ({
+                        ...prev,
+                        [doctor.id]: ratingStats
+                    }));
+                    
+                    return {
+                        id: doctor.id,
+                        name: doctor.fullName,
+                        specialization: doctor.specialization,
+                        experience: doctor.experience || "N/A",
+                        rating: ratingStats.averageRating || 0,
+                        reviews: ratingStats.totalRatings || 0,
+                        location: "Medical Center",
+                        nextAvailable: "Contact for availability",
+                        image: "👨‍⚕️",
+                        about: doctor.bio || "Experienced healthcare professional",
+                        education: doctor.education || "Licensed Medical Professional",
+                        consultationFee: "$120"
+                    };
+                } catch (error) {
+                    console.error(`Error fetching rating stats for doctor ${doctor.id}:`, error);
+                    return {
+                        id: doctor.id,
+                        name: doctor.fullName,
+                        specialization: doctor.specialization,
+                        experience: doctor.experience || "N/A",
+                        rating: doctor.rating || 0,
+                        reviews: doctor.totalRatings || 0,
+                        location: "Medical Center",
+                        nextAvailable: "Contact for availability",
+                        image: "👨‍⚕️",
+                        about: doctor.bio || "Experienced healthcare professional",
+                        education: doctor.education || "Licensed Medical Professional",
+                        consultationFee: "$120"
+                    };
+                }
+            }));
+            
+            setDoctors(transformedDoctors);
+        } catch (error) {
+            console.error('Error fetching doctors:', error);
+            setDoctors([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const fetchSpecializations = useCallback(async () => {
+        try {
+            const availableSpecializations = await getAvailableSpecializations();
+            setSpecializations(['All Specializations', ...availableSpecializations]);
+        } catch (error) {
+            console.error('Error fetching specializations:', error);
+            setSpecializations([
+                'All Specializations',
+                'Cardiology',
+                'Dermatology', 
+                'General Practice',
+                'Neurology',
+                'Orthopedics',
+                'Pediatrics',
+                'Psychiatry'
+            ]);
+        }
+    }, []);
+
+    const filteredDoctors = useMemo(() => {
+        return doctors.filter(doctor => {
+            const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSpecialization = selectedSpecialization === '' ||
+                                         selectedSpecialization === 'All Specializations' ||
+                                         doctor.specialization === selectedSpecialization;
+            return matchesSearch && matchesSpecialization;
+        });
+    }, [doctors, searchTerm, selectedSpecialization]);
+
+    const handleRateDoctor = useCallback(async (doctorId) => {
+        setSelectedDoctorForRating(doctorId);
+        setRatingLoading(true);
+        
+        try {
+            const existingRating = await getMyRatingForDoctor(user.id, doctorId);
+            setUserRating(existingRating);
+        } catch (error) {
+            console.error('Error fetching user rating:', error);
+            setUserRating(null);
+        } finally {
+            setRatingLoading(false);
+            setShowRatingModal(true);
+        }
+    }, [user?.id]);
+
+    const submitRating = useCallback(async (rating, comment) => {
+        try {
+            if (userRating) {
+                await updateRating(userRating.id, { rating, comment });
+            } else {
+                await createRating({
+                    patientId: user.id,
+                    doctorId: selectedDoctorForRating,
+                    rating,
+                    comment
+                });
+            }
+            
+            setShowRatingModal(false);
+            await fetchDoctors();
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            throw error;
+        }
+    }, [userRating, user?.id, selectedDoctorForRating, fetchDoctors]);
+
+    const handleViewComments = useCallback((doctorId) => {
+        setSelectedDoctorForComments(doctorId);
+        setShowCommentsModal(true);
+    }, []);
+
+    return {
+        loading,
+        searchTerm,
+        setSearchTerm,
+        selectedSpecialization,
+        setSelectedSpecialization,
+        doctors,
+        specializations,
+        showBookingModal,
+        setShowBookingModal,
+        selectedDoctor,
+        setSelectedDoctor,
+        showRatingModal,
+        setShowRatingModal,
+        selectedDoctorForRating,
+        setSelectedDoctorForRating,
+        userRating,
+        ratingLoading,
+        doctorRatingStats,
+        showCommentsModal,
+        setShowCommentsModal,
+        selectedDoctorForComments,
+        setSelectedDoctorForComments,
+        filteredDoctors,
+        handleRateDoctor,
+        submitRating,
+        handleViewComments
+    };
+};
