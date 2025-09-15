@@ -112,7 +112,7 @@ export const usePatientDoctors = (user) => {
         setRatingLoading(true);
         
         try {
-            const existingRating = await getMyRatingForDoctor(user.id, doctorId);
+            const existingRating = await getMyRatingForDoctor(doctorId);
             setUserRating(existingRating);
         } catch (error) {
             console.error('Error fetching user rating:', error);
@@ -123,13 +123,13 @@ export const usePatientDoctors = (user) => {
         }
     }, [user?.id]);
 
-    const submitRating = useCallback(async (rating, comment) => {
+    const submitRating = useCallback(async (ratingData) => {
+        const { rating, comment } = ratingData;
         try {
             if (userRating) {
                 await updateRating(userRating.id, { rating, comment });
             } else {
                 await createRating({
-                    patientId: user.id,
                     doctorId: selectedDoctorForRating,
                     rating,
                     comment

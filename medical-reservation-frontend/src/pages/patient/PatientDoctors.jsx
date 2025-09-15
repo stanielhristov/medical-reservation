@@ -271,7 +271,7 @@ const PatientDoctors = () => {
                     isOpen={showRatingModal}
                     onClose={() => setShowRatingModal(false)}
                     doctor={filteredDoctors.find(d => d.id === selectedDoctorForRating)}
-                    userRating={userRating}
+                    existingRating={userRating}
                     onSubmit={submitRating}
                     loading={ratingLoading}
                 />
