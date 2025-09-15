@@ -1,6 +1,5 @@
 import api from './axios.js';
 
-// Create appointment
 export const createAppointment = async (appointmentData) => {
     try {
         const response = await api.post('/appointments', appointmentData);
@@ -10,7 +9,6 @@ export const createAppointment = async (appointmentData) => {
     }
 };
 
-// Get patient appointments
 export const getPatientAppointments = async (patientId) => {
     try {
         const response = await api.get(`/appointments/patient/${patientId}`);
@@ -20,7 +18,6 @@ export const getPatientAppointments = async (patientId) => {
     }
 };
 
-// Get upcoming patient appointments
 export const getUpcomingPatientAppointments = async (patientId) => {
     try {
         const response = await api.get(`/appointments/patient/${patientId}/upcoming`);
@@ -30,7 +27,6 @@ export const getUpcomingPatientAppointments = async (patientId) => {
     }
 };
 
-// Get next patient appointment
 export const getNextPatientAppointment = async (patientId) => {
     try {
         const response = await api.get(`/appointments/patient/${patientId}/next`);
@@ -43,7 +39,6 @@ export const getNextPatientAppointment = async (patientId) => {
     }
 };
 
-// Get doctor appointments
 export const getDoctorAppointments = async (doctorId) => {
     try {
         const response = await api.get(`/appointments/doctor/${doctorId}`);
@@ -53,7 +48,6 @@ export const getDoctorAppointments = async (doctorId) => {
     }
 };
 
-// Get upcoming doctor appointments
 export const getUpcomingDoctorAppointments = async (doctorId) => {
     try {
         const response = await api.get(`/appointments/doctor/${doctorId}/upcoming`);
@@ -63,7 +57,6 @@ export const getUpcomingDoctorAppointments = async (doctorId) => {
     }
 };
 
-// Update appointment status
 export const updateAppointmentStatus = async (appointmentId, status, reason = null) => {
     try {
         const params = new URLSearchParams({ status });
@@ -76,7 +69,6 @@ export const updateAppointmentStatus = async (appointmentId, status, reason = nu
     }
 };
 
-// Cancel appointment
 export const cancelAppointment = async (appointmentId, reason = null) => {
     try {
         const params = reason ? `?reason=${encodeURIComponent(reason)}` : '';
@@ -87,7 +79,6 @@ export const cancelAppointment = async (appointmentId, reason = null) => {
     }
 };
 
-// Check slot availability
 export const checkSlotAvailability = async (doctorId, startTime, endTime) => {
     try {
         const params = new URLSearchParams({

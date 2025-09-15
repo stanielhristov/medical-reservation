@@ -135,7 +135,8 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Cannot delete admin users. Please deactivate instead.");
         }
 
-        if (appointmentRepository.existsByPatientId(userId)) {
+        long patientAppointmentCount = appointmentRepository.countByPatientId(userId);
+        if (patientAppointmentCount > 0) {
             throw new IllegalArgumentException("Cannot delete user with existing appointments. Please deactivate instead.");
         }
 
@@ -180,6 +181,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public DoctorRequestDTO approveDoctorRequest(Long requestId, Long adminId) {
+        // Fetch entities
         DoctorRequestEntity request = doctorRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor request not found"));
 
@@ -190,8 +192,10 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
+        // Get user ID to avoid potential lazy loading issues
         Long userId = request.getUser().getId();
-
+        
+        // Update doctor entity first
         DoctorEntity doctor = doctorRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Doctor entity not found for user"));
 
@@ -202,14 +206,18 @@ public class AdminServiceImpl implements AdminService {
         doctor.setExperience(request.getExperience());
         doctor.setIsActive(true);
 
+        // Save doctor entity
         doctorRepository.save(doctor);
 
+        // Update request status
         request.setStatus(DoctorRequestStatus.APPROVED);
         request.setReviewedBy(admin);
         request.setReviewedAt(LocalDateTime.now());
 
+        // Save updated request
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
 
+        // Create notification using fresh user reference
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         
@@ -236,6 +244,7 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
+        // Get user ID to avoid potential lazy loading issues
         Long userId = request.getUser().getId();
 
         request.setStatus(DoctorRequestStatus.REJECTED);

@@ -1,6 +1,5 @@
 import api from './axios.js';
 
-// Get user notifications
 export const getUserNotifications = async (userId) => {
     try {
         const response = await api.get(`/patient/${userId}/notifications`);
@@ -10,7 +9,6 @@ export const getUserNotifications = async (userId) => {
     }
 };
 
-// Get unread notifications
 export const getUnreadNotifications = async (userId) => {
     try {
         const response = await api.get(`/patient/${userId}/notifications/unread`);
@@ -20,7 +18,6 @@ export const getUnreadNotifications = async (userId) => {
     }
 };
 
-// Get unread notification count
 export const getUnreadNotificationCount = async (userId) => {
     try {
         const response = await api.get(`/notifications/user/${userId}/count`);
@@ -30,7 +27,6 @@ export const getUnreadNotificationCount = async (userId) => {
     }
 };
 
-// Mark notification as read
 export const markNotificationAsRead = async (notificationId) => {
     try {
         await api.patch(`/notifications/${notificationId}/read`);
@@ -40,7 +36,6 @@ export const markNotificationAsRead = async (notificationId) => {
     }
 };
 
-// Mark all notifications as read
 export const markAllNotificationsAsRead = async (userId) => {
     try {
         await api.patch(`/notifications/user/${userId}/mark-all-read`);

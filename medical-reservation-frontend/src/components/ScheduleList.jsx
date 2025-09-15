@@ -1,0 +1,298 @@
+const ScheduleList = ({ 
+    schedules, 
+    onEdit, 
+    onDelete, 
+    onToggleAvailability, 
+    loading 
+}) => {
+    const formatDateTime = (dateTimeString) => {
+        const date = new Date(dateTimeString);
+        return {
+            date: date.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric' 
+            }),
+            time: date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            })
+        };
+    };
+
+    const getDuration = (startTime, endTime) => {
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const diffInMinutes = (end - start) / (1000 * 60);
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+        
+        if (hours > 0 && minutes > 0) {
+            return `${hours}h ${minutes}m`;
+        } else if (hours > 0) {
+            return `${hours}h`;
+        } else {
+            return `${minutes}m`;
+        }
+    };
+
+    if (loading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '3rem',
+                background: 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '20px',
+                boxShadow: '0 8px 24px rgba(21, 128, 61, 0.1)'
+            }}>
+                <div style={{
+                    width: '60px',
+                    height: '60px',
+                    border: '4px solid rgba(21, 128, 61, 0.2)',
+                    borderTop: '4px solid #15803d',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                }} />
+            </div>
+        );
+    }
+
+    if (schedules.length === 0) {
+        return (
+            <div style={{
+                background: 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '20px',
+                padding: '3rem',
+                textAlign: 'center',
+                boxShadow: '0 8px 24px rgba(21, 128, 61, 0.1)',
+                border: '1px solid rgba(21, 128, 61, 0.1)'
+            }}>
+                <div style={{
+                    width: '80px',
+                    height: '80px',
+                    background: 'rgba(21, 128, 61, 0.1)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1.5rem',
+                    fontSize: '2rem'
+                }}>
+                    📅
+                </div>
+                <h3 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '600',
+                    color: '#374151',
+                    margin: '0 0 1rem'
+                }}>
+                    No Schedule Found
+                </h3>
+                <p style={{
+                    color: '#6b7280',
+                    margin: 0,
+                    fontSize: '1rem'
+                }}>
+                    No time slots available for the selected view. Add some schedule entries to get started.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{
+            display: 'grid',
+            gap: '1rem'
+        }}>
+            {schedules.map((schedule) => {
+                const startFormat = formatDateTime(schedule.startTime);
+                const endFormat = formatDateTime(schedule.endTime);
+                const duration = getDuration(schedule.startTime, schedule.endTime);
+                const isPast = new Date(schedule.endTime) < new Date();
+
+                return (
+                    <div key={schedule.id} style={{
+                        background: 'rgba(255, 255, 255, 0.98)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '16px',
+                        padding: '1.5rem',
+                        boxShadow: '0 4px 16px rgba(21, 128, 61, 0.08)',
+                        border: `1px solid ${schedule.available ? '#22c55e' : '#ef4444'}20`,
+                        transition: 'all 0.2s ease',
+                        opacity: isPast ? 0.7 : 1
+                    }}
+                    onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(21, 128, 61, 0.15)';
+                    }}
+                    onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(21, 128, 61, 0.08)';
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            marginBottom: '1rem'
+                        }}>
+                            <div style={{ flex: 1 }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    marginBottom: '0.5rem'
+                                }}>
+                                    <span style={{
+                                        padding: '0.25rem 0.75rem',
+                                        borderRadius: '20px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: '600',
+                                        background: schedule.available 
+                                            ? 'rgba(34, 197, 94, 0.1)' 
+                                            : 'rgba(239, 68, 68, 0.1)',
+                                        color: schedule.available ? '#15803d' : '#dc2626'
+                                    }}>
+                                        {schedule.available ? '✅ Available' : '❌ Unavailable'}
+                                    </span>
+                                    {isPast && (
+                                        <span style={{
+                                            padding: '0.25rem 0.75rem',
+                                            borderRadius: '20px',
+                                            fontSize: '0.8rem',
+                                            fontWeight: '600',
+                                            background: 'rgba(107, 114, 128, 0.1)',
+                                            color: '#6b7280'
+                                        }}>
+                                            Past
+                                        </span>
+                                    )}
+                                </div>
+                                
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                                    gap: '1rem'
+                                }}>
+                                    <div>
+                                        <div style={{ 
+                                            color: '#6b7280', 
+                                            fontSize: '0.8rem', 
+                                            fontWeight: '500' 
+                                        }}>
+                                            Start Time
+                                        </div>
+                                        <div style={{ 
+                                            color: '#374151', 
+                                            fontWeight: '600',
+                                            fontSize: '0.9rem'
+                                        }}>
+                                            {startFormat.date} • {startFormat.time}
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <div style={{ 
+                                            color: '#6b7280', 
+                                            fontSize: '0.8rem', 
+                                            fontWeight: '500' 
+                                        }}>
+                                            End Time
+                                        </div>
+                                        <div style={{ 
+                                            color: '#374151', 
+                                            fontWeight: '600',
+                                            fontSize: '0.9rem'
+                                        }}>
+                                            {endFormat.date} • {endFormat.time}
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <div style={{ 
+                                            color: '#6b7280', 
+                                            fontSize: '0.8rem', 
+                                            fontWeight: '500' 
+                                        }}>
+                                            Duration
+                                        </div>
+                                        <div style={{ 
+                                            color: '#374151', 
+                                            fontWeight: '600',
+                                            fontSize: '0.9rem'
+                                        }}>
+                                            {duration}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ 
+                                display: 'flex', 
+                                gap: '0.5rem',
+                                flexShrink: 0,
+                                marginLeft: '1rem'
+                            }}>
+                                <button
+                                    onClick={() => onToggleAvailability(schedule)}
+                                    style={{
+                                        background: schedule.available 
+                                            ? 'rgba(239, 68, 68, 0.1)' 
+                                            : 'rgba(34, 197, 94, 0.1)',
+                                        border: `1px solid ${schedule.available ? '#ef4444' : '#22c55e'}20`,
+                                        borderRadius: '8px',
+                                        padding: '0.5rem',
+                                        cursor: 'pointer',
+                                        color: schedule.available ? '#dc2626' : '#15803d',
+                                        transition: 'all 0.2s ease',
+                                        fontSize: '0.8rem'
+                                    }}
+                                    title={schedule.available ? 'Mark as Unavailable' : 'Mark as Available'}
+                                >
+                                    {schedule.available ? '🚫' : '✅'}
+                                </button>
+                                
+                                <button
+                                    onClick={() => onEdit(schedule)}
+                                    style={{
+                                        background: 'rgba(59, 130, 246, 0.1)',
+                                        border: '1px solid rgba(59, 130, 246, 0.2)',
+                                        borderRadius: '8px',
+                                        padding: '0.5rem',
+                                        cursor: 'pointer',
+                                        color: '#3b82f6',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    title="Edit Schedule"
+                                >
+                                    ✏️
+                                </button>
+                                
+                                <button
+                                    onClick={() => onDelete(schedule)}
+                                    style={{
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                                        borderRadius: '8px',
+                                        padding: '0.5rem',
+                                        cursor: 'pointer',
+                                        color: '#dc2626',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    title="Delete Schedule"
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+export default ScheduleList;

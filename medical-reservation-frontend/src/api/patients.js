@@ -1,6 +1,5 @@
 import api from './axios.js';
 
-// Get patient dashboard data
 export const getPatientDashboard = async (patientId) => {
     try {
         const response = await api.get(`/patient/${patientId}/dashboard`);
@@ -10,7 +9,6 @@ export const getPatientDashboard = async (patientId) => {
     }
 };
 
-// Get patient appointments
 export const getPatientAppointments = async (patientId) => {
     try {
         const response = await api.get(`/patient/${patientId}/appointments`);
@@ -20,7 +18,6 @@ export const getPatientAppointments = async (patientId) => {
     }
 };
 
-// Get upcoming patient appointments
 export const getUpcomingPatientAppointments = async (patientId) => {
     try {
         const response = await api.get(`/patient/${patientId}/appointments/upcoming`);
@@ -30,7 +27,6 @@ export const getUpcomingPatientAppointments = async (patientId) => {
     }
 };
 
-// Get next patient appointment
 export const getNextPatientAppointment = async (patientId) => {
     try {
         const response = await api.get(`/patient/${patientId}/appointments/next`);
@@ -43,7 +39,6 @@ export const getNextPatientAppointment = async (patientId) => {
     }
 };
 
-// Get available doctors for patients
 export const getAvailableDoctors = async () => {
     try {
         const response = await api.get('/patient/doctors');
@@ -53,7 +48,6 @@ export const getAvailableDoctors = async () => {
     }
 };
 
-// Search doctors for patients
 export const searchDoctorsForPatients = async (searchTerm = '', specialization = '') => {
     try {
         const params = new URLSearchParams();
@@ -67,7 +61,6 @@ export const searchDoctorsForPatients = async (searchTerm = '', specialization =
     }
 };
 
-// Get available specializations for patients
 export const getAvailableSpecializationsForPatients = async () => {
     try {
         const response = await api.get('/patient/doctors/specializations');
@@ -77,7 +70,6 @@ export const getAvailableSpecializationsForPatients = async () => {
     }
 };
 
-// Get doctors by specialization for patients
 export const getDoctorsBySpecializationForPatients = async (specialization) => {
     try {
         const response = await api.get(`/patient/doctors/specialization/${specialization}`);

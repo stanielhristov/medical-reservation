@@ -1,6 +1,5 @@
 import api from './axios.js';
 
-// Get doctor's schedule
 export const getDoctorSchedule = async (doctorId) => {
     try {
         const response = await api.get(`/schedules/doctor/${doctorId}`);
@@ -10,7 +9,6 @@ export const getDoctorSchedule = async (doctorId) => {
     }
 };
 
-// Get available slots for a doctor within a date range
 export const getAvailableSlots = async (doctorId, startDate, endDate) => {
     try {
         const response = await api.get(`/schedules/available/${doctorId}`, {
@@ -25,7 +23,6 @@ export const getAvailableSlots = async (doctorId, startDate, endDate) => {
     }
 };
 
-// Create new schedule slot
 export const createSchedule = async (scheduleData) => {
     try {
         const response = await api.post('/schedules', scheduleData);
@@ -35,7 +32,6 @@ export const createSchedule = async (scheduleData) => {
     }
 };
 
-// Update existing schedule slot
 export const updateSchedule = async (scheduleId, scheduleData) => {
     try {
         const response = await api.put(`/schedules/${scheduleId}`, scheduleData);
@@ -45,7 +41,6 @@ export const updateSchedule = async (scheduleId, scheduleData) => {
     }
 };
 
-// Delete schedule slot
 export const deleteSchedule = async (scheduleId) => {
     try {
         await api.delete(`/schedules/${scheduleId}`);
@@ -55,7 +50,6 @@ export const deleteSchedule = async (scheduleId) => {
     }
 };
 
-// Mark slot as unavailable
 export const markSlotUnavailable = async (scheduleId) => {
     try {
         const response = await api.patch(`/schedules/${scheduleId}/unavailable`);
@@ -65,7 +59,6 @@ export const markSlotUnavailable = async (scheduleId) => {
     }
 };
 
-// Mark slot as available
 export const markSlotAvailable = async (scheduleId) => {
     try {
         const response = await api.patch(`/schedules/${scheduleId}/available`);

@@ -1,6 +1,5 @@
 import api from './axios.js';
 
-// Get all active doctors
 export const getActiveDoctors = async () => {
     try {
         const response = await api.get('/doctors');
@@ -10,7 +9,6 @@ export const getActiveDoctors = async () => {
     }
 };
 
-// Get doctor by ID
 export const getDoctorById = async (doctorId) => {
     try {
         const response = await api.get(`/doctors/${doctorId}`);
@@ -20,7 +18,6 @@ export const getDoctorById = async (doctorId) => {
     }
 };
 
-// Get doctor by user ID
 export const getDoctorByUserId = async (userId) => {
     try {
         const response = await api.get(`/doctors/user/${userId}`);
@@ -30,7 +27,6 @@ export const getDoctorByUserId = async (userId) => {
     }
 };
 
-// Search doctors
 export const searchDoctors = async (searchTerm = '', specialization = '') => {
     try {
         const params = new URLSearchParams();
@@ -44,7 +40,6 @@ export const searchDoctors = async (searchTerm = '', specialization = '') => {
     }
 };
 
-// Get doctors by specialization
 export const getDoctorsBySpecialization = async (specialization) => {
     try {
         const response = await api.get(`/doctors/specialization/${specialization}`);
@@ -54,7 +49,6 @@ export const getDoctorsBySpecialization = async (specialization) => {
     }
 };
 
-// Get available specializations
 export const getAvailableSpecializations = async () => {
     try {
         const response = await api.get('/doctors/specializations');
@@ -64,7 +58,6 @@ export const getAvailableSpecializations = async () => {
     }
 };
 
-// Get doctor dashboard data
 export const getDoctorDashboard = async (doctorId) => {
     try {
         const response = await api.get(`/doctors/${doctorId}/dashboard`);
@@ -74,7 +67,6 @@ export const getDoctorDashboard = async (doctorId) => {
     }
 };
 
-// Get doctor patients
 export const getDoctorPatients = async (doctorId) => {
     try {
         const response = await api.get(`/doctors/${doctorId}/patients`);
@@ -84,7 +76,6 @@ export const getDoctorPatients = async (doctorId) => {
     }
 };
 
-// Update doctor profile
 export const updateDoctor = async (doctorId, doctorData) => {
     try {
         const response = await api.put(`/doctors/${doctorId}`, doctorData);

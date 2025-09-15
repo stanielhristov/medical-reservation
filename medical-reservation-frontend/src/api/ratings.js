@@ -55,7 +55,7 @@ export const getMyRatingForDoctor = async (doctorId) => {
         return response.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
-            return null; // User hasn't rated this doctor yet
+            return null;
         }
         console.error('Error fetching my rating for doctor:', error);
         throw error;

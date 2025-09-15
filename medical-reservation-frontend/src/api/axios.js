@@ -8,7 +8,6 @@ const instance = axios.create({
     withCredentials: true,
 });
 
-// Add a request interceptor to include JWT token
 instance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -22,7 +21,6 @@ instance.interceptors.request.use(
     }
 );
 
-// Add a response interceptor to handle token expiration
 instance.interceptors.response.use(
     (response) => {
         return response;
