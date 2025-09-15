@@ -279,8 +279,7 @@ const PatientDoctors = () => {
                 <RatingCommentsModal
                     isOpen={showCommentsModal}
                     onClose={() => setShowCommentsModal(false)}
-                    doctorId={selectedDoctorForComments}
-                    doctorName={filteredDoctors.find(d => d.id === selectedDoctorForComments)?.name}
+                    doctor={filteredDoctors.find(d => d.id === selectedDoctorForComments)}
                 />
             </main>
         </div>

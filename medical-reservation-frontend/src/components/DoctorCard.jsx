@@ -108,14 +108,13 @@ const DoctorCard = ({
                             alignItems: 'center',
                             gap: '0.5rem'
                         }}>
-                            <StarRating rating={doctor.rating} readonly size="medium" />
-                            <span style={{
-                                fontSize: '1.1rem',
-                                fontWeight: '700',
-                                color: '#374151'
-                            }}>
-                                {doctor.rating.toFixed(1)}
-                            </span>
+                            <StarRating 
+                                rating={doctor.rating} 
+                                readonly 
+                                size="medium" 
+                                showValue={true}
+                                interactive={false}
+                            />
                         </div>
                         
                         <button

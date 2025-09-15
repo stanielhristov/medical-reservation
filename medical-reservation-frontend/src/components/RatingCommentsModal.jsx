@@ -17,6 +17,12 @@ const RatingCommentsModal = ({
     }, [isOpen, doctor]);
 
     const fetchRatings = async () => {
+        if (!doctor?.id) {
+            console.error('No doctor ID available for fetching ratings');
+            setRatings([]);
+            return;
+        }
+        
         setLoading(true);
         try {
             const ratingsData = await getDoctorRatings(doctor.id);
@@ -34,7 +40,7 @@ const RatingCommentsModal = ({
         onClose();
     };
 
-    if (!isOpen) return null;
+    if (!isOpen || !doctor) return null;
 
     return (
         <div style={{
