@@ -4,6 +4,7 @@ import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating 
 
 export const usePatientDoctors = (user) => {
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSpecialization, setSelectedSpecialization] = useState('');
     const [doctors, setDoctors] = useState([]);
@@ -18,14 +19,12 @@ export const usePatientDoctors = (user) => {
     const [showCommentsModal, setShowCommentsModal] = useState(false);
     const [selectedDoctorForComments, setSelectedDoctorForComments] = useState(null);
 
-    useEffect(() => {
-        fetchDoctors();
-        fetchSpecializations();
-    }, []);
-
     const fetchDoctors = useCallback(async () => {
         try {
+            setError(null);
+            console.log('Fetching doctors...');
             const doctorsData = await getActiveDoctors();
+            console.log('Doctors data received:', doctorsData);
 
             const transformedDoctors = await Promise.all(doctorsData.map(async (doctor) => {
                 try {
@@ -42,12 +41,12 @@ export const usePatientDoctors = (user) => {
                         experience: doctor.experience || "N/A",
                         rating: ratingStats.averageRating || 0,
                         reviews: ratingStats.totalRatings || 0,
-                        location: "Medical Center",
+                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
                         nextAvailable: "Contact for availability",
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
-                        consultationFee: "$120"
+                        consultationFee: doctor.price ? `$${doctor.price}` : "Price not set"
                     };
                 } catch (error) {
                     console.error(`Error fetching rating stats for doctor ${doctor.id}:`, error);
@@ -58,12 +57,12 @@ export const usePatientDoctors = (user) => {
                         experience: doctor.experience || "N/A",
                         rating: doctor.rating || 0,
                         reviews: doctor.totalRatings || 0,
-                        location: "Medical Center",
+                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
                         nextAvailable: "Contact for availability",
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
-                        consultationFee: "$120"
+                        consultationFee: doctor.price ? `$${doctor.price}` : "Price not set"
                     };
                 }
             }));
@@ -71,11 +70,46 @@ export const usePatientDoctors = (user) => {
             setDoctors(transformedDoctors);
         } catch (error) {
             console.error('Error fetching doctors:', error);
+            console.error('Error details:', error.response?.data || error.message);
+            setError(error.response?.data?.message || error.message || 'Failed to load doctors');
             setDoctors([]);
         } finally {
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        fetchDoctors();
+        fetchSpecializations();
+    }, [fetchDoctors]);
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                fetchDoctors();
+            }
+        };
+
+        const handleDoctorProfileUpdate = () => {
+            fetchDoctors();
+        };
+
+        const handleStorageChange = (e) => {
+            if (e.key === 'doctorProfileUpdated') {
+                fetchDoctors();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('doctorProfileUpdated', handleDoctorProfileUpdate);
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('doctorProfileUpdated', handleDoctorProfileUpdate);
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [fetchDoctors]);
 
     const fetchSpecializations = useCallback(async () => {
         try {
@@ -151,6 +185,7 @@ export const usePatientDoctors = (user) => {
 
     return {
         loading,
+        error,
         searchTerm,
         setSearchTerm,
         selectedSpecialization,
@@ -175,6 +210,7 @@ export const usePatientDoctors = (user) => {
         filteredDoctors,
         handleRateDoctor,
         submitRating,
-        handleViewComments
+        handleViewComments,
+        refreshDoctors: fetchDoctors
     };
 };

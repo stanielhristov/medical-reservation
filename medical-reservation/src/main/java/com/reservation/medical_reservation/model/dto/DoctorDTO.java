@@ -21,4 +21,6 @@ public class DoctorDTO {
     private Double rating;
     private Integer totalRatings;
     private Boolean isActive;
+    private Integer price;
+    private String location;
 }

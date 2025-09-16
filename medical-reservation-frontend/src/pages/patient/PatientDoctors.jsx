@@ -13,6 +13,7 @@ const PatientDoctors = () => {
     const { user } = useAuth();
     const {
         loading,
+        error,
         searchTerm,
         setSearchTerm,
         selectedSpecialization,
@@ -33,7 +34,8 @@ const PatientDoctors = () => {
         filteredDoctors,
         handleRateDoctor,
         submitRating,
-        handleViewComments
+        handleViewComments,
+        refreshDoctors
     } = usePatientDoctors(user);
 
     const handleBookAppointment = (doctor) => {
@@ -43,6 +45,47 @@ const PatientDoctors = () => {
 
     if (loading) {
         return <LoadingSpinner message="Loading doctors..." />;
+    }
+
+    if (error) {
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '50vh',
+                padding: '2rem',
+                textAlign: 'center'
+            }}>
+                <div style={{
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '2px solid rgba(239, 68, 68, 0.2)',
+                    borderRadius: '16px',
+                    padding: '2rem',
+                    maxWidth: '500px'
+                }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>Unable to Load Doctors</h3>
+                    <p style={{ color: '#6b7280', margin: '0 0 1.5rem' }}>{error}</p>
+                    <button
+                        onClick={refreshDoctors}
+                        style={{
+                            padding: '0.75rem 1.5rem',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            fontWeight: '600'
+                        }}
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -74,7 +117,7 @@ const PatientDoctors = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                <DoctorSearchHeader />
+                <DoctorSearchHeader onRefresh={refreshDoctors} />
 
                 <DoctorSearchFilters
                     searchTerm={searchTerm}
@@ -116,14 +159,31 @@ const PatientDoctors = () => {
                             </h3>
                             <p style={{
                                 fontSize: '1rem',
-                                margin: 0,
+                                margin: '0 0 1.5rem',
                                 maxWidth: '400px',
                                 marginLeft: 'auto',
                                 marginRight: 'auto',
                                 lineHeight: '1.5'
                             }}>
-                                Try adjusting your search criteria or browse all available doctors by clearing the filters.
+                                {searchTerm || selectedSpecialization !== 'All Specializations' && selectedSpecialization !== '' 
+                                    ? 'Try adjusting your search criteria or browse all available doctors by clearing the filters.'
+                                    : 'No doctors are currently available. Please check back later or contact support.'}
                             </p>
+                            <button
+                                onClick={refreshDoctors}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Refresh
+                            </button>
                         </div>
                     ) : (
                         <div style={{

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DoctorSearchHeader = () => {
+const DoctorSearchHeader = ({ onRefresh }) => {
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -39,7 +39,7 @@ const DoctorSearchHeader = () => {
             <p style={{
                 fontSize: '1.2rem',
                 color: '#6b7280',
-                margin: 0,
+                margin: '0 0 2rem',
                 maxWidth: '600px',
                 marginLeft: 'auto',
                 marginRight: 'auto',
@@ -48,6 +48,38 @@ const DoctorSearchHeader = () => {
                 Connect with experienced healthcare professionals. Browse specializations, read reviews, 
                 and book appointments with doctors who match your needs.
             </p>
+            
+            {onRefresh && (
+                <button
+                    onClick={onRefresh}
+                    style={{
+                        padding: '0.75rem 1.5rem',
+                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        fontSize: '0.95rem',
+                        fontWeight: '600',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}
+                    onMouseEnter={e => {
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.4)';
+                    }}
+                    onMouseLeave={e => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
+                    }}
+                >
+                    <span>🔄</span>
+                    Refresh Doctors
+                </button>
+            )}
         </section>
     );
 };

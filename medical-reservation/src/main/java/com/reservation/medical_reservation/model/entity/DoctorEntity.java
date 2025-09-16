@@ -46,6 +46,12 @@ public class DoctorEntity extends BaseEntity {
     @Column
     private LocalDateTime createdAt;
 
+    @Column
+    private Integer price;
+
+    @Column
+    private String location;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

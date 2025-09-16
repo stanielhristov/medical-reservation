@@ -11,6 +11,8 @@ const FormField = ({
     readOnly = false,
     placeholder = '',
     minLength,
+    min,
+    step,
     children,
     helpText 
 }) => {
@@ -72,6 +74,8 @@ const FormField = ({
                         readOnly={readOnly}
                         placeholder={placeholder}
                         minLength={minLength}
+                        min={min}
+                        step={step}
                         style={inputStyle}
                         onFocus={handleFocus}
                         onBlur={handleBlur}

@@ -49,7 +49,9 @@ export const useProfile = (user) => {
         bio: '',
         licenseNumber: '',
         education: '',
-        experience: ''
+        experience: '',
+        price: '',
+        location: ''
     });
 
     const [originalDoctorProfileData, setOriginalDoctorProfileData] = useState({
@@ -57,7 +59,9 @@ export const useProfile = (user) => {
         bio: '',
         licenseNumber: '',
         education: '',
-        experience: ''
+        experience: '',
+        price: '',
+        location: ''
     });
 
     const hasProfileDataChanged = useMemo(() => {
@@ -82,7 +86,9 @@ export const useProfile = (user) => {
                doctorProfileData.bio !== originalDoctorProfileData.bio ||
                doctorProfileData.licenseNumber !== originalDoctorProfileData.licenseNumber ||
                doctorProfileData.education !== originalDoctorProfileData.education ||
-               doctorProfileData.experience !== originalDoctorProfileData.experience;
+               doctorProfileData.experience !== originalDoctorProfileData.experience ||
+               doctorProfileData.price !== originalDoctorProfileData.price ||
+               doctorProfileData.location !== originalDoctorProfileData.location;
     }, [doctorProfileData, originalDoctorProfileData]);
 
     useEffect(() => {
@@ -138,7 +144,9 @@ export const useProfile = (user) => {
                 bio: doctor.bio || '',
                 licenseNumber: doctor.licenseNumber || '',
                 education: doctor.education || '',
-                experience: doctor.experience || ''
+                experience: doctor.experience || '',
+                price: doctor.price ? doctor.price.toString() : '',
+                location: doctor.location || ''
             };
             setDoctorProfileData(doctorDataObj);
             setOriginalDoctorProfileData(doctorDataObj);
@@ -180,8 +188,27 @@ export const useProfile = (user) => {
                 throw new Error('Doctor data not available');
             }
 
-            await updateDoctor(doctorData.id, doctorProfileData);
+            const updateData = {
+                ...doctorProfileData,
+                // Trim and normalize location field
+                location: doctorProfileData.location && doctorProfileData.location.trim() !== '' ? doctorProfileData.location.trim() : null,
+                // Parse price properly, ensuring empty strings become null
+                price: doctorProfileData.price && doctorProfileData.price.trim() !== '' ? parseInt(doctorProfileData.price, 10) : null
+            };
+
+            const updatedDoctor = await updateDoctor(doctorData.id, updateData);
+            
+            // Update the doctor data with the fresh data from the server
+            setDoctorData(updatedDoctor);
+            
+            // Update the original state to reflect the new baseline
             setOriginalDoctorProfileData(doctorProfileData);
+            
+            // Trigger a refresh for other parts of the app that display doctor data
+            localStorage.setItem('doctorProfileUpdated', Date.now().toString());
+            window.dispatchEvent(new CustomEvent('doctorProfileUpdated', { 
+                detail: { doctorId: doctorData.id, updatedData: updatedDoctor } 
+            }));
             
             return true;
         } catch (error) {

@@ -39,6 +39,25 @@ const DoctorProfileForm = ({
                     placeholder="Medical license number"
                 />
 
+                <FormField
+                    label="Consultation Fee"
+                    name="price"
+                    value={doctorProfileData.price}
+                    onChange={handleInputChange}
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="e.g. 120"
+                />
+
+                <FormField
+                    label="Location"
+                    name="location"
+                    value={doctorProfileData.location}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Medical Center, Downtown Clinic"
+                />
+
                 {doctorData?.rating !== undefined && (
                     <div>
                         <label style={{

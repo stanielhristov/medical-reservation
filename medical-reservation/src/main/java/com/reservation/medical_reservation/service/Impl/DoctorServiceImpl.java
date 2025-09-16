@@ -74,6 +74,13 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setLicenseNumber(doctorDTO.getLicenseNumber());
         doctor.setEducation(doctorDTO.getEducation());
         doctor.setExperience(doctorDTO.getExperience());
+        
+        // Handle location: convert empty/blank strings to null for consistency
+        String location = doctorDTO.getLocation();
+        doctor.setLocation(location != null && !location.trim().isEmpty() ? location.trim() : null);
+        
+        // Handle price: ensure null is set when not provided
+        doctor.setPrice(doctorDTO.getPrice());
 
         DoctorEntity updated = doctorRepository.save(doctor);
         return convertToDTO(updated);
@@ -110,7 +117,7 @@ public class DoctorServiceImpl implements DoctorService {
                     .toList();
         } catch (Exception e) {
             System.err.println("Error searching doctors: " + e.getMessage());
-            return List.of(); // Return empty list on error
+            return List.of();
         }
     }
 
@@ -134,7 +141,7 @@ public class DoctorServiceImpl implements DoctorService {
                     .toList();
         } catch (Exception e) {
             System.err.println("Error searching doctors with specialization: " + e.getMessage());
-            return List.of(); // Return empty list on error
+            return List.of();
         }
     }
 
@@ -144,7 +151,7 @@ public class DoctorServiceImpl implements DoctorService {
             return doctorRepository.findAllActiveSpecializations();
         } catch (Exception e) {
             System.err.println("Error getting available specializations: " + e.getMessage());
-            return List.of(); // Return empty list on error
+            return List.of();
         }
     }
 
@@ -164,6 +171,7 @@ public class DoctorServiceImpl implements DoctorService {
         dto.setUserId(doctor.getUser().getId());
         dto.setFullName(doctor.getUser().getFullName());
         dto.setEmail(doctor.getUser().getEmail());
+        dto.setPhoneNumber(doctor.getUser().getPhoneNumber());
         return dto;
     }
 }
