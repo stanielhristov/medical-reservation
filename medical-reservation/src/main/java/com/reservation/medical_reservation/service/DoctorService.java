@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.service;
 
 import com.reservation.medical_reservation.model.dto.DoctorDTO;
+import com.reservation.medical_reservation.model.dto.DoctorPatientDTO;
 
 import java.util.List;
 
@@ -19,5 +20,5 @@ public interface DoctorService {
 
     List<String> getAvailableSpecializations();
 
-    List<com.reservation.medical_reservation.model.dto.UserDTO> getDoctorPatients(Long doctorId);
+    List<DoctorPatientDTO> getDoctorPatients(Long doctorId);
 }

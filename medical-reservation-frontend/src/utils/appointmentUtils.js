@@ -20,6 +20,9 @@ export const getStatusColor = (status) => {
 };
 
 export const formatAppointmentDate = (date) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return 'Invalid Date';
+    }
     return date.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
@@ -29,6 +32,9 @@ export const formatAppointmentDate = (date) => {
 };
 
 export const formatAppointmentTime = (date) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return 'Invalid Time';
+    }
     return date.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit'
@@ -36,6 +42,10 @@ export const formatAppointmentTime = (date) => {
 };
 
 export const getRelativeTimeUntil = (date) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return 'Invalid Date';
+    }
+    
     const now = new Date();
     const diffTime = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

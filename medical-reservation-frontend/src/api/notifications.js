@@ -2,7 +2,7 @@ import api from './axios.js';
 
 export const getUserNotifications = async (userId) => {
     try {
-        const response = await api.get(`/patient/${userId}/notifications`);
+        const response = await api.get(`/notifications/user/${userId}`);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data || error.message);
@@ -11,7 +11,7 @@ export const getUserNotifications = async (userId) => {
 
 export const getUnreadNotifications = async (userId) => {
     try {
-        const response = await api.get(`/patient/${userId}/notifications/unread`);
+        const response = await api.get(`/notifications/user/${userId}/unread`);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data || error.message);
@@ -20,9 +20,8 @@ export const getUnreadNotifications = async (userId) => {
 
 export const getUnreadNotificationCount = async (userId) => {
     try {
-        // Get unread notifications and count them
-        const response = await api.get(`/patient/${userId}/notifications/unread`);
-        return response.data.length;
+        const response = await api.get(`/notifications/user/${userId}/count`);
+        return response.data;
     } catch (error) {
         throw new Error(error.response?.data || error.message);
     }
@@ -30,7 +29,7 @@ export const getUnreadNotificationCount = async (userId) => {
 
 export const markNotificationAsRead = async (notificationId) => {
     try {
-        await api.patch(`/patient/notifications/${notificationId}/read`);
+        await api.patch(`/notifications/${notificationId}/read`);
         return true;
     } catch (error) {
         throw new Error(error.response?.data || error.message);
@@ -49,7 +48,7 @@ export const markAllNotificationsAsRead = async (userId) => {
 
 export const deleteNotification = async (notificationId) => {
     try {
-        await api.delete(`/patient/notifications/${notificationId}`);
+        await api.delete(`/notifications/${notificationId}`);
         return true;
     } catch (error) {
         throw new Error(error.response?.data || error.message);

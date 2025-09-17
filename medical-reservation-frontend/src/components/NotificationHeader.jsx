@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NotificationHeader = () => {
+const NotificationHeader = ({ isDoctor = false }) => {
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -8,20 +8,28 @@ const NotificationHeader = () => {
             borderRadius: '32px',
             padding: '3rem',
             marginBottom: '3rem',
-            boxShadow: '0 32px 64px rgba(249, 115, 22, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
-            border: '1px solid rgba(249, 115, 22, 0.15)',
+            boxShadow: isDoctor 
+                ? '0 32px 64px rgba(16, 185, 129, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)'
+                : '0 32px 64px rgba(249, 115, 22, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
+            border: isDoctor 
+                ? '1px solid rgba(16, 185, 129, 0.15)'
+                : '1px solid rgba(249, 115, 22, 0.15)',
             textAlign: 'center'
         }}>
             <div style={{
                 width: '100px',
                 height: '100px',
-                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                background: isDoctor 
+                    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                    : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 borderRadius: '20px',
                 margin: '0 auto 2rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 16px 40px rgba(249, 115, 22, 0.3)'
+                boxShadow: isDoctor 
+                    ? '0 16px 40px rgba(16, 185, 129, 0.3)'
+                    : '0 16px 40px rgba(249, 115, 22, 0.3)'
             }}>
                 <span style={{ fontSize: '3rem', color: 'white' }}>🔔</span>
             </div>
@@ -45,7 +53,10 @@ const NotificationHeader = () => {
                 marginRight: 'auto',
                 lineHeight: '1.6'
             }}>
-                Stay updated with appointment reminders, health updates, and important medical information
+{isDoctor 
+                    ? "Stay informed about patient appointments, schedule changes, and medical practice updates"
+                    : "Stay updated with appointment reminders, health updates, and important medical information"
+                }
             </p>
         </section>
     );

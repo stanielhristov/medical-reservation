@@ -31,7 +31,8 @@ export const getRoleRoutes = (role) => {
                 { path: '/doctor/dashboard', name: 'Dashboard' },
                 { path: '/doctor/schedule', name: 'Schedule Management' },
                 { path: '/doctor/appointments', name: 'Appointments' },
-                { path: '/doctor/patients', name: 'Patients' }
+                { path: '/doctor/patients', name: 'Patients' },
+                { path: '/doctor/notifications', name: 'Notifications' }
             ];
         case 'USER':
             return [

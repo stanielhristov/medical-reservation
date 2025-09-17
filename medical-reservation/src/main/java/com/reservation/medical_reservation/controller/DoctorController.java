@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.controller;
 
 import com.reservation.medical_reservation.model.dto.DoctorDTO;
+import com.reservation.medical_reservation.model.dto.DoctorPatientDTO;
 import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.dto.MedicalHistoryDTO;
@@ -139,8 +140,8 @@ public class DoctorController {
 
     @GetMapping("/{doctorId}/patients")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<UserDTO>> getDoctorPatients(@PathVariable Long doctorId) {
-        List<UserDTO> patients = doctorService.getDoctorPatients(doctorId);
+    public ResponseEntity<List<DoctorPatientDTO>> getDoctorPatients(@PathVariable Long doctorId) {
+        List<DoctorPatientDTO> patients = doctorService.getDoctorPatients(doctorId);
         return ResponseEntity.ok(patients);
     }
 

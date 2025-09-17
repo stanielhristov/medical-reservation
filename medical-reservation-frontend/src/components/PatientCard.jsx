@@ -25,8 +25,10 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
         }
     };
 
-    const daysSinceLastVisit = Math.floor((new Date() - new Date(patient.lastVisit)) / (1000 * 60 * 60 * 24));
-    const daysUntilNextAppointment = Math.floor((new Date(patient.nextAppointment) - new Date()) / (1000 * 60 * 60 * 24));
+    const daysSinceLastVisit = patient.lastVisit ? 
+        Math.floor((new Date() - new Date(patient.lastVisit)) / (1000 * 60 * 60 * 24)) : null;
+    const daysUntilNextAppointment = patient.nextAppointment ? 
+        Math.floor((new Date(patient.nextAppointment) - new Date()) / (1000 * 60 * 60 * 24)) : null;
 
     return (
         <div
@@ -161,14 +163,22 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         color: '#374151',
                         fontWeight: '500'
                     }}>
-                        {formatDate(patient.lastVisit)}
-                        <span style={{
-                            color: '#6b7280',
-                            fontSize: '0.75rem',
-                            marginLeft: '0.25rem'
-                        }}>
-                            ({daysSinceLastVisit} days ago)
-                        </span>
+                        {patient.lastVisit ? (
+                            <>
+                                {formatDate(patient.lastVisit)}
+                                <span style={{
+                                    color: '#6b7280',
+                                    fontSize: '0.75rem',
+                                    marginLeft: '0.25rem'
+                                }}>
+                                    ({daysSinceLastVisit} days ago)
+                                </span>
+                            </>
+                        ) : (
+                            <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                                No visits yet
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -188,15 +198,23 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         color: '#374151',
                         fontWeight: '500'
                     }}>
-                        {formatDate(patient.nextAppointment)}
-                        <span style={{
-                            color: daysUntilNextAppointment <= 7 ? '#059669' : '#6b7280',
-                            fontSize: '0.75rem',
-                            marginLeft: '0.25rem',
-                            fontWeight: daysUntilNextAppointment <= 7 ? '600' : '400'
-                        }}>
-                            ({daysUntilNextAppointment > 0 ? `in ${daysUntilNextAppointment} days` : 'overdue'})
-                        </span>
+                        {patient.nextAppointment ? (
+                            <>
+                                {formatDate(patient.nextAppointment)}
+                                <span style={{
+                                    color: daysUntilNextAppointment <= 7 ? '#059669' : '#6b7280',
+                                    fontSize: '0.75rem',
+                                    marginLeft: '0.25rem',
+                                    fontWeight: daysUntilNextAppointment <= 7 ? '600' : '400'
+                                }}>
+                                    ({daysUntilNextAppointment > 0 ? `in ${daysUntilNextAppointment} days` : 'overdue'})
+                                </span>
+                            </>
+                        ) : (
+                            <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                                No appointment scheduled
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>

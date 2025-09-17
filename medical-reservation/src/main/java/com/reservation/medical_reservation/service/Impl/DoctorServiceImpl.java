@@ -1,8 +1,12 @@
 package com.reservation.medical_reservation.service.Impl;
 
 import com.reservation.medical_reservation.model.dto.DoctorDTO;
+import com.reservation.medical_reservation.model.dto.DoctorPatientDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.DoctorEntity;
+import com.reservation.medical_reservation.model.entity.UserEntity;
+import com.reservation.medical_reservation.model.entity.AppointmentEntity;
+import com.reservation.medical_reservation.model.enums.AppointmentStatus;
 import com.reservation.medical_reservation.repository.DoctorRepository;
 import com.reservation.medical_reservation.repository.AppointmentRepository;
 import com.reservation.medical_reservation.service.DoctorService;
@@ -10,7 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
+import java.util.Arrays;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -154,14 +161,68 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<UserDTO> getDoctorPatients(Long doctorId) {
+    public List<DoctorPatientDTO> getDoctorPatients(Long doctorId) {
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
         
         return appointmentRepository.findDoctorPatients(doctor)
                 .stream()
-                .map(patient -> modelMapper.map(patient, UserDTO.class))
+                .map(patient -> convertToDoctorPatientDTO(patient, doctor))
                 .toList();
+    }
+    
+    private DoctorPatientDTO convertToDoctorPatientDTO(UserEntity patient, DoctorEntity doctor) {
+        DoctorPatientDTO dto = modelMapper.map(patient, DoctorPatientDTO.class);
+        
+        // Calculate age from date of birth
+        if (patient.getDateOfBirth() != null) {
+            dto.setAge(Period.between(patient.getDateOfBirth(), java.time.LocalDate.now()).getYears());
+        }
+        
+        // Set gender (assuming it's stored in patient entity - you may need to add this field)
+        // For now, defaulting to a placeholder since UserEntity doesn't have gender field
+        dto.setGender("Not specified");
+        
+        // Set blood type (assuming it's stored in patient entity - you may need to add this field)
+        dto.setBloodType("Not specified");
+        
+        // Set allergies and conditions (you may need to add these fields to UserEntity or get from medical records)
+        dto.setAllergies(Arrays.asList("None known"));
+        dto.setConditions(Arrays.asList());
+        
+        // Calculate last visit
+        List<AppointmentEntity> patientAppointments = appointmentRepository.findByPatientOrderByAppointmentTimeDesc(patient);
+        LocalDateTime lastVisit = patientAppointments.stream()
+                .filter(apt -> apt.getDoctor().equals(doctor) && apt.getStatus() == AppointmentStatus.COMPLETED)
+                .map(AppointmentEntity::getAppointmentTime)
+                .findFirst()
+                .orElse(null);
+        dto.setLastVisit(lastVisit);
+        
+        // Calculate next appointment
+        LocalDateTime nextAppointment = patientAppointments.stream()
+                .filter(apt -> apt.getDoctor().equals(doctor) && 
+                             apt.getAppointmentTime().isAfter(LocalDateTime.now()) &&
+                             (apt.getStatus() == AppointmentStatus.CONFIRMED || apt.getStatus() == AppointmentStatus.PENDING))
+                .map(AppointmentEntity::getAppointmentTime)
+                .findFirst()
+                .orElse(null);
+        dto.setNextAppointment(nextAppointment);
+        
+        // Calculate visit count
+        long visitCount = appointmentRepository.countByPatientId(patient.getId());
+        dto.setVisitCount(visitCount);
+        
+        // Set status based on conditions and recent activity
+        if (lastVisit != null && lastVisit.isAfter(LocalDateTime.now().minusDays(30))) {
+            dto.setStatus("active");
+        } else if (nextAppointment != null) {
+            dto.setStatus("followup");
+        } else {
+            dto.setStatus("inactive");
+        }
+        
+        return dto;
     }
 
     private DoctorDTO convertToDTO(DoctorEntity doctor) {

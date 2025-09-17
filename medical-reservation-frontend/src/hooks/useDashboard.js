@@ -19,8 +19,36 @@ export const useDashboard = (user) => {
 
             const dashboardData = await getPatientDashboard(user.id);
             
-            setNextAppointment(dashboardData.nextAppointment || null);
-            setRecentAppointments(dashboardData.recentAppointments || []);
+            const transformedNextAppointment = dashboardData.nextAppointment ? {
+                id: dashboardData.nextAppointment.id,
+                doctorName: dashboardData.nextAppointment.doctorName || 'Unknown Doctor',
+                specialization: dashboardData.nextAppointment.doctorSpecialization || 'General Practice',
+                date: new Date(dashboardData.nextAppointment.appointmentTime),
+                duration: dashboardData.nextAppointment.duration || "30 minutes",
+                status: dashboardData.nextAppointment.status?.toLowerCase() || 'pending',
+                type: dashboardData.nextAppointment.serviceName || 'Consultation',
+                location: dashboardData.nextAppointment.doctorLocation || 'Medical Center',
+                notes: dashboardData.nextAppointment.notes || '',
+                doctorImage: "👨‍⚕️",
+                consultationFee: dashboardData.nextAppointment.consultationFee ? `$${dashboardData.nextAppointment.consultationFee}` : '$150'
+            } : null;
+
+            const transformedRecentAppointments = (dashboardData.recentAppointments || []).map(appointment => ({
+                id: appointment.id,
+                doctorName: appointment.doctorName || 'Unknown Doctor',
+                specialization: appointment.doctorSpecialization || 'General Practice',
+                date: new Date(appointment.appointmentTime),
+                duration: appointment.duration || "30 minutes",
+                status: appointment.status?.toLowerCase() || 'pending',
+                type: appointment.serviceName || 'Consultation',
+                location: appointment.doctorLocation || 'Medical Center',
+                notes: appointment.notes || '',
+                doctorImage: "👨‍⚕️",
+                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
+            }));
+            
+            setNextAppointment(transformedNextAppointment);
+            setRecentAppointments(transformedRecentAppointments);
             
         } catch (error) {
             console.error('Error fetching dashboard data:', error);

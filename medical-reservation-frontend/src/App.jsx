@@ -25,6 +25,7 @@ import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorSchedule from './pages/doctor/DoctorSchedule';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
+import DoctorNotifications from './pages/doctor/DoctorNotifications';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -112,6 +113,11 @@ function App() {
                     <Route path="/doctor/patients" element={
                         <ProtectedRoute requiredRoles={['DOCTOR']}>
                             <Layout><DoctorPatients /></Layout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/doctor/notifications" element={
+                        <ProtectedRoute requiredRoles={['DOCTOR']}>
+                            <Layout><DoctorNotifications /></Layout>
                         </ProtectedRoute>
                     } />
 

@@ -30,13 +30,13 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/schedule'
         },
         {
-            title: 'Medical Reports',
-            description: 'Generate and review patient reports',
-            icon: '📋',
-            color: '#8b5cf6',
-            bgColor: 'rgba(139, 92, 246, 0.1)',
-            borderColor: 'rgba(139, 92, 246, 0.2)',
-            path: '/doctor/reports'
+            title: 'Notifications',
+            description: 'View appointment alerts and system messages',
+            icon: '🔔',
+            color: '#ef4444',
+            bgColor: 'rgba(239, 68, 68, 0.1)',
+            borderColor: 'rgba(239, 68, 68, 0.2)',
+            path: '/doctor/notifications'
         }
     ];
 
