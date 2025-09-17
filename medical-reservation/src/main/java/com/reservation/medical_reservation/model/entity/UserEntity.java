@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.model.entity;
 
+import com.reservation.medical_reservation.model.enums.BloodType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.EqualsAndHashCode;
@@ -54,6 +55,12 @@ public class UserEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "blood_type")
+    private BloodType bloodType;
+
+
     
     @PrePersist
     protected void onCreate() {

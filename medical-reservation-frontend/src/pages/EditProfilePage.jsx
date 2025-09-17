@@ -10,6 +10,7 @@ import MessageDisplay from '../components/MessageDisplay';
 import ProfileForm from '../components/ProfileForm';
 import PasswordForm from '../components/PasswordForm';
 import DoctorProfileForm from '../components/DoctorProfileForm';
+import PersonalInfoForm from '../components/PersonalInfoForm';
 
 const EditProfilePage = () => {
     const { user } = useAuth();
@@ -25,13 +26,17 @@ const EditProfilePage = () => {
         doctorData,
         profileData,
         setProfileData,
+        personalData,
+        setPersonalData,
         addressData,
         setAddressData,
         doctorProfileData,
         setDoctorProfileData,
         hasProfileDataChanged,
+        hasPersonalDataChanged,
         hasDoctorDataChanged,
         updateProfile,
+        updatePersonalInfo,
         updateDoctorProfile
     } = useProfile(user);
 
@@ -48,6 +53,8 @@ const EditProfilePage = () => {
         
         if (formType === 'profile') {
             setProfileData(prev => ({ ...prev, [name]: value }));
+        } else if (formType === 'personal') {
+            setPersonalData(prev => ({ ...prev, [name]: value }));
         } else if (formType === 'doctor') {
             setDoctorProfileData(prev => ({ ...prev, [name]: value }));
         } else if (formType === 'password') {
@@ -66,6 +73,16 @@ const EditProfilePage = () => {
             setMessageWithAutoFade('success', 'Profile updated successfully!');
         } catch (error) {
             setMessageWithAutoFade('error', error.message || 'Failed to update profile');
+        }
+    };
+
+    const handlePersonalInfoSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await updatePersonalInfo();
+            setMessageWithAutoFade('success', 'Personal info updated successfully!');
+        } catch (error) {
+            setMessageWithAutoFade('error', error.message || 'Failed to update personal info');
         }
     };
 
@@ -155,6 +172,7 @@ const EditProfilePage = () => {
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     isDoctor={isDoctor}
+                    isPatient={user?.role === 'USER'}
                 />
 
                 <MessageDisplay message={message} />
@@ -185,6 +203,14 @@ const EditProfilePage = () => {
                             onSubmit={handlePasswordSubmit}
                             saving={passwordSaving}
                             hasPasswordDataInput={hasPasswordDataInput}
+                        />
+                    ) : activeTab === 'personal' ? (
+                        <PersonalInfoForm
+                            profileData={personalData}
+                            onInputChange={(e) => handleInputChange(e, 'personal')}
+                            onSubmit={handlePersonalInfoSubmit}
+                            saving={profileSaving}
+                            hasPersonalInfoChanged={hasPersonalDataChanged}
                         />
                     ) : activeTab === 'doctor' ? (
                         <DoctorProfileForm

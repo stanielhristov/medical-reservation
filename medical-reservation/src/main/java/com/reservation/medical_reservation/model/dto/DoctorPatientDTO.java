@@ -24,7 +24,6 @@ public class DoctorPatientDTO {
     private LocalDateTime createdAt;
     private String role;
     
-    // Additional fields for doctor patient view
     private Integer age;
     private String gender;
     private String bloodType;

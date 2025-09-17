@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.model.dto;
 
+import com.reservation.medical_reservation.model.enums.BloodType;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,5 +23,6 @@ public class UserDTO {
     private LocalDateTime lastLogin;
     private LocalDateTime createdAt;
     private String role;
-    private String phone; 
+    private String phone;
+    private BloodType bloodType; 
 }

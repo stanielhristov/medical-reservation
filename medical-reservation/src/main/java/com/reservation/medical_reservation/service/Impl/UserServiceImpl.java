@@ -145,6 +145,7 @@ public class UserServiceImpl implements UserService {
         
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setAddress(userDTO.getAddress());
+        user.setBloodType(userDTO.getBloodType());
 
         if (userDTO.getEmergencyContact() != null) {
             user.setEmergencyPhone(userDTO.getEmergencyContact());
@@ -199,6 +200,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setLastLogin(user.getLastLogin());
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setRole(user.getRole().getName().toString());
+        userDTO.setBloodType(user.getBloodType());
         
         return userDTO;
     }

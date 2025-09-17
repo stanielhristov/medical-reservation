@@ -1,3 +1,5 @@
+import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
+
 const PatientDetails = ({ patient, onAddRecord, onClose }) => {
     if (!patient) return null;
 
@@ -119,7 +121,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         <span>•</span>
                         <span>{patient.gender}</span>
                         <span>•</span>
-                        <span>Blood Type: {patient.bloodType}</span>
+                        <span>Blood Type: {getBloodTypeDisplay(patient.bloodType)}</span>
                         <span>•</span>
                         <span>{patient.visitCount} visits</span>
                     </div>

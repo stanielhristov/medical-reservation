@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProfileTabs = ({ activeTab, setActiveTab, isDoctor }) => {
+const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
     return (
         <div style={{
             display: 'flex',
@@ -115,6 +115,75 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor }) => {
                 </div>
                 Change Password
             </button>
+            {isPatient && (
+                <button
+                    onClick={() => setActiveTab('personal')}
+                    style={{
+                        flex: 1,
+                        padding: '1rem 2rem',
+                        background: activeTab === 'personal' 
+                            ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                            : 'transparent',
+                        color: activeTab === 'personal' ? 'white' : '#6b7280',
+                        border: 'none',
+                        borderRadius: '14px',
+                        cursor: 'pointer',
+                        fontWeight: '600',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem'
+                    }}
+                >
+                    <div style={{
+                        width: '16px',
+                        height: '16px',
+                        position: 'relative'
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            top: '2px',
+                            left: '8px',
+                            width: '2px',
+                            height: '10px',
+                            background: activeTab === 'personal' ? 'white' : '#6b7280',
+                            borderRadius: '1px'
+                        }} />
+                        <div style={{
+                            position: 'absolute',
+                            top: '6px',
+                            left: '4px',
+                            width: '10px',
+                            height: '2px',
+                            background: activeTab === 'personal' ? 'white' : '#6b7280',
+                            borderRadius: '1px'
+                        }} />
+                        <div style={{
+                            position: 'absolute',
+                            top: '2px',
+                            left: '2px',
+                            width: '6px',
+                            height: '6px',
+                            border: `2px solid ${activeTab === 'personal' ? 'white' : '#6b7280'}`,
+                            borderRadius: '50%',
+                            background: 'transparent'
+                        }} />
+                        <div style={{
+                            position: 'absolute',
+                            top: '10px',
+                            left: '2px',
+                            width: '6px',
+                            height: '6px',
+                            border: `2px solid ${activeTab === 'personal' ? 'white' : '#6b7280'}`,
+                            borderRadius: '50%',
+                            background: 'transparent'
+                        }} />
+                    </div>
+                    Personal Info
+                </button>
+            )}
             {isDoctor && (
                 <button
                     onClick={() => setActiveTab('doctor')}

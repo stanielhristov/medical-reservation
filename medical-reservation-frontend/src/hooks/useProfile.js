@@ -16,7 +16,8 @@ export const useProfile = (user) => {
         phone: '',
         dateOfBirth: '',
         address: '',
-        emergencyContact: ''
+        emergencyContact: '',
+        bloodType: ''
     });
 
     const [originalProfileData, setOriginalProfileData] = useState({
@@ -25,7 +26,18 @@ export const useProfile = (user) => {
         phone: '',
         dateOfBirth: '',
         address: '',
-        emergencyContact: ''
+        emergencyContact: '',
+        bloodType: ''
+    });
+
+    const [personalData, setPersonalData] = useState({
+        emergencyContact: '',
+        bloodType: ''
+    });
+
+    const [originalPersonalData, setOriginalPersonalData] = useState({
+        emergencyContact: '',
+        bloodType: ''
     });
 
     const [addressData, setAddressData] = useState({
@@ -68,8 +80,7 @@ export const useProfile = (user) => {
         const profileChanged = 
             profileData.fullName !== originalProfileData.fullName ||
             profileData.phone !== originalProfileData.phone ||
-            profileData.dateOfBirth !== originalProfileData.dateOfBirth ||
-            profileData.emergencyContact !== originalProfileData.emergencyContact;
+            profileData.dateOfBirth !== originalProfileData.dateOfBirth;
 
         const addressChanged = 
             addressData.street !== originalAddressData.street ||
@@ -80,6 +91,11 @@ export const useProfile = (user) => {
 
         return profileChanged || addressChanged;
     }, [profileData, originalProfileData, addressData, originalAddressData]);
+
+    const hasPersonalDataChanged = useMemo(() => {
+        return personalData.emergencyContact !== originalPersonalData.emergencyContact ||
+               personalData.bloodType !== originalPersonalData.bloodType;
+    }, [personalData, originalPersonalData]);
 
     const hasDoctorDataChanged = useMemo(() => {
         return doctorProfileData.specialization !== originalDoctorProfileData.specialization ||
@@ -113,11 +129,19 @@ export const useProfile = (user) => {
                 phone: profile.phone || '',
                 dateOfBirth: profile.dateOfBirth ? profile.dateOfBirth.split('T')[0] : '',
                 address: profile.address || '',
-                emergencyContact: profile.emergencyContact || ''
+                emergencyContact: profile.emergencyContact || '',
+                bloodType: profile.bloodType || ''
+            };
+            
+            const personalDataObj = {
+                emergencyContact: profile.emergencyContact || '',
+                bloodType: profile.bloodType || ''
             };
             
             setProfileData(profileDataObj);
             setOriginalProfileData(profileDataObj);
+            setPersonalData(personalDataObj);
+            setOriginalPersonalData(personalDataObj);
             
             const parsedAddress = parseAddress(profile.address);
             setAddressData(parsedAddress);
@@ -215,6 +239,37 @@ export const useProfile = (user) => {
         }
     };
 
+    const updatePersonalInfo = async () => {
+        setSaving(true);
+        try {
+            const updateData = {
+                ...profileData,
+                emergencyContact: personalData.emergencyContact,
+                bloodType: personalData.bloodType
+            };
+
+            await updateUserProfile(user.id, updateData);
+            
+            setOriginalPersonalData(personalData);
+            
+            // Also update the profile data to keep it in sync
+            const updatedProfileData = {
+                ...profileData,
+                emergencyContact: personalData.emergencyContact,
+                bloodType: personalData.bloodType
+            };
+            setProfileData(updatedProfileData);
+            setOriginalProfileData(updatedProfileData);
+            
+            return true;
+        } catch (error) {
+            console.error('Error updating personal info:', error);
+            throw error;
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return {
         loading,
         saving,
@@ -222,13 +277,17 @@ export const useProfile = (user) => {
         doctorData,
         profileData,
         setProfileData,
+        personalData,
+        setPersonalData,
         addressData,
         setAddressData,
         doctorProfileData,
         setDoctorProfileData,
         hasProfileDataChanged,
+        hasPersonalDataChanged,
         hasDoctorDataChanged,
         updateProfile,
+        updatePersonalInfo,
         updateDoctorProfile
     };
 };

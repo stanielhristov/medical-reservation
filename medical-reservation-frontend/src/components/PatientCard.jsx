@@ -1,3 +1,5 @@
+import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
+
 const PatientCard = ({ patient, onClick, isSelected = false }) => {
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -136,7 +138,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         Total Visits: {patient.visitCount}
                     </div>
                     <div>
-                        Blood Type: {patient.bloodType}
+                        Blood Type: {getBloodTypeDisplay(patient.bloodType)}
                     </div>
                 </div>
             </div>

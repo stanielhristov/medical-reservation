@@ -143,18 +143,6 @@ const ProfileForm = ({
                 disabled={saving}
             />
             
-            {user?.role !== 'USER' && (
-                <div style={{ marginBottom: '2rem' }}>
-                    <FormField
-                        label="Emergency Contact"
-                        name="emergencyContact"
-                        value={profileData.emergencyContact}
-                        onChange={handleInputChange}
-                        placeholder="Name and phone number"
-                    />
-                </div>
-            )}
-            
             <div style={{
                 display: 'flex',
                 gap: '1rem',

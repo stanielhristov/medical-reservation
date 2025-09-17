@@ -179,18 +179,14 @@ public class DoctorServiceImpl implements DoctorService {
             dto.setAge(Period.between(patient.getDateOfBirth(), java.time.LocalDate.now()).getYears());
         }
         
-        // Set gender (assuming it's stored in patient entity - you may need to add this field)
-        // For now, defaulting to a placeholder since UserEntity doesn't have gender field
         dto.setGender("Not specified");
         
-        // Set blood type (assuming it's stored in patient entity - you may need to add this field)
-        dto.setBloodType("Not specified");
+        // Set blood type display name instead of enum
+        dto.setBloodType(patient.getBloodType() != null ? patient.getBloodType().getDisplayName() : null);
         
-        // Set allergies and conditions (you may need to add these fields to UserEntity or get from medical records)
         dto.setAllergies(Arrays.asList("None known"));
         dto.setConditions(Arrays.asList());
         
-        // Calculate last visit
         List<AppointmentEntity> patientAppointments = appointmentRepository.findByPatientOrderByAppointmentTimeDesc(patient);
         LocalDateTime lastVisit = patientAppointments.stream()
                 .filter(apt -> apt.getDoctor().equals(doctor) && apt.getStatus() == AppointmentStatus.COMPLETED)
@@ -199,7 +195,6 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElse(null);
         dto.setLastVisit(lastVisit);
         
-        // Calculate next appointment
         LocalDateTime nextAppointment = patientAppointments.stream()
                 .filter(apt -> apt.getDoctor().equals(doctor) && 
                              apt.getAppointmentTime().isAfter(LocalDateTime.now()) &&
@@ -209,11 +204,9 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElse(null);
         dto.setNextAppointment(nextAppointment);
         
-        // Calculate visit count
         long visitCount = appointmentRepository.countByPatientId(patient.getId());
         dto.setVisitCount(visitCount);
         
-        // Set status based on conditions and recent activity
         if (lastVisit != null && lastVisit.isAfter(LocalDateTime.now().minusDays(30))) {
             dto.setStatus("active");
         } else if (nextAppointment != null) {
