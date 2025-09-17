@@ -61,4 +61,20 @@ public class NotificationController {
         notificationService.markAllAsRead(userId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{notificationId}")
+    @PreAuthorize("hasRole('USER') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long notificationId) {
+        notificationService.deleteNotification(notificationId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{notificationId}/user/{userId}")
+    @PreAuthorize("hasRole('USER') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteNotificationWithAuth(
+            @PathVariable Long notificationId,
+            @PathVariable Long userId) {
+        notificationService.deleteNotification(notificationId, userId);
+        return ResponseEntity.ok().build();
+    }
 }

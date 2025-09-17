@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getDoctorAppointments, updateAppointmentStatus as updateAppointmentStatusAPI } from '../api/appointments';
+import { getDoctorByUserId } from '../api/doctors';
 
 export const useDoctorAppointments = () => {
     const [loading, setLoading] = useState(true);
@@ -20,23 +21,32 @@ export const useDoctorAppointments = () => {
     const fetchAppointments = async () => {
         try {
             setLoading(true);
-            const response = await getDoctorAppointments(user.id);
+            
+            const doctorProfile = await getDoctorByUserId(user.id);
+            
+            if (!doctorProfile?.id) {
+                console.error('Doctor profile not found for user');
+                setAppointments([]);
+                return;
+            }
+            
+            const response = await getDoctorAppointments(doctorProfile.id);
             const transformedAppointments = response.map(appointment => ({
                 id: appointment.id,
-                patientName: appointment.patient?.fullName || 'Unknown Patient',
-                patientAge: appointment.patient?.age || null,
-                patientPhone: appointment.patient?.phoneNumber || 'N/A',
-                patientEmail: appointment.patient?.email || 'N/A',
+                patientName: appointment.patientName || 'Unknown Patient',
+                patientAge: null, 
+                patientPhone: 'N/A', 
+                patientEmail: 'N/A', 
                 appointmentDate: new Date(appointment.appointmentTime),
-                duration: appointment.duration || "30 minutes",
+                duration: "60 minutes", 
                 status: appointment.status?.toLowerCase() || 'pending',
-                type: appointment.appointmentType || 'Consultation',
-                reason: appointment.reason || 'Routine visit',
+                type: 'Consultation', 
+                reason: appointment.notes || 'No reason provided', 
                 notes: appointment.notes || '',
-                medicalHistory: appointment.patient?.medicalHistory || [],
-                lastVisit: appointment.patient?.lastVisit ? new Date(appointment.patient.lastVisit) : null,
-                isEmergency: appointment.isEmergency || false,
-                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
+                medicalHistory: [],
+                lastVisit: null,
+                isEmergency: false,
+                consultationFee: '$150'
             }));
             setAppointments(transformedAppointments);
         } catch (error) {

@@ -5,6 +5,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import AppointmentHeader from '../../components/AppointmentHeader';
 import AppointmentTabs from '../../components/AppointmentTabs';
 import AppointmentCard from '../../components/AppointmentCard';
+import CancelAppointmentModal from '../../components/CancelAppointmentModal';
 
 const PatientAppointments = () => {
     const { user } = useAuth();
@@ -14,6 +15,9 @@ const PatientAppointments = () => {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+    const [cancelLoading, setCancelLoading] = useState(false);
 
     const {
         loading,
@@ -38,6 +42,32 @@ const PatientAppointments = () => {
             setSelectedAppointment(null);
             setSelectedDate('');
             setSelectedTime('');
+        }
+    };
+
+    const handleCancelClick = (appointment) => {
+        setAppointmentToCancel(appointment);
+        setShowCancelModal(true);
+    };
+
+    const handleConfirmCancel = async (appointment, reason) => {
+        try {
+            setCancelLoading(true);
+            await handleCancelAppointment(appointment);
+            setShowCancelModal(false);
+            setAppointmentToCancel(null);
+        } catch (error) {
+            console.error('Failed to cancel appointment:', error);
+            // You could add error handling here (e.g., show error message)
+        } finally {
+            setCancelLoading(false);
+        }
+    };
+
+    const handleCloseCancelModal = () => {
+        if (!cancelLoading) {
+            setShowCancelModal(false);
+            setAppointmentToCancel(null);
         }
     };
 
@@ -154,7 +184,7 @@ const PatientAppointments = () => {
                                 <AppointmentCard
                                     key={appointment.id}
                                     appointment={appointment}
-                                    onCancel={handleCancelAppointment}
+                                    onCancel={handleCancelClick}
                                     onReschedule={handleReschedule}
                                     selectedTab={selectedTab}
                                 />
@@ -162,6 +192,15 @@ const PatientAppointments = () => {
                         </div>
                     )}
                 </section>
+
+                {/* Cancel Appointment Confirmation Modal */}
+                <CancelAppointmentModal
+                    isOpen={showCancelModal}
+                    onClose={handleCloseCancelModal}
+                    onConfirm={handleConfirmCancel}
+                    appointment={appointmentToCancel}
+                    loading={cancelLoading}
+                />
             </main>
         </div>
     );

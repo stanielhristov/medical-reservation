@@ -193,10 +193,8 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
-        // Get user ID to avoid potential lazy loading issues
         Long userId = request.getUser().getId();
         
-        // Update doctor entity first
         DoctorEntity doctor = doctorRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Doctor entity not found for user"));
 
@@ -207,18 +205,14 @@ public class AdminServiceImpl implements AdminService {
         doctor.setExperience(request.getExperience());
         doctor.setIsActive(true);
 
-        // Save doctor entity
         doctorRepository.save(doctor);
 
-        // Update request status
         request.setStatus(DoctorRequestStatus.APPROVED);
         request.setReviewedBy(admin);
         request.setReviewedAt(LocalDateTime.now());
 
-        // Save updated request
         DoctorRequestEntity updated = doctorRequestRepository.save(request);
 
-        // Create notification using fresh user reference
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         

@@ -3,8 +3,10 @@ import { useAuth } from '../context/AuthContext';
 import { 
     getUserNotifications, 
     markNotificationAsRead as markAsReadAPI, 
-    markAllNotificationsAsRead as markAllAsReadAPI 
+    markAllNotificationsAsRead as markAllAsReadAPI,
+    deleteNotification as deleteNotificationAPI
 } from '../api/notifications';
+import { refreshNotificationBadge } from '../utils/notificationHelpers';
 
 export const useNotifications = () => {
     const [loading, setLoading] = useState(true);
@@ -21,7 +23,6 @@ export const useNotifications = () => {
         try {
             setLoading(true);
             const response = await getUserNotifications(user.id);
-            // Transform backend data to match frontend structure
             const transformedNotifications = response.map(notification => ({
                 id: notification.id,
                 title: notification.title || notification.subject || 'Notification',
@@ -29,7 +30,7 @@ export const useNotifications = () => {
                 category: mapCategoryFromBackend(notification.type),
                 type: notification.type?.toLowerCase() || 'update',
                 priority: notification.priority?.toLowerCase() || 'medium',
-                isRead: notification.isRead || false,
+                isRead: notification.read === true,
                 timestamp: new Date(notification.createdAt || notification.timestamp),
                 actionRequired: notification.actionRequired || false,
                 actionText: notification.actionText || null,
@@ -77,6 +78,7 @@ export const useNotifications = () => {
                         : notification
                 )
             );
+            refreshNotificationBadge();
         } catch (error) {
             console.error('Error marking notification as read:', error);
             throw error;
@@ -89,18 +91,24 @@ export const useNotifications = () => {
             setNotifications(prev =>
                 prev.map(notification => ({ ...notification, isRead: true }))
             );
+            refreshNotificationBadge();
         } catch (error) {
             console.error('Error marking all notifications as read:', error);
             throw error;
         }
     };
 
-    const deleteNotification = (notificationId) => {
-        // Note: This would need a delete notification API endpoint
-        // For now, we'll just remove it locally
-        setNotifications(prev =>
-            prev.filter(notification => notification.id !== notificationId)
-        );
+    const deleteNotification = async (notificationId) => {
+        try {
+            await deleteNotificationAPI(notificationId);
+            setNotifications(prev =>
+                prev.filter(notification => notification.id !== notificationId)
+            );
+            refreshNotificationBadge();
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+            throw error;
+        }
     };
 
     const getFilteredNotifications = (selectedCategory) => {

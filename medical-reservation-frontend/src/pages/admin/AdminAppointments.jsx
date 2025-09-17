@@ -46,8 +46,8 @@ const AdminAppointments = () => {
                     appointmentTime: appointment.appointmentTime,
                     status: appointment.status,
                     reason: appointment.notes || 'Routine visit',
-                    location: 'Medical Center', // This can be added later if needed
-                    consultationFee: null // This can be added later if need
+                    location: 'Medical Center', 
+                    consultationFee: null 
                 }));
                 setAppointments(transformedAppointments);
             } else {

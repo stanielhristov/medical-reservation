@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getRoleRoutes } from '../utils/roleBasedNavigation';
+import { getUnreadNotificationCount } from '../api/notifications';
 
 const Layout = ({ children }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
     const handleLogout = () => {
         setShowLogoutConfirm(true);
@@ -33,6 +35,43 @@ const Layout = ({ children }) => {
     };
 
     const navigationRoutes = user ? getRoleRoutes(user.role) : [];
+
+    // Fetch unread notification count
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            if (user?.id) {
+                try {
+                    const count = await getUnreadNotificationCount(user.id);
+                    setUnreadNotificationCount(count);
+                } catch (error) {
+                    console.error('Error fetching unread notification count:', error);
+                    setUnreadNotificationCount(0);
+                }
+            }
+        };
+
+        fetchUnreadCount();
+        
+        const interval = setInterval(fetchUnreadCount, 30000);
+        
+        return () => clearInterval(interval);
+    }, [user?.id]);
+
+    useEffect(() => {
+        const handleNotificationUpdate = () => {
+            if (user?.id) {
+                getUnreadNotificationCount(user.id)
+                    .then(count => setUnreadNotificationCount(count))
+                    .catch(error => console.error('Error refreshing notification count:', error));
+            }
+        };
+
+        window.addEventListener('refreshNotificationCount', handleNotificationUpdate);
+        
+        return () => {
+            window.removeEventListener('refreshNotificationCount', handleNotificationUpdate);
+        };
+    }, [user?.id]);
 
     return (
         <div style={{
@@ -223,6 +262,29 @@ const Layout = ({ children }) => {
                                                 return (
                                                     <div style={{...iconStyle, background: '#6b7280', borderRadius: '8px 8px 2px 2px', position: 'relative'}}>
                                                         <div style={{position: 'absolute', top: '8px', left: '6px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        {/* Red notification badge */}
+                                                        {route.name === 'Notifications' && unreadNotificationCount > 0 && (
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                top: '-3px',
+                                                                right: '-3px',
+                                                                minWidth: unreadNotificationCount > 99 ? '18px' : '14px',
+                                                                height: '14px',
+                                                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                                                borderRadius: '7px',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                fontSize: '9px',
+                                                                fontWeight: '700',
+                                                                color: 'white',
+                                                                border: '1px solid white',
+                                                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                                                zIndex: 10
+                                                            }}>
+                                                                {unreadNotificationCount > 99 ? '99+' : unreadNotificationCount}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 );
                                             case 'Users':

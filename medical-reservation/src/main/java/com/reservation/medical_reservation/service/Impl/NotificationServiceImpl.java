@@ -57,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
-        return notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user)
+        return notificationRepository.findByUserAndReadFalseOrderByCreatedAtDesc(user)
                 .stream()
                 .map(notification -> modelMapper.map(notification, NotificationDTO.class))
                 .toList();
@@ -83,7 +83,7 @@ public class NotificationServiceImpl implements NotificationService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
-        List<NotificationEntity> unreadNotifications = notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user);
+        List<NotificationEntity> unreadNotifications = notificationRepository.findByUserAndReadFalseOrderByCreatedAtDesc(user);
         unreadNotifications.forEach(notification -> notification.setRead(true));
         notificationRepository.saveAll(unreadNotifications);
     }
@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
-        return notificationRepository.countByUserAndIsReadFalse(user);
+        return notificationRepository.countByUserAndReadFalse(user);
     }
 
     @Override
@@ -114,5 +114,27 @@ public class NotificationServiceImpl implements NotificationService {
         
         notification.setRead(true);
         notificationRepository.save(notification);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotification(Long notificationId) {
+        NotificationEntity notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+        
+        notificationRepository.delete(notification);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotification(Long notificationId, Long userId) {
+        NotificationEntity notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+        
+        if (!notification.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("Unauthorized access to notification");
+        }
+        
+        notificationRepository.delete(notification);
     }
 }

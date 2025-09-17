@@ -93,6 +93,12 @@ public class PatientController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/notifications/{notificationId}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long notificationId) {
+        notificationService.deleteNotification(notificationId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{patientId}/dashboard")
     public ResponseEntity<Map<String, Object>> getPatientDashboard(@PathVariable Long patientId) {
         Map<String, Object> dashboard = new HashMap<>();

@@ -72,10 +72,9 @@ const AppointmentBookingModal = ({
             const appointmentData = {
                 doctorId: doctor.id,
                 patientId: patientId,
-                startTime: selectedSlot.startTime,
+                appointmentTime: selectedSlot.startTime,
                 endTime: selectedSlot.endTime,
-                reason: reason.trim(),
-                notes: notes.trim() || null
+                notes: reason.trim() + (notes.trim() ? ' | Additional notes: ' + notes.trim() : '')
             };
 
             await createAppointment(appointmentData);
