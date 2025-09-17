@@ -53,12 +53,11 @@ const PatientAppointments = () => {
     const handleConfirmCancel = async (appointment, reason) => {
         try {
             setCancelLoading(true);
-            await handleCancelAppointment(appointment);
+            await handleCancelAppointment(appointment, reason);
             setShowCancelModal(false);
             setAppointmentToCancel(null);
         } catch (error) {
             console.error('Failed to cancel appointment:', error);
-            // You could add error handling here (e.g., show error message)
         } finally {
             setCancelLoading(false);
         }

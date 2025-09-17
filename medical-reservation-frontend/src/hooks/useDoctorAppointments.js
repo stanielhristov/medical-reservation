@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getDoctorAppointments, updateAppointmentStatus as updateAppointmentStatusAPI } from '../api/appointments';
+import { getDoctorAppointments, updateAppointmentStatus as updateAppointmentStatusAPI, cancelAppointment as cancelAppointmentAPI } from '../api/appointments';
 import { getDoctorByUserId } from '../api/doctors';
 
 export const useDoctorAppointments = () => {
@@ -40,13 +40,13 @@ export const useDoctorAppointments = () => {
                 appointmentDate: new Date(appointment.appointmentTime),
                 duration: "60 minutes", 
                 status: appointment.status?.toLowerCase() || 'pending',
-                type: 'Consultation', 
+                type: appointment.serviceName || 'Consultation', 
                 reason: appointment.notes || 'No reason provided', 
                 notes: appointment.notes || '',
                 medicalHistory: [],
                 lastVisit: null,
                 isEmergency: false,
-                consultationFee: '$150'
+                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
             }));
             setAppointments(transformedAppointments);
         } catch (error) {
@@ -111,6 +111,22 @@ export const useDoctorAppointments = () => {
         }
     }, []);
 
+    const cancelAppointment = useCallback(async (appointmentId, reason = null) => {
+        try {
+            await cancelAppointmentAPI(appointmentId, reason);
+            setAppointments(prev => 
+                prev.map(apt => 
+                    apt.id === appointmentId 
+                        ? { ...apt, status: 'cancelled' }
+                        : apt
+                )
+            );
+        } catch (error) {
+            console.error('Error cancelling appointment:', error);
+            throw error;
+        }
+    }, []);
+
     const addNotes = useCallback((appointmentId, newNotes) => {
         setAppointments(prev => 
             prev.map(apt => 
@@ -156,6 +172,7 @@ export const useDoctorAppointments = () => {
         filteredAppointments,
         getStatusColor,
         updateAppointmentStatus,
+        cancelAppointment,
         addNotes,
         formatTime,
         formatDate

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getPatientAppointments, updateAppointmentStatus as updateAppointmentStatusAPI } from '../api/appointments';
+import { getPatientAppointments, updateAppointmentStatus as updateAppointmentStatusAPI, cancelAppointment as cancelAppointmentAPI } from '../api/appointments';
 
 export const useAppointments = () => {
     const [loading, setLoading] = useState(true);
@@ -19,17 +19,17 @@ export const useAppointments = () => {
             const response = await getPatientAppointments(user.id);
             const transformedAppointments = response.map(appointment => ({
                 id: appointment.id,
-                doctorName: appointment.doctor?.fullName || 'Unknown Doctor',
-                specialization: appointment.doctor?.specialization || 'General Practice',
+                doctorName: appointment.doctorName || 'Unknown Doctor',
+                specialization: appointment.doctorSpecialization || 'General Practice',
                 date: new Date(appointment.appointmentTime),
                 duration: appointment.duration || "30 minutes",
                 status: appointment.status?.toLowerCase() || 'pending',
-                type: appointment.appointmentType || 'Consultation',
-                location: appointment.location || 'Medical Center',
+                type: appointment.serviceName || 'Consultation',
+                location: appointment.doctorLocation || 'Medical Center',
                 notes: appointment.notes || '',
                 doctorImage: "👨‍⚕️", 
                 consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150',
-                bookingDate: new Date(appointment.createdAt)
+                bookingDate: new Date(appointment.createdAt || appointment.appointmentTime)
             }));
             setAppointments(transformedAppointments);
         } catch (error) {
@@ -58,9 +58,9 @@ export const useAppointments = () => {
         }
     };
 
-    const handleCancelAppointment = async (appointment) => {
+    const handleCancelAppointment = async (appointment, reason = null) => {
         try {
-            await updateAppointmentStatusAPI(appointment.id, 'CANCELLED');
+            await cancelAppointmentAPI(appointment.id, reason);
             setAppointments(prev => 
                 prev.map(apt => 
                     apt.id === appointment.id 

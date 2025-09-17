@@ -169,7 +169,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         
         AppointmentEntity updated = appointmentRepository.save(appointment);
 
-        // Send appropriate notifications
         if (status == AppointmentStatus.CONFIRMED && oldStatus == AppointmentStatus.PENDING) {
             notificationService.createNotification(
                     appointment.getPatient(),
@@ -290,6 +289,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         dto.setDoctorId(appointment.getDoctor().getId());
         dto.setDoctorName(appointment.getDoctor().getUser().getFullName());
         dto.setDoctorSpecialization(appointment.getDoctor().getSpecialization());
+        dto.setDoctorLocation(appointment.getDoctor().getLocation());
+        dto.setConsultationFee(appointment.getDoctor().getPrice());
         
         if (appointment.getService() != null) {
             dto.setServiceId(appointment.getService().getId());

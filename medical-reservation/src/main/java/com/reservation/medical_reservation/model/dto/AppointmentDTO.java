@@ -24,4 +24,6 @@ public class AppointmentDTO {
     private AppointmentStatus status;
     private String notes;
     private String cancellationReason;
+    private String doctorLocation;
+    private Integer consultationFee;
 }
