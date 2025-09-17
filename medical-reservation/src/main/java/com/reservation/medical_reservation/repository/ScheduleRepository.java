@@ -23,7 +23,7 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> 
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
     
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.doctor = :doctor AND s.available = true AND s.startTime >= :startTime AND s.endTime <= :endTime")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.doctor = :doctor AND s.available = true AND s.startTime >= :startTime AND s.startTime <= :endTime ORDER BY s.startTime")
     List<ScheduleEntity> findAvailableSlots(
             @Param("doctor") DoctorEntity doctor,
             @Param("startTime") LocalDateTime startTime,

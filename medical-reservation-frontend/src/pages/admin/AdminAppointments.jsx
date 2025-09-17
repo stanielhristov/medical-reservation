@@ -31,20 +31,47 @@ const AdminAppointments = () => {
     const loadAppointments = async () => {
         try {
             setLoading(true);
-            // Since there's no specific admin appointments endpoint, we'll use the admin stats
-            // In a real implementation, you'd have an endpoint that returns all appointments
-            const statsResponse = await adminAPI.getStatistics();
-            setStatistics(prev => ({
-                ...prev,
-                total: statsResponse.data.totalAppointments
-            }));
             
-            // For now, we'll show a placeholder since we don't have the actual appointments endpoint
-            // You would implement this endpoint in the backend to return all appointments
-            setAppointments([]);
+            const [appointmentsResponse, statsResponse] = await Promise.allSettled([
+                adminAPI.getAllAppointments(),
+                adminAPI.getStatistics()
+            ]);
+            
+            if (appointmentsResponse.status === 'fulfilled') {
+                const transformedAppointments = appointmentsResponse.value.data.map(appointment => ({
+                    id: appointment.id,
+                    patientName: appointment.patient?.fullName || 'Unknown Patient',
+                    doctorName: appointment.doctor?.fullName || 'Unknown Doctor',
+                    service: appointment.appointmentType || 'Consultation',
+                    appointmentTime: appointment.appointmentTime,
+                    status: appointment.status,
+                    reason: appointment.reason || 'Routine visit',
+                    location: appointment.location || 'Medical Center',
+                    consultationFee: appointment.consultationFee
+                }));
+                setAppointments(transformedAppointments);
+            } else {
+                console.warn('Failed to load appointments:', appointmentsResponse.reason);
+                setAppointments([]);
+                
+                if (appointmentsResponse.reason?.response?.status === 404) {
+                    setError('Admin appointments endpoint not implemented yet. Please check backend implementation.');
+                } else {
+                    setError('Failed to load appointments');
+                }
+            }
+            
+            if (statsResponse.status === 'fulfilled') {
+                setStatistics(prev => ({
+                    ...prev,
+                    total: statsResponse.value.data.totalAppointments
+                }));
+            }
+            
         } catch (err) {
             console.error('Error loading appointments:', err);
             setError('Failed to load appointments');
+            setAppointments([]);
         } finally {
             setLoading(false);
         }
@@ -53,7 +80,6 @@ const AdminAppointments = () => {
     const applyFilters = () => {
         let filtered = [...appointments];
 
-        // Search filter
         if (searchTerm) {
             filtered = filtered.filter(appointment => 
                 appointment.patientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -62,12 +88,10 @@ const AdminAppointments = () => {
             );
         }
 
-        // Status filter
         if (statusFilter !== 'all') {
             filtered = filtered.filter(appointment => appointment.status === statusFilter);
         }
 
-        // Date filter
         if (dateFilter !== 'all') {
             const today = new Date();
             const appointmentDate = new Date();

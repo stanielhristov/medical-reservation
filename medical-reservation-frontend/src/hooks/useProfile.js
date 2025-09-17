@@ -190,21 +190,17 @@ export const useProfile = (user) => {
 
             const updateData = {
                 ...doctorProfileData,
-                // Trim and normalize location field
                 location: doctorProfileData.location && doctorProfileData.location.trim() !== '' ? doctorProfileData.location.trim() : null,
-                // Parse price properly, ensuring empty strings become null
+
                 price: doctorProfileData.price && doctorProfileData.price.trim() !== '' ? parseInt(doctorProfileData.price, 10) : null
             };
 
             const updatedDoctor = await updateDoctor(doctorData.id, updateData);
             
-            // Update the doctor data with the fresh data from the server
             setDoctorData(updatedDoctor);
             
-            // Update the original state to reflect the new baseline
             setOriginalDoctorProfileData(doctorProfileData);
             
-            // Trigger a refresh for other parts of the app that display doctor data
             localStorage.setItem('doctorProfileUpdated', Date.now().toString());
             window.dispatchEvent(new CustomEvent('doctorProfileUpdated', { 
                 detail: { doctorId: doctorData.id, updatedData: updatedDoctor } 

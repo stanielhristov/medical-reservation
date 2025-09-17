@@ -21,4 +21,5 @@ export const adminAPI = {
     getTotalPatients: () => axios.get('/admin/statistics/patients'),
     getTotalDoctors: () => axios.get('/admin/statistics/doctors'),
     getTotalAppointments: () => axios.get('/admin/statistics/appointments'),
+    getAllAppointments: () => axios.get('/admin/appointments'),
 };

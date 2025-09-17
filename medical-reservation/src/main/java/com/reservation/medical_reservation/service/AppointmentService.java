@@ -19,8 +19,7 @@ public interface AppointmentService {
     void cancelAppointment(Long appointmentId, String reason);
     List<AppointmentDTO> getDoctorAppointmentsByDate(Long doctorId, LocalDateTime date);
     boolean isSlotAvailable(Long doctorId, LocalDateTime startTime, LocalDateTime endTime);
-    
-    // Dashboard methods
+
     List<AppointmentDTO> getDoctorAppointmentsForToday(Long doctorId);
     List<AppointmentDTO> getPatientAppointmentsForToday(Long patientId);
     long countDoctorAppointmentsByStatus(Long doctorId, AppointmentStatus status);

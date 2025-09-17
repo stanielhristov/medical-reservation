@@ -1,148 +1,81 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useDoctorPatients } from '../../hooks/useDoctorPatients';
 import PatientFilters from '../../components/PatientFilters';
 import PatientCard from '../../components/PatientCard';
 import PatientDetails from '../../components/PatientDetails';
 import MedicalRecordModal from '../../components/MedicalRecordModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const DoctorPatientsRefactored = () => {
     const { user } = useAuth();
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState('all');
-    const [patients, setPatients] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState(null);
-    const [showAddRecord, setShowAddRecord] = useState(false);
-
-    const filters = [
-        { id: 'all', name: 'All Patients', icon: '👥', color: '#059669' },
-        { id: 'recent', name: 'Recent Visits', icon: '⏰', color: '#3b82f6' },
-        { id: 'chronic', name: 'Chronic Conditions', icon: '🏥', color: '#dc2626' },
-        { id: 'followup', name: 'Follow-up Required', icon: '📋', color: '#f59e0b' }
-    ];
-
-    useEffect(() => {
-        fetchPatients();
-    }, []);
-
-    const fetchPatients = async () => {
-        try {
-            // Mock data implementation
-            setPatients([
-                {
-                    id: 1,
-                    name: "John Smith",
-                    age: 45,
-                    gender: "Male",
-                    phone: "(555) 123-4567",
-                    email: "john.smith@email.com",
-                    address: "123 Main St, City, State 12345",
-                    bloodType: "O+",
-                    allergies: ["Penicillin", "Shellfish"],
-                    conditions: ["Hypertension", "Type 2 Diabetes"],
-                    lastVisit: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                    nextAppointment: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-                    visitCount: 12,
-                    status: "active",
-                    medicalRecords: [
-                        {
-                            id: 1,
-                            date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                            type: "consultation",
-                            title: "Blood Pressure Check",
-                            description: "Routine follow-up for hypertension management",
-                            diagnosis: "Hypertension - well controlled",
-                            treatment: "Continue current medication regimen",
-                            prescription: "Lisinopril 10mg daily"
-                        }
-                    ]
-                }
-            ]);
-        } catch (error) {
-            console.error('Error fetching patients:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getFilteredPatients = () => {
-        let filtered = patients;
-
-        if (searchTerm) {
-            filtered = filtered.filter(patient =>
-                patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                patient.phone.includes(searchTerm)
-            );
-        }
-
-        const now = new Date();
-        switch (selectedFilter) {
-            case 'recent':
-                return filtered.filter(patient => 
-                    new Date(patient.lastVisit) >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-                );
-            case 'chronic':
-                return filtered.filter(patient => patient.status === 'chronic');
-            case 'followup':
-                return filtered.filter(patient => 
-                    new Date(patient.nextAppointment) <= new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
-                );
-            default:
-                return filtered;
-        }
-    };
+    const {
+        loading,
+        error,
+        patients,
+        searchTerm,
+        setSearchTerm,
+        selectedFilter,
+        setSelectedFilter,
+        selectedPatient,
+        setSelectedPatient,
+        showAddRecord,
+        setShowAddRecord,
+        filteredPatients,
+        handleSaveRecord,
+        filters,
+        refetchPatients
+    } = useDoctorPatients();
 
     const getPatientCounts = () => {
         const now = new Date();
         return {
             all: patients.length,
-            recent: patients.filter(p => new Date(p.lastVisit) >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)).length,
-            chronic: patients.filter(p => p.status === 'chronic').length,
-            followup: patients.filter(p => new Date(p.nextAppointment) <= new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)).length
+            recent: patients.filter(p => p.lastVisit && (now - p.lastVisit) <= 30 * 24 * 60 * 60 * 1000).length,
+            chronic: patients.filter(p => p.conditions && p.conditions.length > 0).length,
+            followup: patients.filter(p => p.nextAppointment && p.nextAppointment > now).length
         };
     };
 
-    const handleSaveRecord = (recordData) => {
-        setPatients(prevPatients => 
-            prevPatients.map(patient => 
-                patient.id === selectedPatient.id
-                    ? {
-                        ...patient,
-                        medicalRecords: [...patient.medicalRecords, { ...recordData, id: Date.now() }]
-                    }
-                    : patient
-            )
-        );
-        setShowAddRecord(false);
-    };
-
     if (loading) {
+        return <LoadingSpinner message="Loading patients..." />;
+    }
+
+    if (error) {
         return (
             <div style={{
-                minHeight: '100vh',
-                background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)',
                 display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 justifyContent: 'center',
-                alignItems: 'center'
+                minHeight: '50vh',
+                padding: '2rem',
+                textAlign: 'center'
             }}>
                 <div style={{
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: '24px',
-                    padding: '3rem',
-                    textAlign: 'center'
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '2px solid rgba(239, 68, 68, 0.2)',
+                    borderRadius: '16px',
+                    padding: '2rem',
+                    maxWidth: '500px'
                 }}>
-                    <div style={{
-                        width: '60px',
-                        height: '60px',
-                        border: '4px solid rgba(5, 150, 105, 0.2)',
-                        borderTop: '4px solid #059669',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite',
-                        margin: '0 auto 1.5rem'
-                    }} />
-                    <p>Loading patients...</p>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>Unable to Load Patients</h3>
+                    <p style={{ color: '#6b7280', margin: '0 0 1.5rem' }}>{error}</p>
+                    <button
+                        onClick={refetchPatients}
+                        style={{
+                            padding: '0.75rem 1.5rem',
+                            background: '#dc2626',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontWeight: '500'
+                        }}
+                    >
+                        Try Again
+                    </button>
                 </div>
             </div>
         );
@@ -195,7 +128,7 @@ const DoctorPatientsRefactored = () => {
                     alignItems: 'flex-start'
                 }}>
                     <div>
-                        {getFilteredPatients().map(patient => (
+                        {filteredPatients.map(patient => (
                             <PatientCard
                                 key={patient.id}
                                 patient={patient}

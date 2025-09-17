@@ -1,89 +1,41 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getPatientAppointments, updateAppointmentStatus as updateAppointmentStatusAPI } from '../api/appointments';
 
 export const useAppointments = () => {
     const [loading, setLoading] = useState(true);
     const [appointments, setAppointments] = useState([]);
+    const { user } = useAuth();
 
     useEffect(() => {
-        fetchAppointments();
-    }, []);
+        if (user?.id) {
+            fetchAppointments();
+        }
+    }, [user?.id]);
 
     const fetchAppointments = async () => {
         try {
-            setAppointments([
-                {
-                    id: 1,
-                    doctorName: "Dr. Sarah Johnson",
-                    specialization: "Cardiology",
-                    date: new Date(2024, 2, 25, 14, 30),
-                    duration: "30 minutes",
-                    status: "confirmed",
-                    type: "Follow-up",
-                    location: "Medical Center East, Room 205",
-                    notes: "Follow-up for blood pressure medication adjustment",
-                    doctorImage: "👩‍⚕️",
-                    consultationFee: "$150",
-                    bookingDate: new Date(2024, 1, 20)
-                },
-                {
-                    id: 2,
-                    doctorName: "Dr. Michael Chen",
-                    specialization: "Dermatology",
-                    date: new Date(2024, 3, 2, 10, 0),
-                    duration: "45 minutes",
-                    status: "pending",
-                    type: "Consultation",
-                    location: "Skin Care Clinic, Room 102",
-                    notes: "Skin examination and mole check",
-                    doctorImage: "👨‍⚕️",
-                    consultationFee: "$120",
-                    bookingDate: new Date(2024, 2, 15)
-                },
-                {
-                    id: 3,
-                    doctorName: "Dr. Emily Rodriguez",
-                    specialization: "General Practice",
-                    date: new Date(2024, 1, 28, 16, 0),
-                    duration: "30 minutes",
-                    status: "completed",
-                    type: "Annual Checkup",
-                    location: "Community Health Center, Room 301",
-                    notes: "Annual physical examination completed successfully",
-                    doctorImage: "👩‍⚕️",
-                    consultationFee: "$100",
-                    bookingDate: new Date(2024, 0, 25)
-                },
-                {
-                    id: 4,
-                    doctorName: "Dr. James Wilson",
-                    specialization: "Orthopedics",
-                    date: new Date(2024, 1, 15, 9, 30),
-                    duration: "60 minutes",
-                    status: "completed",
-                    type: "Surgery Follow-up",
-                    location: "Sports Medicine Institute, Room 401",
-                    notes: "Post-surgery knee rehabilitation assessment",
-                    doctorImage: "👨‍⚕️",
-                    consultationFee: "$200",
-                    bookingDate: new Date(2024, 0, 10)
-                },
-                {
-                    id: 5,
-                    doctorName: "Dr. Lisa Martinez",
-                    specialization: "Pediatrics",
-                    date: new Date(2024, 1, 10, 11, 0),
-                    duration: "30 minutes",
-                    status: "cancelled",
-                    type: "Vaccination",
-                    location: "Children's Medical Center, Room 201",
-                    notes: "Cancelled due to patient illness",
-                    doctorImage: "👩‍⚕️",
-                    consultationFee: "$110",
-                    bookingDate: new Date(2024, 0, 5)
-                }
-            ]);
+            setLoading(true);
+            const response = await getPatientAppointments(user.id);
+            // Transform backend data to match frontend structure
+            const transformedAppointments = response.map(appointment => ({
+                id: appointment.id,
+                doctorName: appointment.doctor?.fullName || 'Unknown Doctor',
+                specialization: appointment.doctor?.specialization || 'General Practice',
+                date: new Date(appointment.appointmentTime),
+                duration: appointment.duration || "30 minutes",
+                status: appointment.status?.toLowerCase() || 'pending',
+                type: appointment.appointmentType || 'Consultation',
+                location: appointment.location || 'Medical Center',
+                notes: appointment.notes || '',
+                doctorImage: "👨‍⚕️", // Default image
+                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150',
+                bookingDate: new Date(appointment.createdAt)
+            }));
+            setAppointments(transformedAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
+            setAppointments([]); // Set empty array on error
         } finally {
             setLoading(false);
         }
@@ -107,24 +59,37 @@ export const useAppointments = () => {
         }
     };
 
-    const handleCancelAppointment = (appointment) => {
-        setAppointments(prev => 
-            prev.map(apt => 
-                apt.id === appointment.id 
-                    ? { ...apt, status: 'cancelled' } 
-                    : apt
-            )
-        );
+    const handleCancelAppointment = async (appointment) => {
+        try {
+            await updateAppointmentStatusAPI(appointment.id, 'CANCELLED');
+            setAppointments(prev => 
+                prev.map(apt => 
+                    apt.id === appointment.id 
+                        ? { ...apt, status: 'cancelled' } 
+                        : apt
+                )
+            );
+        } catch (error) {
+            console.error('Error cancelling appointment:', error);
+            throw error;
+        }
     };
 
-    const handleRescheduleAppointment = (appointmentId, newDate) => {
-        setAppointments(prev => 
-            prev.map(apt => 
-                apt.id === appointmentId 
-                    ? { ...apt, date: newDate, status: 'confirmed' } 
-                    : apt
-            )
-        );
+    const handleRescheduleAppointment = async (appointmentId, newDate) => {
+        try {
+        
+            await updateAppointmentStatusAPI(appointmentId, 'SCHEDULED');
+            setAppointments(prev => 
+                prev.map(apt => 
+                    apt.id === appointmentId 
+                        ? { ...apt, date: newDate, status: 'confirmed' } 
+                        : apt
+                )
+            );
+        } catch (error) {
+            console.error('Error rescheduling appointment:', error);
+            throw error;
+        }
     };
 
     return {

@@ -75,11 +75,9 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setEducation(doctorDTO.getEducation());
         doctor.setExperience(doctorDTO.getExperience());
         
-        // Handle location: convert empty/blank strings to null for consistency
         String location = doctorDTO.getLocation();
         doctor.setLocation(location != null && !location.trim().isEmpty() ? location.trim() : null);
         
-        // Handle price: ensure null is set when not provided
         doctor.setPrice(doctorDTO.getPrice());
 
         DoctorEntity updated = doctorRepository.save(doctor);

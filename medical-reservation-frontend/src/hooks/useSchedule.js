@@ -24,29 +24,7 @@ export const useSchedule = (doctorId) => {
         } catch (err) {
             console.error('Error fetching schedule:', err);
             setError(err.message);
-            setSchedules([
-                {
-                    id: 1,
-                    doctorId: 1,
-                    startTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-                    endTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
-                    available: true
-                },
-                {
-                    id: 2,
-                    doctorId: 1,
-                    startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-                    endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
-                    available: true
-                },
-                {
-                    id: 3,
-                    doctorId: 1,
-                    startTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
-                    endTime: new Date(Date.now() + 49 * 60 * 60 * 1000).toISOString(),
-                    available: false
-                }
-            ]);
+            setSchedules([]);
         } finally {
             setLoading(false);
         }

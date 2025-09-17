@@ -53,7 +53,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorEntity doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
-        // Check if slot is available
         if (!isSlotAvailable(appointmentDTO.getDoctorId(), 
                            appointmentDTO.getAppointmentTime(), 
                            appointmentDTO.getEndTime())) {
@@ -76,7 +75,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentEntity saved = appointmentRepository.save(appointment);
 
-        // Send notifications
         notificationService.createNotification(
                 patient,
                 "Appointment Requested",
@@ -196,22 +194,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDTO rescheduleAppointment(Long appointmentId, LocalDateTime newDateTime) {
         AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
-        
-        // Calculate new end time (assuming 1 hour duration for now)
+
         LocalDateTime newEndTime = newDateTime.plusHours(1);
-        
-        // Check if new slot is available
+
         if (!isSlotAvailable(appointment.getDoctor().getId(), newDateTime, newEndTime)) {
             throw new IllegalArgumentException("New time slot is not available");
         }
         
         appointment.setAppointmentTime(newDateTime);
         appointment.setEndTime(newEndTime);
-        appointment.setStatus(AppointmentStatus.PENDING); // Reset to pending for re-confirmation
+        appointment.setStatus(AppointmentStatus.PENDING);
         
         AppointmentEntity updated = appointmentRepository.save(appointment);
 
-        // Send notification
         notificationService.createNotification(
                 appointment.getPatient(),
                 "Appointment Rescheduled",

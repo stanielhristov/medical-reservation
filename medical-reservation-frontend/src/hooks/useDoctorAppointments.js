@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getDoctorAppointments, updateAppointmentStatus as updateAppointmentStatusAPI } from '../api/appointments';
 
 export const useDoctorAppointments = () => {
     const [loading, setLoading] = useState(true);
@@ -7,102 +9,40 @@ export const useDoctorAppointments = () => {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [showNotes, setShowNotes] = useState(false);
     const [notes, setNotes] = useState('');
+    const { user } = useAuth();
 
     useEffect(() => {
-        fetchAppointments();
-    }, []);
+        if (user?.id && user?.role === 'DOCTOR') {
+            fetchAppointments();
+        }
+    }, [user?.id, user?.role]);
 
     const fetchAppointments = async () => {
         try {
-            setAppointments([
-                {
-                    id: 1,
-                    patientName: "John Smith",
-                    patientAge: 45,
-                    patientPhone: "(555) 123-4567",
-                    patientEmail: "john.smith@email.com",
-                    appointmentDate: new Date(Date.now() + 2 * 60 * 60 * 1000),
-                    duration: "30 minutes",
-                    status: "confirmed",
-                    type: "Follow-up",
-                    reason: "Blood pressure medication review",
-                    notes: "Patient reports feeling better since starting new medication. Check BP levels.",
-                    medicalHistory: ["Hypertension", "Type 2 Diabetes"],
-                    lastVisit: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                    isEmergency: false,
-                    consultationFee: "$150"
-                },
-                {
-                    id: 2,
-                    patientName: "Sarah Johnson",
-                    patientAge: 32,
-                    patientPhone: "(555) 234-5678",
-                    patientEmail: "sarah.johnson@email.com",
-                    appointmentDate: new Date(Date.now() + 4 * 60 * 60 * 1000),
-                    duration: "45 minutes",
-                    status: "confirmed",
-                    type: "Consultation",
-                    reason: "Chest pain and shortness of breath",
-                    notes: "Patient experienced chest pain during exercise. Requesting cardiac evaluation.",
-                    medicalHistory: ["No significant history"],
-                    lastVisit: null,
-                    isEmergency: true,
-                    consultationFee: "$200"
-                },
-                {
-                    id: 3,
-                    patientName: "Michael Davis",
-                    patientAge: 28,
-                    patientPhone: "(555) 345-6789",
-                    patientEmail: "michael.davis@email.com",
-                    appointmentDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                    duration: "30 minutes",
-                    status: "pending",
-                    type: "Check-up",
-                    reason: "Annual physical examination",
-                    notes: "Healthy young adult requesting routine checkup.",
-                    medicalHistory: ["Allergies to penicillin"],
-                    lastVisit: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
-                    isEmergency: false,
-                    consultationFee: "$120"
-                },
-                {
-                    id: 4,
-                    patientName: "Emily Wilson",
-                    patientAge: 55,
-                    patientPhone: "(555) 456-7890",
-                    patientEmail: "emily.wilson@email.com",
-                    appointmentDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                    duration: "45 minutes",
-                    status: "completed",
-                    type: "Treatment",
-                    reason: "Cardiac catheterization follow-up",
-                    notes: "Post-procedure recovery excellent. Patient cleared for normal activities.",
-                    medicalHistory: ["Coronary Artery Disease", "Hypertension"],
-                    lastVisit: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                    isEmergency: false,
-                    consultationFee: "$250"
-                },
-                {
-                    id: 5,
-                    patientName: "Robert Brown",
-                    patientAge: 67,
-                    patientPhone: "(555) 567-8901",
-                    patientEmail: "robert.brown@email.com",
-                    appointmentDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
-                    duration: "60 minutes",
-                    status: "pending",
-                    type: "Surgery Consultation",
-                    reason: "Pre-operative cardiac assessment",
-                    notes: "Patient scheduled for bypass surgery. Comprehensive cardiac evaluation needed.",
-                    medicalHistory: ["Coronary Artery Disease", "Previous MI", "Diabetes"],
-                    lastVisit: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-                    isEmergency: false,
-                    consultationFee: "$300"
-                }
-            ]);
+            setLoading(true);
+            const response = await getDoctorAppointments(user.id);
+            // Transform backend data to match frontend structure
+            const transformedAppointments = response.map(appointment => ({
+                id: appointment.id,
+                patientName: appointment.patient?.fullName || 'Unknown Patient',
+                patientAge: appointment.patient?.age || null,
+                patientPhone: appointment.patient?.phoneNumber || 'N/A',
+                patientEmail: appointment.patient?.email || 'N/A',
+                appointmentDate: new Date(appointment.appointmentTime),
+                duration: appointment.duration || "30 minutes",
+                status: appointment.status?.toLowerCase() || 'pending',
+                type: appointment.appointmentType || 'Consultation',
+                reason: appointment.reason || 'Routine visit',
+                notes: appointment.notes || '',
+                medicalHistory: appointment.patient?.medicalHistory || [],
+                lastVisit: appointment.patient?.lastVisit ? new Date(appointment.patient.lastVisit) : null,
+                isEmergency: appointment.isEmergency || false,
+                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
+            }));
+            setAppointments(transformedAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
+            setAppointments([]); // Set empty array on error
         } finally {
             setLoading(false);
         }
@@ -146,14 +86,20 @@ export const useDoctorAppointments = () => {
         }
     }, []);
 
-    const updateAppointmentStatus = useCallback((appointmentId, newStatus) => {
-        setAppointments(prev => 
-            prev.map(apt => 
-                apt.id === appointmentId 
-                    ? { ...apt, status: newStatus }
-                    : apt
-            )
-        );
+    const updateAppointmentStatus = useCallback(async (appointmentId, newStatus) => {
+        try {
+            await updateAppointmentStatusAPI(appointmentId, newStatus.toUpperCase());
+            setAppointments(prev => 
+                prev.map(apt => 
+                    apt.id === appointmentId 
+                        ? { ...apt, status: newStatus.toLowerCase() }
+                        : apt
+                )
+            );
+        } catch (error) {
+            console.error('Error updating appointment status:', error);
+            throw error;
+        }
     }, []);
 
     const addNotes = useCallback((appointmentId, newNotes) => {

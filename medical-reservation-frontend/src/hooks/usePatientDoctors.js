@@ -18,6 +18,8 @@ export const usePatientDoctors = (user) => {
     const [doctorRatingStats, setDoctorRatingStats] = useState({});
     const [showCommentsModal, setShowCommentsModal] = useState(false);
     const [selectedDoctorForComments, setSelectedDoctorForComments] = useState(null);
+    const [message, setMessage] = useState({ text: '', type: '' });
+    const [bookingLoading, setBookingLoading] = useState(false);
 
     const fetchDoctors = useCallback(async () => {
         try {
@@ -183,6 +185,27 @@ export const usePatientDoctors = (user) => {
         setShowCommentsModal(true);
     }, []);
 
+    const handleBookingSuccess = useCallback((message) => {
+        setMessage({ text: message, type: 'success' });
+        setShowBookingModal(false);
+        setBookingLoading(false);
+        // Refresh doctors to get updated data
+        fetchDoctors();
+        // Clear message after 5 seconds
+        setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+    }, [fetchDoctors]);
+
+    const handleBookingError = useCallback((error) => {
+        setMessage({ text: error, type: 'error' });
+        setBookingLoading(false);
+        // Clear message after 5 seconds
+        setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+    }, []);
+
+    const clearMessage = useCallback(() => {
+        setMessage({ text: '', type: '' });
+    }, []);
+
     return {
         loading,
         error,
@@ -211,6 +234,11 @@ export const usePatientDoctors = (user) => {
         handleRateDoctor,
         submitRating,
         handleViewComments,
+        handleBookingSuccess,
+        handleBookingError,
+        clearMessage,
+        message,
+        bookingLoading,
         refreshDoctors: fetchDoctors
     };
 };
