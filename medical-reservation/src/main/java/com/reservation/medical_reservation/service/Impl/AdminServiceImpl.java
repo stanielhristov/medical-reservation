@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.service.Impl;
 
+import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorRequestDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.*;
@@ -268,6 +269,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<AppointmentDTO> getAllAppointments() {
+        return appointmentRepository.findAllByOrderByAppointmentTimeDesc()
+                .stream()
+                .map(this::convertAppointmentToDTO)
+                .toList();
+    }
+
+    @Override
     public long getTotalUsers() {
         return userRepository.count();
     }
@@ -307,6 +316,22 @@ public class AdminServiceImpl implements AdminService {
 
         dto.setRole(user.getRole().getName().toString());
         dto.setIsActive(user.getIsActive());
+        
+        return dto;
+    }
+
+    private AppointmentDTO convertAppointmentToDTO(AppointmentEntity appointment) {
+        AppointmentDTO dto = modelMapper.map(appointment, AppointmentDTO.class);
+        dto.setPatientId(appointment.getPatient().getId());
+        dto.setPatientName(appointment.getPatient().getFullName());
+        dto.setDoctorId(appointment.getDoctor().getId());
+        dto.setDoctorName(appointment.getDoctor().getUser().getFullName());
+        dto.setDoctorSpecialization(appointment.getDoctor().getSpecialization());
+        
+        if (appointment.getService() != null) {
+            dto.setServiceId(appointment.getService().getId());
+            dto.setServiceName(appointment.getService().getName());
+        }
         
         return dto;
     }

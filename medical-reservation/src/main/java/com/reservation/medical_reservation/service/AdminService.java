@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.service;
 
+import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorRequestDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 
@@ -19,6 +20,9 @@ public interface AdminService {
     List<DoctorRequestDTO> getPendingDoctorRequests();
     DoctorRequestDTO approveDoctorRequest(Long requestId, Long adminId);
     DoctorRequestDTO rejectDoctorRequest(Long requestId, Long adminId, String reason);
+    
+    // Appointment Management
+    List<AppointmentDTO> getAllAppointments();
     
     // Statistics
     long getTotalUsers();

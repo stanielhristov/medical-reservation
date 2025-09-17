@@ -189,16 +189,13 @@ export const usePatientDoctors = (user) => {
         setMessage({ text: message, type: 'success' });
         setShowBookingModal(false);
         setBookingLoading(false);
-        // Refresh doctors to get updated data
         fetchDoctors();
-        // Clear message after 5 seconds
         setTimeout(() => setMessage({ text: '', type: '' }), 5000);
     }, [fetchDoctors]);
 
     const handleBookingError = useCallback((error) => {
         setMessage({ text: error, type: 'error' });
         setBookingLoading(false);
-        // Clear message after 5 seconds
         setTimeout(() => setMessage({ text: '', type: '' }), 5000);
     }, []);
 

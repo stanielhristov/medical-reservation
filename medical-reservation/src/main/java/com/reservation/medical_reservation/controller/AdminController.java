@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.controller;
 
+import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorRequestDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.service.AdminService;
@@ -87,6 +88,12 @@ public class AdminController {
             @RequestParam String reason) {
         DoctorRequestDTO updated = adminService.rejectDoctorRequest(requestId, adminId, reason);
         return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/appointments")
+    public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
+        List<AppointmentDTO> appointments = adminService.getAllAppointments();
+        return ResponseEntity.ok(appointments);
     }
 
     @GetMapping("/statistics")

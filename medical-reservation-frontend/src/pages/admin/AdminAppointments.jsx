@@ -40,14 +40,14 @@ const AdminAppointments = () => {
             if (appointmentsResponse.status === 'fulfilled') {
                 const transformedAppointments = appointmentsResponse.value.data.map(appointment => ({
                     id: appointment.id,
-                    patientName: appointment.patient?.fullName || 'Unknown Patient',
-                    doctorName: appointment.doctor?.fullName || 'Unknown Doctor',
-                    service: appointment.appointmentType || 'Consultation',
+                    patientName: appointment.patientName || 'Unknown Patient',
+                    doctorName: appointment.doctorName || 'Unknown Doctor',
+                    service: appointment.serviceName || 'Consultation',
                     appointmentTime: appointment.appointmentTime,
                     status: appointment.status,
-                    reason: appointment.reason || 'Routine visit',
-                    location: appointment.location || 'Medical Center',
-                    consultationFee: appointment.consultationFee
+                    reason: appointment.notes || 'Routine visit',
+                    location: 'Medical Center', // This can be added later if needed
+                    consultationFee: null // This can be added later if need
                 }));
                 setAppointments(transformedAppointments);
             } else {
@@ -720,56 +720,162 @@ const AdminAppointments = () => {
                         All Appointments
                     </h3>
                     
-                    {/* Implementation Notice */}
-                    <div style={{
-                        background: 'rgba(168, 85, 247, 0.05)',
-                        border: '1px solid rgba(168, 85, 247, 0.2)',
-                        borderRadius: '16px',
-                        padding: '2rem',
-                        textAlign: 'center'
-                    }}>
+                    {/* Appointments Table */}
+                    {filteredAppointments.length === 0 ? (
                         <div style={{
-                            width: '60px',
-                            height: '60px',
-                            background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            margin: '0 auto 1.5rem',
-                            boxShadow: '0 8px 24px rgba(168, 85, 247, 0.3)'
+                            background: 'rgba(107, 114, 128, 0.05)',
+                            border: '1px solid rgba(107, 114, 128, 0.2)',
+                            borderRadius: '16px',
+                            padding: '2rem',
+                            textAlign: 'center'
                         }}>
-                            <span style={{ fontSize: '1.5rem', color: 'white' }}>⚙️</span>
+                            <div style={{
+                                width: '60px',
+                                height: '60px',
+                                background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 1.5rem',
+                                boxShadow: '0 8px 24px rgba(107, 114, 128, 0.3)'
+                            }}>
+                                <span style={{ fontSize: '1.5rem', color: 'white' }}>📅</span>
+                            </div>
+                            <h4 style={{
+                                fontSize: '1.5rem',
+                                fontWeight: '700',
+                                color: '#374151',
+                                margin: '0 0 1rem'
+                            }}>No Appointments Found</h4>
+                            <p style={{
+                                color: '#6b7280',
+                                margin: 0,
+                                fontSize: '1rem',
+                                lineHeight: '1.6'
+                            }}>
+                                No appointments match your current filters. Try adjusting the search criteria.
+                            </p>
                         </div>
-                        <h4 style={{
-                            fontSize: '1.5rem',
-                            fontWeight: '700',
-                            color: '#6b21a8',
-                            margin: '0 0 1rem'
-                        }}>Implementation Note</h4>
-                        <p style={{
-                            color: '#7c2d12',
-                            margin: '0 0 1.5rem',
-                            fontSize: '1rem',
-                            lineHeight: '1.6'
-                        }}>
-                            This page requires a backend endpoint to fetch all appointments. Currently showing appointment statistics only.
-                        </p>
-                        <p style={{
-                            color: '#92400e',
-                            fontSize: '0.9rem',
-                            margin: 0,
-                            lineHeight: '1.5'
-                        }}>
-                            To complete this feature, add an endpoint like <code style={{
-                                background: 'rgba(168, 85, 247, 0.1)',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '4px',
-                                fontFamily: 'monospace',
-                                color: '#6b21a8'
-                            }}>/api/admin/appointments</code> that returns all appointments with patient and doctor information.
-                        </p>
-                    </div>
+                    ) : (
+                        <div style={{ overflowX: 'auto' }}>
+                            <table style={{
+                                width: '100%',
+                                borderCollapse: 'collapse',
+                                backgroundColor: 'transparent'
+                            }}>
+                                <thead>
+                                    <tr style={{ borderBottom: '2px solid rgba(34, 197, 94, 0.1)' }}>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'left',
+                                            fontWeight: '700',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                        }}>Patient</th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'left',
+                                            fontWeight: '700',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                        }}>Doctor</th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'left',
+                                            fontWeight: '700',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                        }}>Service</th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'left',
+                                            fontWeight: '700',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                        }}>Date & Time</th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            fontWeight: '700',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                        }}>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredAppointments.map((appointment) => (
+                                        <tr key={appointment.id} style={{
+                                            borderBottom: '1px solid rgba(34, 197, 94, 0.1)',
+                                            transition: 'background-color 0.2s ease'
+                                        }}
+                                        onMouseEnter={e => e.target.closest('tr').style.backgroundColor = 'rgba(34, 197, 94, 0.02)'}
+                                        onMouseLeave={e => e.target.closest('tr').style.backgroundColor = 'transparent'}>
+                                            <td style={{
+                                                padding: '1rem',
+                                                borderBottom: '1px solid rgba(34, 197, 94, 0.1)'
+                                            }}>
+                                                <div style={{
+                                                    fontWeight: '600',
+                                                    color: '#374151',
+                                                    marginBottom: '0.25rem'
+                                                }}>{appointment.patientName}</div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                borderBottom: '1px solid rgba(34, 197, 94, 0.1)'
+                                            }}>
+                                                <div style={{
+                                                    fontWeight: '600',
+                                                    color: '#374151',
+                                                    marginBottom: '0.25rem'
+                                                }}>{appointment.doctorName}</div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                borderBottom: '1px solid rgba(34, 197, 94, 0.1)'
+                                            }}>
+                                                <div style={{
+                                                    fontWeight: '500',
+                                                    color: '#6b7280'
+                                                }}>{appointment.service}</div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                borderBottom: '1px solid rgba(34, 197, 94, 0.1)'
+                                            }}>
+                                                <div style={{
+                                                    fontWeight: '500',
+                                                    color: '#374151',
+                                                    fontSize: '0.9rem'
+                                                }}>{formatDate(appointment.appointmentTime)}</div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'center',
+                                                borderBottom: '1px solid rgba(34, 197, 94, 0.1)'
+                                            }}>
+                                                <span style={{
+                                                    padding: '0.5rem 0.75rem',
+                                                    borderRadius: '8px',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: '600',
+                                                    textTransform: 'capitalize'
+                                                }} className={getStatusColor(appointment.status)}>
+                                                    {appointment.status?.toLowerCase()}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </section>
             </main>
 

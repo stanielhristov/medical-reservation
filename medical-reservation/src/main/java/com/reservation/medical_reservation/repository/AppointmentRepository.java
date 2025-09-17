@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity, Long> {
+    List<AppointmentEntity> findAllByOrderByAppointmentTimeDesc();
     List<AppointmentEntity> findByPatientOrderByAppointmentTimeDesc(UserEntity patient);
     List<AppointmentEntity> findByDoctorOrderByAppointmentTimeDesc(DoctorEntity doctor);
     List<AppointmentEntity> findByPatientAndStatusOrderByAppointmentTimeDesc(UserEntity patient, AppointmentStatus status);

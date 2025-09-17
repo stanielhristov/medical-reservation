@@ -17,7 +17,6 @@ export const useAppointments = () => {
         try {
             setLoading(true);
             const response = await getPatientAppointments(user.id);
-            // Transform backend data to match frontend structure
             const transformedAppointments = response.map(appointment => ({
                 id: appointment.id,
                 doctorName: appointment.doctor?.fullName || 'Unknown Doctor',
@@ -28,14 +27,14 @@ export const useAppointments = () => {
                 type: appointment.appointmentType || 'Consultation',
                 location: appointment.location || 'Medical Center',
                 notes: appointment.notes || '',
-                doctorImage: "👨‍⚕️", // Default image
+                doctorImage: "👨‍⚕️", 
                 consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150',
                 bookingDate: new Date(appointment.createdAt)
             }));
             setAppointments(transformedAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
-            setAppointments([]); // Set empty array on error
+            setAppointments([]); 
         } finally {
             setLoading(false);
         }
