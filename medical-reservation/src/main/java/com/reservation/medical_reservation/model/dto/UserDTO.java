@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.model.dto;
 
 import com.reservation.medical_reservation.model.enums.BloodType;
+import com.reservation.medical_reservation.model.enums.GenderEnum;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,4 +26,5 @@ public class UserDTO {
     private String role;
     private String phone;
     private BloodType bloodType; 
+    private GenderEnum gender;
 }

@@ -11,7 +11,7 @@ import DateOfBirthInput from './DateOfBirthInput';
 import PasswordInput from './PasswordInput';
 import DoctorFields from './DoctorFields';
 
-export default function RegisterFormRefactored() {
+export default function RegisterForm() {
     const navigate = useNavigate();
     const { validateDateOfBirth, validatePassword } = useValidation();
 
@@ -23,6 +23,7 @@ export default function RegisterFormRefactored() {
         confirmPassword: '',
         role: 'USER',
         dateOfBirth: '',
+        gender: '',
         emergencyPhone: ''
     });
 
@@ -134,6 +135,7 @@ export default function RegisterFormRefactored() {
                 password: formData.password,
                 role: formData.role,
                 dateOfBirth: formData.dateOfBirth,
+                gender: formData.gender,
                 address: formattedAddress,
             };
 
@@ -376,6 +378,41 @@ export default function RegisterFormRefactored() {
                         disabled={loading}
                         error={dateError}
                     />
+
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{
+                            display: 'block',
+                            marginBottom: '0.5rem',
+                            fontWeight: '500',
+                            color: '#374151',
+                            fontSize: '0.9rem'
+                        }}>
+                            Gender
+                        </label>
+                        <select
+                            value={formData.gender}
+                            onChange={e => handleFormChange('gender', e.target.value)}
+                            required
+                            disabled={loading}
+                            style={{
+                                width: '100%',
+                                padding: '0.875rem 1rem',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '12px',
+                                fontSize: '0.95rem',
+                                background: '#f9fafb',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                                color: '#374151',
+                                transition: 'all 0.2s ease',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value="">Select your gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                    </div>
 
                     <AddressInput
                         street={addressData.street}

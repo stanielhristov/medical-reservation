@@ -32,12 +32,14 @@ export const useProfile = (user) => {
 
     const [personalData, setPersonalData] = useState({
         emergencyContact: '',
-        bloodType: ''
+        bloodType: '',
+        gender: ''
     });
 
     const [originalPersonalData, setOriginalPersonalData] = useState({
         emergencyContact: '',
-        bloodType: ''
+        bloodType: '',
+        gender: ''
     });
 
     const [addressData, setAddressData] = useState({
@@ -94,7 +96,8 @@ export const useProfile = (user) => {
 
     const hasPersonalDataChanged = useMemo(() => {
         return personalData.emergencyContact !== originalPersonalData.emergencyContact ||
-               personalData.bloodType !== originalPersonalData.bloodType;
+               personalData.bloodType !== originalPersonalData.bloodType ||
+               personalData.gender !== originalPersonalData.gender;
     }, [personalData, originalPersonalData]);
 
     const hasDoctorDataChanged = useMemo(() => {
@@ -135,7 +138,8 @@ export const useProfile = (user) => {
             
             const personalDataObj = {
                 emergencyContact: profile.emergencyContact || '',
-                bloodType: profile.bloodType || ''
+                bloodType: profile.bloodType || '',
+                gender: profile.gender || ''
             };
             
             setProfileData(profileDataObj);
@@ -244,9 +248,17 @@ export const useProfile = (user) => {
         try {
             const updateData = {
                 ...profileData,
-                emergencyContact: personalData.emergencyContact,
-                bloodType: personalData.bloodType
+                emergencyContact: personalData.emergencyContact?.trim() || null,
+                bloodType: personalData.bloodType?.trim() || null,
+                gender: personalData.gender?.trim() || null
             };
+
+            // Remove any fields with null values to avoid sending them
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] === null || updateData[key] === '') {
+                    delete updateData[key];
+                }
+            });
 
             await updateUserProfile(user.id, updateData);
             
@@ -255,8 +267,9 @@ export const useProfile = (user) => {
             // Also update the profile data to keep it in sync
             const updatedProfileData = {
                 ...profileData,
-                emergencyContact: personalData.emergencyContact,
-                bloodType: personalData.bloodType
+                emergencyContact: personalData.emergencyContact || null,
+                bloodType: personalData.bloodType || null,
+                gender: personalData.gender || null
             };
             setProfileData(updatedProfileData);
             setOriginalProfileData(updatedProfileData);

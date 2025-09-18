@@ -1,5 +1,6 @@
 package com.reservation.medical_reservation.model.dto;
 
+import com.reservation.medical_reservation.model.enums.GenderEnum;
 import lombok.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
@@ -24,6 +25,9 @@ public class RegisterDTO {
     
     @NotBlank(message = "Role is required")
     private String role;
+
+    @NotNull(message = "Gender is required")
+    private GenderEnum gender;
 
     private LocalDate dateOfBirth;
     private String address;

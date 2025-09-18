@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.model.entity;
 
 import com.reservation.medical_reservation.model.enums.BloodType;
+import com.reservation.medical_reservation.model.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.EqualsAndHashCode;
@@ -30,6 +31,10 @@ public class UserEntity extends BaseEntity {
     
     @Column
     private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private GenderEnum gender;
     
     @Column
     private String address;
@@ -61,7 +66,6 @@ public class UserEntity extends BaseEntity {
     private BloodType bloodType;
 
 
-    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

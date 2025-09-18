@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(registerDTO.getEmail());
         user.setPhoneNumber(registerDTO.getPhoneNumber());
         user.setDateOfBirth(registerDTO.getDateOfBirth());
+        user.setGender(registerDTO.getGender());
         user.setAddress(registerDTO.getAddress());
 
         String encodedPassword = passwordEncoder.encode(registerDTO.getPassword());
@@ -113,7 +114,6 @@ public class UserServiceImpl implements UserService {
         doctorDTO.setExperience(doctor.getExperience());
         doctorDTO.setIsActive(doctor.getIsActive());
         
-        // Set user information
         doctorDTO.setFullName(user.getFullName());
         doctorDTO.setEmail(user.getEmail());
         doctorDTO.setPhoneNumber(user.getPhoneNumber());
@@ -145,7 +145,15 @@ public class UserServiceImpl implements UserService {
         
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setAddress(userDTO.getAddress());
-        user.setBloodType(userDTO.getBloodType());
+        
+
+        if (userDTO.getBloodType() != null) {
+            user.setBloodType(userDTO.getBloodType());
+        }
+        
+        if (userDTO.getGender() != null) {
+            user.setGender(userDTO.getGender());
+        }
 
         if (userDTO.getEmergencyContact() != null) {
             user.setEmergencyPhone(userDTO.getEmergencyContact());
@@ -201,6 +209,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setRole(user.getRole().getName().toString());
         userDTO.setBloodType(user.getBloodType());
+        userDTO.setGender(user.getGender());
         
         return userDTO;
     }

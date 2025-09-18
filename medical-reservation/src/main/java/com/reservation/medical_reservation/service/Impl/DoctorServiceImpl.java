@@ -174,14 +174,12 @@ public class DoctorServiceImpl implements DoctorService {
     private DoctorPatientDTO convertToDoctorPatientDTO(UserEntity patient, DoctorEntity doctor) {
         DoctorPatientDTO dto = modelMapper.map(patient, DoctorPatientDTO.class);
         
-        // Calculate age from date of birth
         if (patient.getDateOfBirth() != null) {
             dto.setAge(Period.between(patient.getDateOfBirth(), java.time.LocalDate.now()).getYears());
         }
         
         dto.setGender("Not specified");
         
-        // Set blood type display name instead of enum
         dto.setBloodType(patient.getBloodType() != null ? patient.getBloodType().getDisplayName() : null);
         
         dto.setAllergies(Arrays.asList("None known"));
