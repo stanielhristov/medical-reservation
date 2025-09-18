@@ -28,19 +28,6 @@ public class UserEntity extends BaseEntity {
     
     @Column(nullable = false)
     private String password;
-    
-    @Column
-    private LocalDate dateOfBirth;
-
-    @Enumerated(EnumType.STRING)
-    @Column
-    private GenderEnum gender;
-    
-    @Column
-    private String address;
-    
-    @Column
-    private String emergencyPhone;
 
     @Column(nullable = false)
     private Boolean isActive = true;
@@ -61,14 +48,73 @@ public class UserEntity extends BaseEntity {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "blood_type")
-    private BloodType bloodType;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private PatientProfileEntity patientProfile;
 
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+    
+    public LocalDate getDateOfBirth() {
+        return patientProfile != null ? patientProfile.getDateOfBirth() : null;
+    }
+    
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        if (patientProfile == null) {
+            patientProfile = new PatientProfileEntity();
+            patientProfile.setUser(this);
+        }
+        patientProfile.setDateOfBirth(dateOfBirth);
+    }
+    
+    public GenderEnum getGender() {
+        return patientProfile != null ? patientProfile.getGender() : null;
+    }
+    
+    public void setGender(GenderEnum gender) {
+        if (patientProfile == null) {
+            patientProfile = new PatientProfileEntity();
+            patientProfile.setUser(this);
+        }
+        patientProfile.setGender(gender);
+    }
+    
+    public String getAddress() {
+        return patientProfile != null ? patientProfile.getAddress() : null;
+    }
+    
+    public void setAddress(String address) {
+        if (patientProfile == null) {
+            patientProfile = new PatientProfileEntity();
+            patientProfile.setUser(this);
+        }
+        patientProfile.setAddress(address);
+    }
+    
+    public String getEmergencyPhone() {
+        return patientProfile != null ? patientProfile.getEmergencyPhone() : null;
+    }
+    
+    public void setEmergencyPhone(String emergencyPhone) {
+        if (patientProfile == null) {
+            patientProfile = new PatientProfileEntity();
+            patientProfile.setUser(this);
+        }
+        patientProfile.setEmergencyPhone(emergencyPhone);
+    }
+    
+    public BloodType getBloodType() {
+        return patientProfile != null ? patientProfile.getBloodType() : null;
+    }
+    
+    public void setBloodType(BloodType bloodType) {
+        if (patientProfile == null) {
+            patientProfile = new PatientProfileEntity();
+            patientProfile.setUser(this);
+        }
+        patientProfile.setBloodType(bloodType);
     }
 }
 

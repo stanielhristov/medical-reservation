@@ -117,14 +117,14 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
             </button>
             {isPatient && (
                 <button
-                    onClick={() => setActiveTab('personal')}
+                    onClick={() => setActiveTab('medical')}
                     style={{
                         flex: 1,
                         padding: '1rem 2rem',
-                        background: activeTab === 'personal' 
+                        background: activeTab === 'medical' 
                             ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
                             : 'transparent',
-                        color: activeTab === 'personal' ? 'white' : '#6b7280',
+                        color: activeTab === 'medical' ? 'white' : '#6b7280',
                         border: 'none',
                         borderRadius: '14px',
                         cursor: 'pointer',
@@ -145,43 +145,40 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                         <div style={{
                             position: 'absolute',
                             top: '2px',
-                            left: '8px',
-                            width: '2px',
-                            height: '10px',
-                            background: activeTab === 'personal' ? 'white' : '#6b7280',
-                            borderRadius: '1px'
+                            left: '6px',
+                            width: '4px',
+                            height: '8px',
+                            background: activeTab === 'medical' ? 'white' : '#6b7280',
+                            borderRadius: '2px'
                         }} />
                         <div style={{
                             position: 'absolute',
                             top: '6px',
-                            left: '4px',
-                            width: '10px',
+                            left: '2px',
+                            width: '12px',
                             height: '2px',
-                            background: activeTab === 'personal' ? 'white' : '#6b7280',
+                            background: activeTab === 'medical' ? 'white' : '#6b7280',
                             borderRadius: '1px'
                         }} />
                         <div style={{
                             position: 'absolute',
-                            top: '2px',
-                            left: '2px',
-                            width: '6px',
-                            height: '6px',
-                            border: `2px solid ${activeTab === 'personal' ? 'white' : '#6b7280'}`,
-                            borderRadius: '50%',
-                            background: 'transparent'
+                            top: '10px',
+                            left: '4px',
+                            width: '8px',
+                            height: '2px',
+                            background: activeTab === 'medical' ? 'white' : '#6b7280',
+                            borderRadius: '1px'
                         }} />
                         <div style={{
                             position: 'absolute',
-                            top: '10px',
+                            top: '13px',
                             left: '2px',
-                            width: '6px',
-                            height: '6px',
-                            border: `2px solid ${activeTab === 'personal' ? 'white' : '#6b7280'}`,
-                            borderRadius: '50%',
-                            background: 'transparent'
+                            width: '4px',
+                            height: '1px',
+                            background: activeTab === 'medical' ? 'white' : '#6b7280'
                         }} />
                     </div>
-                    Personal Info
+                    Medical Info
                 </button>
             )}
             {isDoctor && (

@@ -6,6 +6,7 @@ import com.reservation.medical_reservation.model.dto.RegisterDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.DoctorEntity;
 import com.reservation.medical_reservation.model.entity.DoctorRequestEntity;
+import com.reservation.medical_reservation.model.entity.PatientProfileEntity;
 import com.reservation.medical_reservation.model.entity.RoleEntity;
 import com.reservation.medical_reservation.model.entity.UserEntity;
 import com.reservation.medical_reservation.model.enums.DoctorRequestStatus;
@@ -18,6 +19,8 @@ import com.reservation.medical_reservation.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 import java.util.Optional;
 import java.util.Set;
@@ -161,6 +164,49 @@ public class UserServiceImpl implements UserService {
             user.setEmergencyPhone(userDTO.getEmergencyPhone());
         }
         
+        PatientProfileEntity profile = user.getPatientProfile();
+        if (profile == null) {
+            profile = new PatientProfileEntity();
+            profile.setUser(user);
+            user.setPatientProfile(profile);
+        }
+        
+        if (userDTO.getEmergencyContactName() != null) {
+            profile.setEmergencyContactName(userDTO.getEmergencyContactName());
+        }
+        if (userDTO.getEmergencyContactRelationship() != null) {
+            profile.setEmergencyContactRelationship(userDTO.getEmergencyContactRelationship());
+        }
+        if (userDTO.getChronicConditions() != null) {
+            profile.setChronicConditions(userDTO.getChronicConditions());
+        }
+        if (userDTO.getAllergies() != null) {
+            profile.setAllergies(userDTO.getAllergies());
+        }
+        if (userDTO.getCurrentMedications() != null) {
+            profile.setCurrentMedications(userDTO.getCurrentMedications());
+        }
+        if (userDTO.getPastSurgeries() != null) {
+            profile.setPastSurgeries(userDTO.getPastSurgeries());
+        }
+        if (userDTO.getFamilyMedicalHistory() != null) {
+            profile.setFamilyMedicalHistory(userDTO.getFamilyMedicalHistory());
+        }
+        if (userDTO.getHeight() != null) {
+            profile.setHeight(userDTO.getHeight());
+        }
+        if (userDTO.getWeight() != null) {
+            profile.setWeight(userDTO.getWeight());
+            if (profile.getHeight() != null && profile.getHeight().compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal heightInMeters = profile.getHeight().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
+                BigDecimal bmi = profile.getWeight().divide(heightInMeters.multiply(heightInMeters), 2, BigDecimal.ROUND_HALF_UP);
+                profile.setBmi(bmi);
+            }
+        }
+        if (userDTO.getBmi() != null) {
+            profile.setBmi(userDTO.getBmi());
+        }
+        
         UserEntity savedUser = userRepository.save(user);
         return convertToUserDTO(savedUser);
     }
@@ -210,6 +256,20 @@ public class UserServiceImpl implements UserService {
         userDTO.setRole(user.getRole().getName().toString());
         userDTO.setBloodType(user.getBloodType());
         userDTO.setGender(user.getGender());
+        
+        if (user.getPatientProfile() != null) {
+            PatientProfileEntity profile = user.getPatientProfile();
+            userDTO.setEmergencyContactName(profile.getEmergencyContactName());
+            userDTO.setEmergencyContactRelationship(profile.getEmergencyContactRelationship());
+            userDTO.setChronicConditions(profile.getChronicConditions());
+            userDTO.setAllergies(profile.getAllergies());
+            userDTO.setCurrentMedications(profile.getCurrentMedications());
+            userDTO.setPastSurgeries(profile.getPastSurgeries());
+            userDTO.setFamilyMedicalHistory(profile.getFamilyMedicalHistory());
+            userDTO.setHeight(profile.getHeight());
+            userDTO.setWeight(profile.getWeight());
+            userDTO.setBmi(profile.getBmi());
+        }
         
         return userDTO;
     }

@@ -4,6 +4,7 @@ import com.reservation.medical_reservation.model.enums.BloodType;
 import com.reservation.medical_reservation.model.enums.GenderEnum;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,4 +28,14 @@ public class UserDTO {
     private String phone;
     private BloodType bloodType; 
     private GenderEnum gender;
+    private String emergencyContactName;
+    private String emergencyContactRelationship;
+    private String chronicConditions;
+    private String allergies;
+    private String currentMedications;
+    private String pastSurgeries;
+    private String familyMedicalHistory;
+    private BigDecimal height; 
+    private BigDecimal weight; 
+    private BigDecimal bmi;
 }

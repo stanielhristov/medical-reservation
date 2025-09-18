@@ -10,7 +10,7 @@ import MessageDisplay from '../components/MessageDisplay';
 import ProfileForm from '../components/ProfileForm';
 import PasswordForm from '../components/PasswordForm';
 import DoctorProfileForm from '../components/DoctorProfileForm';
-import PersonalInfoForm from '../components/PersonalInfoForm';
+import MedicalProfileForm from '../components/MedicalProfileForm';
 
 const EditProfilePage = () => {
     const { user } = useAuth();
@@ -26,17 +26,17 @@ const EditProfilePage = () => {
         doctorData,
         profileData,
         setProfileData,
-        personalData,
-        setPersonalData,
+        medicalData,
+        setMedicalData,
         addressData,
         setAddressData,
         doctorProfileData,
         setDoctorProfileData,
         hasProfileDataChanged,
-        hasPersonalDataChanged,
+        hasMedicalDataChanged,
         hasDoctorDataChanged,
         updateProfile,
-        updatePersonalInfo,
+        updateMedicalInfo,
         updateDoctorProfile
     } = useProfile(user);
 
@@ -53,8 +53,8 @@ const EditProfilePage = () => {
         
         if (formType === 'profile') {
             setProfileData(prev => ({ ...prev, [name]: value }));
-        } else if (formType === 'personal') {
-            setPersonalData(prev => ({ ...prev, [name]: value }));
+        } else if (formType === 'medical') {
+            setMedicalData(prev => ({ ...prev, [name]: value }));
         } else if (formType === 'doctor') {
             setDoctorProfileData(prev => ({ ...prev, [name]: value }));
         } else if (formType === 'password') {
@@ -76,13 +76,14 @@ const EditProfilePage = () => {
         }
     };
 
-    const handlePersonalInfoSubmit = async (e) => {
+
+    const handleMedicalInfoSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updatePersonalInfo();
-            setMessageWithAutoFade('success', 'Personal info updated successfully!');
+            await updateMedicalInfo();
+            setMessageWithAutoFade('success', 'Medical info updated successfully!');
         } catch (error) {
-            setMessageWithAutoFade('error', error.message || 'Failed to update personal info');
+            setMessageWithAutoFade('error', error.message || 'Failed to update medical info');
         }
     };
 
@@ -204,13 +205,13 @@ const EditProfilePage = () => {
                             saving={passwordSaving}
                             hasPasswordDataInput={hasPasswordDataInput}
                         />
-                    ) : activeTab === 'personal' ? (
-                        <PersonalInfoForm
-                            profileData={personalData}
-                            onInputChange={(e) => handleInputChange(e, 'personal')}
-                            onSubmit={handlePersonalInfoSubmit}
+                    ) : activeTab === 'medical' ? (
+                        <MedicalProfileForm
+                            medicalData={medicalData}
+                            onInputChange={(e) => handleInputChange(e, 'medical')}
+                            onSubmit={handleMedicalInfoSubmit}
                             saving={profileSaving}
-                            hasPersonalInfoChanged={hasPersonalDataChanged}
+                            hasMedicalDataChanged={hasMedicalDataChanged}
                         />
                     ) : activeTab === 'doctor' ? (
                         <DoctorProfileForm

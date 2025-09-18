@@ -17,7 +17,9 @@ export const useProfile = (user) => {
         dateOfBirth: '',
         address: '',
         emergencyContact: '',
-        bloodType: ''
+        gender: '',
+        emergencyContactName: '',
+        emergencyContactRelationship: ''
     });
 
     const [originalProfileData, setOriginalProfileData] = useState({
@@ -27,7 +29,9 @@ export const useProfile = (user) => {
         dateOfBirth: '',
         address: '',
         emergencyContact: '',
-        bloodType: ''
+        gender: '',
+        emergencyContactName: '',
+        emergencyContactRelationship: ''
     });
 
     const [personalData, setPersonalData] = useState({
@@ -40,6 +44,34 @@ export const useProfile = (user) => {
         emergencyContact: '',
         bloodType: '',
         gender: ''
+    });
+
+    const [medicalData, setMedicalData] = useState({
+        bloodType: '',
+        emergencyContactName: '',
+        emergencyContactRelationship: '',
+        chronicConditions: '',
+        allergies: '',
+        currentMedications: '',
+        pastSurgeries: '',
+        familyMedicalHistory: '',
+        height: '',
+        weight: '',
+        bmi: ''
+    });
+
+    const [originalMedicalData, setOriginalMedicalData] = useState({
+        bloodType: '',
+        emergencyContactName: '',
+        emergencyContactRelationship: '',
+        chronicConditions: '',
+        allergies: '',
+        currentMedications: '',
+        pastSurgeries: '',
+        familyMedicalHistory: '',
+        height: '',
+        weight: '',
+        bmi: ''
     });
 
     const [addressData, setAddressData] = useState({
@@ -82,7 +114,11 @@ export const useProfile = (user) => {
         const profileChanged = 
             profileData.fullName !== originalProfileData.fullName ||
             profileData.phone !== originalProfileData.phone ||
-            profileData.dateOfBirth !== originalProfileData.dateOfBirth;
+            profileData.dateOfBirth !== originalProfileData.dateOfBirth ||
+            profileData.emergencyContact !== originalProfileData.emergencyContact ||
+            profileData.gender !== originalProfileData.gender ||
+            profileData.emergencyContactName !== originalProfileData.emergencyContactName ||
+            profileData.emergencyContactRelationship !== originalProfileData.emergencyContactRelationship;
 
         const addressChanged = 
             addressData.street !== originalAddressData.street ||
@@ -110,6 +146,20 @@ export const useProfile = (user) => {
                doctorProfileData.location !== originalDoctorProfileData.location;
     }, [doctorProfileData, originalDoctorProfileData]);
 
+    const hasMedicalDataChanged = useMemo(() => {
+        return medicalData.bloodType !== originalMedicalData.bloodType ||
+               medicalData.emergencyContactName !== originalMedicalData.emergencyContactName ||
+               medicalData.emergencyContactRelationship !== originalMedicalData.emergencyContactRelationship ||
+               medicalData.chronicConditions !== originalMedicalData.chronicConditions ||
+               medicalData.allergies !== originalMedicalData.allergies ||
+               medicalData.currentMedications !== originalMedicalData.currentMedications ||
+               medicalData.pastSurgeries !== originalMedicalData.pastSurgeries ||
+               medicalData.familyMedicalHistory !== originalMedicalData.familyMedicalHistory ||
+               medicalData.height !== originalMedicalData.height ||
+               medicalData.weight !== originalMedicalData.weight ||
+               medicalData.bmi !== originalMedicalData.bmi;
+    }, [medicalData, originalMedicalData]);
+
     useEffect(() => {
         fetchUserProfile();
         if (user?.role === 'DOCTOR') {
@@ -133,7 +183,9 @@ export const useProfile = (user) => {
                 dateOfBirth: profile.dateOfBirth ? profile.dateOfBirth.split('T')[0] : '',
                 address: profile.address || '',
                 emergencyContact: profile.emergencyContact || '',
-                bloodType: profile.bloodType || ''
+                gender: profile.gender || '',
+                emergencyContactName: profile.emergencyContactName || '',
+                emergencyContactRelationship: profile.emergencyContactRelationship || ''
             };
             
             const personalDataObj = {
@@ -141,15 +193,43 @@ export const useProfile = (user) => {
                 bloodType: profile.bloodType || '',
                 gender: profile.gender || ''
             };
+
+            const medicalDataObj = {
+                bloodType: profile.bloodType || '',
+                emergencyContactName: profile.emergencyContactName || '',
+                emergencyContactRelationship: profile.emergencyContactRelationship || '',
+                chronicConditions: profile.chronicConditions || '',
+                allergies: profile.allergies || '',
+                currentMedications: profile.currentMedications || '',
+                pastSurgeries: profile.pastSurgeries || '',
+                familyMedicalHistory: profile.familyMedicalHistory || '',
+                height: profile.height ? profile.height.toString() : '',
+                weight: profile.weight ? profile.weight.toString() : '',
+                bmi: profile.bmi ? profile.bmi.toString() : ''
+            };
             
             setProfileData(profileDataObj);
             setOriginalProfileData(profileDataObj);
             setPersonalData(personalDataObj);
             setOriginalPersonalData(personalDataObj);
+            setMedicalData(medicalDataObj);
+            setOriginalMedicalData(medicalDataObj);
             
-            const parsedAddress = parseAddress(profile.address);
-            setAddressData(parsedAddress);
-            setOriginalAddressData(parsedAddress);
+            const parsedAddress = parseAddress(profile.address || '');
+            setAddressData(parsedAddress || {
+                street: '',
+                city: '',
+                stateProvince: '',
+                postalCode: '',
+                countryCode: 'US'
+            });
+            setOriginalAddressData(parsedAddress || {
+                street: '',
+                city: '',
+                stateProvince: '',
+                postalCode: '',
+                countryCode: 'US'
+            });
         } catch (error) {
             console.error('Error fetching profile:', error);
             throw error;
@@ -191,8 +271,14 @@ export const useProfile = (user) => {
             const formattedAddress = formatAddress(addressData, selectedCountry);
 
             const updateData = {
-                ...profileData,
-                address: formattedAddress || profileData.address
+                fullName: profileData.fullName,
+                phone: profileData.phone,
+                dateOfBirth: profileData.dateOfBirth,
+                emergencyContact: profileData.emergencyContact,
+                gender: profileData.gender,
+                emergencyContactName: profileData.emergencyContactName,
+                emergencyContactRelationship: profileData.emergencyContactRelationship,
+                address: formattedAddress || ''
             };
 
             await updateUserProfile(user.id, updateData);
@@ -283,6 +369,44 @@ export const useProfile = (user) => {
         }
     };
 
+    const updateMedicalInfo = async () => {
+        setSaving(true);
+        try {
+            const updateData = {
+                ...profileData,
+                bloodType: medicalData.bloodType?.trim() || null,
+                emergencyContactName: medicalData.emergencyContactName?.trim() || null,
+                emergencyContactRelationship: medicalData.emergencyContactRelationship?.trim() || null,
+                chronicConditions: medicalData.chronicConditions?.trim() || null,
+                allergies: medicalData.allergies?.trim() || null,
+                currentMedications: medicalData.currentMedications?.trim() || null,
+                pastSurgeries: medicalData.pastSurgeries?.trim() || null,
+                familyMedicalHistory: medicalData.familyMedicalHistory?.trim() || null,
+                height: medicalData.height && medicalData.height.trim() !== '' ? parseFloat(medicalData.height) : null,
+                weight: medicalData.weight && medicalData.weight.trim() !== '' ? parseFloat(medicalData.weight) : null,
+                bmi: medicalData.bmi && medicalData.bmi.trim() !== '' ? parseFloat(medicalData.bmi) : null
+            };
+
+            // Remove any fields with null values to avoid sending them
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] === null || updateData[key] === '') {
+                    delete updateData[key];
+                }
+            });
+
+            await updateUserProfile(user.id, updateData);
+            
+            setOriginalMedicalData(medicalData);
+            
+            return true;
+        } catch (error) {
+            console.error('Error updating medical info:', error);
+            throw error;
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return {
         loading,
         saving,
@@ -292,15 +416,19 @@ export const useProfile = (user) => {
         setProfileData,
         personalData,
         setPersonalData,
+        medicalData,
+        setMedicalData,
         addressData,
         setAddressData,
         doctorProfileData,
         setDoctorProfileData,
         hasProfileDataChanged,
         hasPersonalDataChanged,
+        hasMedicalDataChanged,
         hasDoctorDataChanged,
         updateProfile,
         updatePersonalInfo,
+        updateMedicalInfo,
         updateDoctorProfile
     };
 };

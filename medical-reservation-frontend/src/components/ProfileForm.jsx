@@ -127,6 +127,79 @@ const ProfileForm = ({
                     value={profileData.dateOfBirth}
                     onChange={handleInputChange}
                 />
+
+                {/* Gender Field */}
+                <div style={{ position: 'relative' }}>
+                    <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        marginBottom: '0.5rem'
+                    }}>
+                        Gender
+                    </label>
+                    <select
+                        name="gender"
+                        value={profileData.gender || ''}
+                        onChange={handleInputChange}
+                        disabled={saving}
+                        style={{
+                            width: '100%',
+                            padding: '0.875rem 1rem',
+                            fontSize: '1rem',
+                            lineHeight: '1.5',
+                            color: '#374151',
+                            backgroundColor: saving ? '#f9fafb' : '#ffffff',
+                            backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'m6 8 4 4 4-4\'/%3e%3c/svg%3e")',
+                            backgroundPosition: 'right 0.75rem center',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundSize: '1.5em 1.5em',
+                            border: '2px solid #e5e7eb',
+                            borderRadius: '12px',
+                            transition: 'all 0.2s ease-in-out',
+                            appearance: 'none',
+                            cursor: saving ? 'not-allowed' : 'pointer'
+                        }}
+                        onFocus={e => {
+                            e.target.style.borderColor = '#22c55e';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                        }}
+                        onBlur={e => {
+                            e.target.style.borderColor = '#e5e7eb';
+                            e.target.style.boxShadow = 'none';
+                        }}
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                </div>
+
+                <FormField
+                    label="Emergency Contact Phone"
+                    name="emergencyContact"
+                    type="tel"
+                    value={profileData.emergencyContact}
+                    onChange={handleInputChange}
+                    placeholder="Emergency contact phone number"
+                />
+
+                <FormField
+                    label="Emergency Contact Name"
+                    name="emergencyContactName"
+                    value={profileData.emergencyContactName}
+                    onChange={handleInputChange}
+                    placeholder="Full name of emergency contact"
+                />
+
+                <FormField
+                    label="Emergency Contact Relationship"
+                    name="emergencyContactRelationship"
+                    value={profileData.emergencyContactRelationship}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Spouse, Parent, Sibling"
+                />
             </div>
             
             <AddressInput

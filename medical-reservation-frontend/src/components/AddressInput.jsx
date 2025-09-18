@@ -33,8 +33,8 @@ const AddressInput = ({
             <div style={{ marginBottom: '0.75rem' }}>
                 <input
                     type="text"
-                    value={street}
-                    onChange={onStreetChange}
+                    value={street || ''}
+                    onChange={(e) => onStreetChange(e.target.value)}
                     disabled={disabled}
                     style={{
                         width: '100%',
@@ -42,7 +42,7 @@ const AddressInput = ({
                         border: '1px solid #e5e7eb',
                         borderRadius: '12px',
                         fontSize: '0.95rem',
-                        background: '#f9fafb',
+                        background: disabled ? '#f3f4f6' : '#ffffff',
                         outline: 'none',
                         boxSizing: 'border-box',
                         color: '#374151',
@@ -55,8 +55,8 @@ const AddressInput = ({
             <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 <input
                     type="text"
-                    value={city}
-                    onChange={onCityChange}
+                    value={city || ''}
+                    onChange={(e) => onCityChange(e.target.value)}
                     disabled={disabled}
                     style={{
                         flex: 2,
@@ -64,7 +64,7 @@ const AddressInput = ({
                         border: '1px solid #e5e7eb',
                         borderRadius: '12px',
                         fontSize: '0.95rem',
-                        background: '#f9fafb',
+                        background: disabled ? '#f3f4f6' : '#ffffff',
                         outline: 'none',
                         boxSizing: 'border-box',
                         color: '#374151',
@@ -74,8 +74,8 @@ const AddressInput = ({
                 />
                 <input
                     type="text"
-                    value={stateProvince}
-                    onChange={onStateProvinceChange}
+                    value={stateProvince || ''}
+                    onChange={(e) => onStateProvinceChange(e.target.value)}
                     disabled={disabled}
                     style={{
                         flex: 1,
@@ -83,7 +83,7 @@ const AddressInput = ({
                         border: '1px solid #e5e7eb',
                         borderRadius: '12px',
                         fontSize: '0.95rem',
-                        background: '#f9fafb',
+                        background: disabled ? '#f3f4f6' : '#ffffff',
                         outline: 'none',
                         boxSizing: 'border-box',
                         color: '#374151',
@@ -96,8 +96,8 @@ const AddressInput = ({
             <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <input
                     type="text"
-                    value={postalCode}
-                    onChange={onPostalCodeChange}
+                    value={postalCode || ''}
+                    onChange={(e) => onPostalCodeChange(e.target.value)}
                     disabled={disabled}
                     style={{
                         flex: 1,
@@ -105,7 +105,7 @@ const AddressInput = ({
                         border: '1px solid #e5e7eb',
                         borderRadius: '12px',
                         fontSize: '0.95rem',
-                        background: '#f9fafb',
+                        background: disabled ? '#f3f4f6' : '#ffffff',
                         outline: 'none',
                         boxSizing: 'border-box',
                         color: '#374151',
@@ -115,7 +115,7 @@ const AddressInput = ({
                 />
                 <div style={{ flex: 2, position: 'relative' }}>
                     <select
-                        value={countryCode}
+                        value={countryCode || 'US'}
                         onChange={handleCountryChange}
                         disabled={disabled}
                         style={{
@@ -124,7 +124,7 @@ const AddressInput = ({
                             border: '1px solid #e5e7eb',
                             borderRadius: '12px',
                             fontSize: '0.95rem',
-                            background: '#f9fafb',
+                            background: disabled ? '#f3f4f6' : '#ffffff',
                             outline: 'none',
                             boxSizing: 'border-box',
                             color: '#374151',
