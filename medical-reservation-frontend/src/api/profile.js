@@ -26,3 +26,12 @@ export const changePassword = async (userId, passwordData) => {
         throw new Error(error.response?.data?.message || error.message);
     }
 };
+
+export const selfDeactivateAccount = async (userId) => {
+    try {
+        const response = await api.patch(`/users/${userId}/self-deactivate`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || error.message);
+    }
+};

@@ -248,6 +248,89 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                     Doctor Info
                 </button>
             )}
+            <button
+                onClick={() => setActiveTab('settings')}
+                style={{
+                    flex: 1,
+                    padding: '1rem 2rem',
+                    background: activeTab === 'settings' 
+                        ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' 
+                        : 'transparent',
+                    color: activeTab === 'settings' ? 'white' : '#6b7280',
+                    border: 'none',
+                    borderRadius: '14px',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                }}
+            >
+                <div style={{
+                    width: '16px',
+                    height: '16px',
+                    position: 'relative'
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '1px',
+                        left: '1px',
+                        width: '14px',
+                        height: '14px',
+                        border: `2px solid ${activeTab === 'settings' ? 'white' : '#6b7280'}`,
+                        borderRadius: '50%'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '6px',
+                        left: '6px',
+                        width: '4px',
+                        height: '4px',
+                        background: activeTab === 'settings' ? 'white' : '#6b7280',
+                        borderRadius: '50%'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '0px',
+                        left: '7px',
+                        width: '2px',
+                        height: '4px',
+                        background: activeTab === 'settings' ? 'white' : '#6b7280',
+                        borderRadius: '1px'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        left: '7px',
+                        width: '2px',
+                        height: '4px',
+                        background: activeTab === 'settings' ? 'white' : '#6b7280',
+                        borderRadius: '1px'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '7px',
+                        left: '0px',
+                        width: '4px',
+                        height: '2px',
+                        background: activeTab === 'settings' ? 'white' : '#6b7280',
+                        borderRadius: '1px'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '7px',
+                        right: '0px',
+                        width: '4px',
+                        height: '2px',
+                        background: activeTab === 'settings' ? 'white' : '#6b7280',
+                        borderRadius: '1px'
+                    }} />
+                </div>
+                Account Settings
+            </button>
         </div>
     );
 };

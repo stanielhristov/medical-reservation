@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.model.entity;
 
 import com.reservation.medical_reservation.model.enums.BloodType;
+import com.reservation.medical_reservation.model.enums.DeactivationType;
 import com.reservation.medical_reservation.model.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +32,10 @@ public class UserEntity extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isActive = true;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "deactivation_type")
+    private DeactivationType deactivationType;
     
     @Column
     private LocalDateTime lastLogin;

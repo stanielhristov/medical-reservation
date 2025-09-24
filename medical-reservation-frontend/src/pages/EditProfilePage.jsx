@@ -11,6 +11,7 @@ import ProfileForm from '../components/ProfileForm';
 import PasswordForm from '../components/PasswordForm';
 import DoctorProfileForm from '../components/DoctorProfileForm';
 import MedicalProfileForm from '../components/MedicalProfileForm';
+import AccountSettings from '../components/AccountSettings';
 
 const EditProfilePage = () => {
     const { user } = useAuth();
@@ -222,6 +223,8 @@ const EditProfilePage = () => {
                             saving={profileSaving}
                             hasDoctorDataChanged={hasDoctorDataChanged}
                         />
+                    ) : activeTab === 'settings' ? (
+                        <AccountSettings />
                     ) : null}
                 </div>
             </div>

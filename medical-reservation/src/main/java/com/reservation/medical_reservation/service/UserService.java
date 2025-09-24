@@ -14,4 +14,5 @@ public interface UserService {
     UserDTO updateUserProfile(Long userId, UserDTO userDTO);
     void changePassword(Long userId, ChangePasswordDTO changePasswordDTO);
     UserDTO getUserById(Long userId);
+    void selfDeactivateAccount(Long userId);
 }

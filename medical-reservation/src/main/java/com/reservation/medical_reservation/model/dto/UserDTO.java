@@ -1,6 +1,7 @@
 package com.reservation.medical_reservation.model.dto;
 
 import com.reservation.medical_reservation.model.enums.BloodType;
+import com.reservation.medical_reservation.model.enums.DeactivationType;
 import com.reservation.medical_reservation.model.enums.GenderEnum;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class UserDTO {
     private String emergencyPhone;
     private String emergencyContact; 
     private Boolean isActive;
+    private DeactivationType deactivationType;
     private LocalDateTime lastLogin;
     private LocalDateTime createdAt;
     private String role;

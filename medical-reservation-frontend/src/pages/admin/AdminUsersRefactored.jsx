@@ -270,6 +270,76 @@ const AdminUsersRefactored = () => {
                     userCounts={getUserCounts()}
                 />
 
+                {/* Deactivation Types Information Panel */}
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.98)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '16px',
+                    padding: '1.5rem',
+                    marginBottom: '1.5rem',
+                    boxShadow: '0 8px 24px rgba(5, 150, 105, 0.1)',
+                    border: '1px solid rgba(5, 150, 105, 0.1)'
+                }}>
+                    <h3 style={{
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        margin: '0 0 1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        ℹ️ Deactivation Types Guide
+                    </h3>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                        gap: '1rem',
+                        fontSize: '0.875rem'
+                    }}>
+                        <div style={{
+                            background: 'rgba(245, 158, 11, 0.05)',
+                            border: '1px solid rgba(245, 158, 11, 0.2)',
+                            borderRadius: '8px',
+                            padding: '0.75rem'
+                        }}>
+                            <div style={{
+                                fontWeight: '600',
+                                color: '#d97706',
+                                marginBottom: '0.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.25rem'
+                            }}>
+                                👤 Self-deactivated
+                            </div>
+                            <div style={{ color: '#374151', fontSize: '0.8rem' }}>
+                                User deactivated their own account. They can reactivate by logging in again.
+                            </div>
+                        </div>
+                        <div style={{
+                            background: 'rgba(239, 68, 68, 0.05)',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            borderRadius: '8px',
+                            padding: '0.75rem'
+                        }}>
+                            <div style={{
+                                fontWeight: '600',
+                                color: '#dc2626',
+                                marginBottom: '0.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.25rem'
+                            }}>
+                                🛡️ Admin-deactivated
+                            </div>
+                            <div style={{ color: '#374151', fontSize: '0.8rem' }}>
+                                Account deactivated by an administrator. Only admins can reactivate these accounts.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <UserTable
                     users={filteredUsers}
                     onUserAction={openConfirmModal}

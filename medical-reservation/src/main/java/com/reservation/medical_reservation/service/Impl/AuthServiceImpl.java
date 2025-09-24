@@ -5,10 +5,13 @@ import com.reservation.medical_reservation.model.dto.ForgotPasswordDTO;
 import com.reservation.medical_reservation.model.dto.LoginDTO;
 import com.reservation.medical_reservation.model.dto.ResetPasswordDTO;
 import com.reservation.medical_reservation.model.entity.UserEntity;
+import com.reservation.medical_reservation.model.enums.DeactivationType;
+import com.reservation.medical_reservation.model.enums.NotificationType;
 import com.reservation.medical_reservation.repository.UserRepository;
 import com.reservation.medical_reservation.security.JwtTokenProvider;
 import com.reservation.medical_reservation.service.AuthService;
 import com.reservation.medical_reservation.service.EmailService;
+import com.reservation.medical_reservation.service.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,16 +26,19 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
+    private final NotificationService notificationService;
     
     @Value("${password.reset.token.expiration}")
     private long tokenExpirationTime;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, 
-                          JwtTokenProvider jwtTokenProvider, EmailService emailService) {
+                          JwtTokenProvider jwtTokenProvider, EmailService emailService,
+                          NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -46,7 +52,24 @@ public class AuthServiceImpl implements AuthService {
 
         // Check if user account is active
         if (!user.getIsActive()) {
-            throw new IllegalArgumentException("Your account has been deactivated. Please contact support for assistance.");
+            // Only auto-reactivate if it was self-deactivated
+            if (user.getDeactivationType() == DeactivationType.SELF_DEACTIVATED) {
+                // Auto-reactivate the account on login (for self-deactivated accounts only)
+                user.setIsActive(true);
+                user.setDeactivationType(null); // Clear deactivation type
+                userRepository.save(user);
+                
+                // Create notification for successful reactivation
+                notificationService.createNotification(
+                        user,
+                        "Account Reactivated",
+                        "Welcome back! Your account has been automatically reactivated.",
+                        NotificationType.SYSTEM_NOTIFICATION
+                );
+            } else {
+                // Admin deactivated - require admin to reactivate
+                throw new IllegalArgumentException("Your account has been deactivated by an administrator. Please contact support for assistance.");
+            }
         }
 
         // Update last login timestamp

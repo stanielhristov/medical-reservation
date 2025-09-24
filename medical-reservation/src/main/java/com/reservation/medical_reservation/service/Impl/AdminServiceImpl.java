@@ -4,6 +4,7 @@ import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorRequestDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.*;
+import com.reservation.medical_reservation.model.enums.DeactivationType;
 import com.reservation.medical_reservation.model.enums.DoctorRequestStatus;
 import com.reservation.medical_reservation.model.enums.NotificationType;
 import com.reservation.medical_reservation.model.enums.RoleName;
@@ -95,6 +96,7 @@ public class AdminServiceImpl implements AdminService {
         }
         
         user.setIsActive(false);
+        user.setDeactivationType(DeactivationType.ADMIN_DEACTIVATED);
         userRepository.save(user);
 
         notificationService.createNotification(
@@ -116,6 +118,7 @@ public class AdminServiceImpl implements AdminService {
         }
         
         user.setIsActive(true);
+        user.setDeactivationType(null); // Clear deactivation type when reactivated by admin
         userRepository.save(user);
 
         notificationService.createNotification(
@@ -310,6 +313,7 @@ public class AdminServiceImpl implements AdminService {
 
         dto.setRole(user.getRole().getName().toString());
         dto.setIsActive(user.getIsActive());
+        dto.setDeactivationType(user.getDeactivationType());
         
         return dto;
     }

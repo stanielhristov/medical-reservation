@@ -265,19 +265,43 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                     </td>
                                     
                                     <td style={{ padding: '1rem' }}>
-                                        <span style={{
-                                            padding: '0.375rem 0.75rem',
-                                            borderRadius: '20px',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '600',
-                                            background: user.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                                            color: user.isActive ? '#22c55e' : '#6b7280',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '0.25rem'
-                                        }}>
-                                            {user.isActive ? 'Active' : 'Inactive'}
-                                        </span>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                            <span style={{
+                                                padding: '0.375rem 0.75rem',
+                                                borderRadius: '20px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '600',
+                                                background: user.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                                                color: user.isActive ? '#22c55e' : '#6b7280',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '0.25rem'
+                                            }}>
+                                                {user.isActive ? 'Active' : 'Inactive'}
+                                            </span>
+                                            {!user.isActive && user.deactivationType && (
+                                                <span style={{
+                                                    padding: '0.25rem 0.5rem',
+                                                    borderRadius: '12px',
+                                                    fontSize: '0.65rem',
+                                                    fontWeight: '500',
+                                                    background: user.deactivationType === 'SELF_DEACTIVATED' 
+                                                        ? 'rgba(245, 158, 11, 0.1)' 
+                                                        : 'rgba(239, 68, 68, 0.1)',
+                                                    color: user.deactivationType === 'SELF_DEACTIVATED' 
+                                                        ? '#d97706' 
+                                                        : '#dc2626',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem',
+                                                    width: 'fit-content'
+                                                }}>
+                                                    {user.deactivationType === 'SELF_DEACTIVATED' 
+                                                        ? '👤 Self-deactivated' 
+                                                        : '🛡️ Admin-deactivated'}
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     
                                     <td style={{ padding: '1rem' }}>

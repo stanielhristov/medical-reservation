@@ -9,12 +9,15 @@ import com.reservation.medical_reservation.model.entity.DoctorRequestEntity;
 import com.reservation.medical_reservation.model.entity.PatientProfileEntity;
 import com.reservation.medical_reservation.model.entity.RoleEntity;
 import com.reservation.medical_reservation.model.entity.UserEntity;
+import com.reservation.medical_reservation.model.enums.DeactivationType;
 import com.reservation.medical_reservation.model.enums.DoctorRequestStatus;
+import com.reservation.medical_reservation.model.enums.NotificationType;
 import com.reservation.medical_reservation.model.enums.RoleName;
 import com.reservation.medical_reservation.repository.DoctorRepository;
 import com.reservation.medical_reservation.repository.DoctorRequestRepository;
 import com.reservation.medical_reservation.repository.RoleRepository;
 import com.reservation.medical_reservation.repository.UserRepository;
+import com.reservation.medical_reservation.service.NotificationService;
 import com.reservation.medical_reservation.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,15 +36,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final DoctorRequestRepository doctorRequestRepository;
     private final DoctorRepository doctorRepository;
+    private final NotificationService notificationService;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, 
                           PasswordEncoder passwordEncoder, DoctorRequestRepository doctorRequestRepository,
-                          DoctorRepository doctorRepository) {
+                          DoctorRepository doctorRepository, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.doctorRequestRepository = doctorRequestRepository;
         this.doctorRepository = doctorRepository;
+        this.notificationService = notificationService;
     }
 
 
@@ -312,6 +317,29 @@ public class UserServiceImpl implements UserService {
         doctor.setIsActive(false);
 
         doctorRepository.save(doctor);
+    }
+
+    @Override
+    @Transactional
+    public void selfDeactivateAccount(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        if (!user.getIsActive()) {
+            throw new IllegalArgumentException("Account is already deactivated");
+        }
+        
+        user.setIsActive(false);
+        user.setDeactivationType(DeactivationType.SELF_DEACTIVATED);
+        userRepository.save(user);
+
+        // Create notification for the user
+        notificationService.createNotification(
+                user,
+                "Account Deactivated",
+                "You have successfully deactivated your account. You can reactivate it by logging in again.",
+                NotificationType.SYSTEM_NOTIFICATION
+        );
     }
 
 }

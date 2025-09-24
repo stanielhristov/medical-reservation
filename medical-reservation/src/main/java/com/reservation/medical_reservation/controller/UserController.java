@@ -50,4 +50,11 @@ public class UserController {
         UserDTO user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
+
+    @PatchMapping("/{userId}/self-deactivate")
+    @PreAuthorize("#userId == authentication.principal.id")
+    public ResponseEntity<String> selfDeactivateAccount(@PathVariable Long userId) {
+        userService.selfDeactivateAccount(userId);
+        return ResponseEntity.ok("Account deactivated successfully. You can reactivate it by logging in again.");
+    }
 }
