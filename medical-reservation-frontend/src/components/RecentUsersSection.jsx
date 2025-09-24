@@ -36,7 +36,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                         justifyContent: 'center',
                         fontSize: '1.2rem'
                     }}>
-                        Users
+                        👥
                     </span>
                     Recent Users
                 </h2>
@@ -78,7 +78,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                     padding: '3rem',
                     color: '#6b7280'
                 }}>
-                    <div style={{ fontSize: '1.5rem', marginBottom: '1rem', opacity: 0.5, fontWeight: '600' }}>No Users</div>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>👤</div>
                     <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>
                         No recent users found
                     </p>
@@ -134,7 +134,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                                             color: 'white',
                                             boxShadow: '0 4px 12px rgba(107, 114, 128, 0.3)'
                                         }}>
-                                            {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                                            {user.role === 'DOCTOR' ? '👩‍⚕️' : user.role === 'PATIENT' ? '🏥' : '👤'}
                                         </div>
                                         
                                         <div style={{ flex: 1 }}>

@@ -2,8 +2,13 @@ package com.reservation.medical_reservation.controller;
 
 import com.reservation.medical_reservation.model.dto.AppointmentDTO;
 import com.reservation.medical_reservation.model.dto.DoctorRequestDTO;
+import com.reservation.medical_reservation.model.dto.DoctorRatingDTO;
 import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.service.AdminService;
+import com.reservation.medical_reservation.service.DoctorRatingService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +23,11 @@ import java.util.Map;
 public class AdminController {
 
     private final AdminService adminService;
+    private final DoctorRatingService doctorRatingService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, DoctorRatingService doctorRatingService) {
         this.adminService = adminService;
+        this.doctorRatingService = doctorRatingService;
     }
 
     @GetMapping("/users")
@@ -128,5 +135,26 @@ public class AdminController {
     public ResponseEntity<Long> getTotalAppointments() {
         long count = adminService.getTotalAppointments();
         return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/ratings")
+    public ResponseEntity<Page<DoctorRatingDTO>> getAllRatings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DoctorRatingDTO> ratings = doctorRatingService.getAllRatings(pageable);
+        return ResponseEntity.ok(ratings);
+    }
+
+    @DeleteMapping("/ratings/{ratingId}")
+    public ResponseEntity<Void> deleteRating(@PathVariable Long ratingId) {
+        try {
+            doctorRatingService.adminDeleteRating(ratingId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

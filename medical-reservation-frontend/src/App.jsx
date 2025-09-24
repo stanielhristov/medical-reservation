@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Public Pages
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -13,27 +12,24 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 
-// Patient Pages
 import PatientDashboard from './pages/patient/PatientDashboard';
 import PatientAppointments from './pages/patient/PatientAppointments';
 import PatientDoctors from './pages/patient/PatientDoctors';
 import PatientMedicalHistory from './pages/patient/PatientMedicalHistory';
 import PatientNotifications from './pages/patient/PatientNotifications';
 
-// Doctor Pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorSchedule from './pages/doctor/DoctorSchedule';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
 import DoctorNotifications from './pages/doctor/DoctorNotifications';
 
-// Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminDoctors from './pages/admin/AdminDoctors';
 import AdminAppointments from './pages/admin/AdminAppointments';
+import AdminComments from './pages/admin/AdminComments';
 
-// Common Components
 import Layout from './components/Layout';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import EditProfilePage from './pages/EditProfilePage';
@@ -140,6 +136,11 @@ function App() {
                     <Route path="/admin/appointments" element={
                         <ProtectedRoute requiredRoles={['ADMIN']}>
                             <Layout><AdminAppointments /></Layout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/comments" element={
+                        <ProtectedRoute requiredRoles={['ADMIN']}>
+                            <Layout><AdminComments /></Layout>
                         </ProtectedRoute>
                     } />
 

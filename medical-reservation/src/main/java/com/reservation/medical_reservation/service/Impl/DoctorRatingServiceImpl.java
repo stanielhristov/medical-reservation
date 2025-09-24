@@ -9,6 +9,8 @@ import com.reservation.medical_reservation.repository.DoctorRepository;
 import com.reservation.medical_reservation.repository.UserRepository;
 import com.reservation.medical_reservation.service.DoctorRatingService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -153,6 +155,24 @@ public class DoctorRatingServiceImpl implements DoctorRatingService {
         doctor.setTotalRatings(totalRatings != null ? totalRatings.intValue() : 0);
         
         doctorRepository.save(doctor);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DoctorRatingDTO> getAllRatings(Pageable pageable) {
+        Page<DoctorRatingEntity> ratings = doctorRatingRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return ratings.map(this::convertToDTO);
+    }
+
+    @Override
+    @Transactional
+    public void adminDeleteRating(Long ratingId) {
+        DoctorRatingEntity rating = doctorRatingRepository.findById(ratingId)
+                .orElseThrow(() -> new IllegalArgumentException("Rating not found with ID: " + ratingId));
+
+        DoctorEntity doctor = rating.getDoctor();
+        doctorRatingRepository.delete(rating);
+        updateDoctorRatingStats(doctor);
     }
 
     private DoctorRatingDTO convertToDTO(DoctorRatingEntity rating) {

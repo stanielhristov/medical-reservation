@@ -22,4 +22,9 @@ export const adminAPI = {
     getTotalDoctors: () => axios.get('/admin/statistics/doctors'),
     getTotalAppointments: () => axios.get('/admin/statistics/appointments'),
     getAllAppointments: () => axios.get('/admin/appointments'),
+
+    // Ratings/Comments management
+    getAllRatings: (page = 0, size = 10) => 
+        axios.get(`/admin/ratings?page=${page}&size=${size}`),
+    deleteRating: (ratingId) => axios.delete(`/admin/ratings/${ratingId}`),
 };

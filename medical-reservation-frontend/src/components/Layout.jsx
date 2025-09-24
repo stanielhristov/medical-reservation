@@ -294,6 +294,15 @@ const Layout = ({ children }) => {
                                                         <div style={{position: 'absolute', top: '8px', left: '2px', width: '12px', height: '6px', background: '#6b7280', borderRadius: '0 0 4px 4px'}} />
                                                     </div>
                                                 );
+                                            case 'Comments':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '8px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '6px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '10px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', bottom: '2px', left: '2px', width: '6px', height: '1px', background: '#6b7280'}} />
+                                                    </div>
+                                                );
                                             default:
                                                 return <div style={{...iconStyle}} />;
                                         }

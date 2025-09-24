@@ -127,6 +127,166 @@ const AdminDashboard = () => {
                     onNavigation={handleNavigation}
                 />
 
+                {/* Quick Actions Section */}
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.98)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '24px',
+                    padding: '2rem',
+                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.04)',
+                    border: '1px solid rgba(226, 232, 240, 0.5)',
+                    marginBottom: '2rem'
+                }}>
+                    <h2 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '700',
+                        color: '#1f2937',
+                        margin: '0 0 1.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <span style={{
+                            fontSize: '1.2rem'
+                        }}>⚡</span>
+                        Quick Actions
+                    </h2>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '1rem'
+                    }}>
+                        <button
+                            onClick={() => handleNavigation('/admin/comments')}
+                            style={{
+                                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '16px',
+                                padding: '1.5rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 8px 20px rgba(245, 158, 11, 0.3)',
+                                textAlign: 'left'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.transform = 'translateY(-4px)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(245, 158, 11, 0.4)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(245, 158, 11, 0.3)';
+                            }}
+                        >
+                            <div style={{
+                                fontSize: '1.5rem',
+                                marginBottom: '0.5rem'
+                            }}>
+                                💬
+                            </div>
+                            <div style={{
+                                fontSize: '1rem',
+                                fontWeight: '600',
+                                marginBottom: '0.25rem'
+                            }}>
+                                Manage Comments
+                            </div>
+                            <div style={{
+                                fontSize: '0.85rem',
+                                opacity: 0.9
+                            }}>
+                                View and moderate user comments
+                            </div>
+                        </button>
+                        
+                        <button
+                            onClick={() => handleNavigation('/admin/users')}
+                            style={{
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '16px',
+                                padding: '1.5rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)',
+                                textAlign: 'left'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.transform = 'translateY(-4px)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(16, 185, 129, 0.4)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.3)';
+                            }}
+                        >
+                            <div style={{
+                                fontSize: '1.5rem',
+                                marginBottom: '0.5rem'
+                            }}>
+                                👥
+                            </div>
+                            <div style={{
+                                fontSize: '1rem',
+                                fontWeight: '600',
+                                marginBottom: '0.25rem'
+                            }}>
+                                Manage Users
+                            </div>
+                            <div style={{
+                                fontSize: '0.85rem',
+                                opacity: 0.9
+                            }}>
+                                User roles and permissions
+                            </div>
+                        </button>
+                        
+                        <button
+                            onClick={() => handleNavigation('/admin/doctors')}
+                            style={{
+                                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '16px',
+                                padding: '1.5rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)',
+                                textAlign: 'left'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.transform = 'translateY(-4px)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.3)';
+                            }}
+                        >
+                            <div style={{
+                                fontSize: '1.5rem',
+                                marginBottom: '0.5rem'
+                            }}>
+                                👩‍⚕️
+                            </div>
+                            <div style={{
+                                fontSize: '1rem',
+                                fontWeight: '600',
+                                marginBottom: '0.25rem'
+                            }}>
+                                Doctor Requests
+                            </div>
+                            <div style={{
+                                fontSize: '0.85rem',
+                                opacity: 0.9
+                            }}>
+                                Review and approve doctors
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
