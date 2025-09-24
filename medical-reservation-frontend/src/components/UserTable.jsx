@@ -15,26 +15,22 @@ const UserTable = ({ users, onUserAction, loading }) => {
             case 'ADMIN': 
                 return { 
                     background: 'rgba(220, 38, 38, 0.1)', 
-                    color: '#dc2626',
-                    icon: '👑'
+                    color: '#dc2626'
                 };
             case 'DOCTOR': 
                 return { 
                     background: 'rgba(139, 92, 246, 0.1)', 
-                    color: '#8b5cf6',
-                    icon: '🩺'
+                    color: '#8b5cf6'
                 };
             case 'USER': 
                 return { 
                     background: 'rgba(59, 130, 246, 0.1)', 
-                    color: '#3b82f6',
-                    icon: '👤'
+                    color: '#3b82f6'
                 };
             default: 
                 return { 
                     background: 'rgba(107, 114, 128, 0.1)', 
-                    color: '#6b7280',
-                    icon: '❓'
+                    color: '#6b7280'
                 };
         }
     };
@@ -85,9 +81,9 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     justifyContent: 'center',
                     margin: '0 auto 1.5rem',
                     fontSize: '2rem'
-                }}>
-                    👥
-                </div>
+                                }}>
+                                    Users
+                                </div>
                 <h3 style={{
                     fontSize: '1.5rem',
                     fontWeight: '600',
@@ -130,7 +126,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     alignItems: 'center',
                     gap: '0.5rem'
                 }}>
-                    👥 Users ({users.length})
+                    Users ({users.length})
                 </h3>
             </div>
 
@@ -245,7 +241,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                         color: '#6b7280',
                                                         fontSize: '0.75rem'
                                                     }}>
-                                                        📞 {user.phoneNumber}
+                                                        {user.phoneNumber}
                                                     </div>
                                                 )}
                                             </div>
@@ -264,7 +260,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                             alignItems: 'center',
                                             gap: '0.25rem'
                                         }}>
-                                            {roleStyle.icon} {user.role || 'Unknown'}
+                                            {user.role || 'Unknown'}
                                         </span>
                                     </td>
                                     
@@ -280,7 +276,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                             alignItems: 'center',
                                             gap: '0.25rem'
                                         }}>
-                                            {user.isActive ? '✅ Active' : '⏸️ Inactive'}
+                                            {user.isActive ? 'Active' : 'Inactive'}
                                         </span>
                                     </td>
                                     
@@ -366,7 +362,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                 }}
                                                 title="Delete User"
                                             >
-                                                🗑️
+                                                Delete
                                             </button>
                                         </div>
                                     </td>

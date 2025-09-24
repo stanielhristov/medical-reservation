@@ -78,7 +78,7 @@ const UserFilters = ({
                             color: '#6b7280',
                             fontSize: '1rem'
                         }}>
-                            🔍
+                            Search
                         </span>
                     </div>
                 </div>

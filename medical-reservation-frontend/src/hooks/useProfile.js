@@ -387,7 +387,6 @@ export const useProfile = (user) => {
                 bmi: medicalData.bmi && medicalData.bmi.trim() !== '' ? parseFloat(medicalData.bmi) : null
             };
 
-            // Remove any fields with null values to avoid sending them
             Object.keys(updateData).forEach(key => {
                 if (updateData[key] === null || updateData[key] === '') {
                     delete updateData[key];
