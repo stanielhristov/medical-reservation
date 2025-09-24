@@ -2,6 +2,7 @@ package com.reservation.medical_reservation.model.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,4 +34,15 @@ public class DoctorPatientDTO {
     private LocalDateTime nextAppointment;
     private Long visitCount;
     private String status;
+    
+    // Additional comprehensive medical information
+    private String emergencyContactName;
+    private String emergencyContactRelationship;
+    private String chronicConditions;
+    private String currentMedications;
+    private String pastSurgeries;
+    private String familyMedicalHistory;
+    private BigDecimal height;
+    private BigDecimal weight;
+    private BigDecimal bmi;
 }

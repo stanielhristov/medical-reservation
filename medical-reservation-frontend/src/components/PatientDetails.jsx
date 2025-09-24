@@ -49,35 +49,6 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
             border: '1px solid rgba(5, 150, 105, 0.1)',
             position: 'relative'
         }}>
-            <button
-                onClick={onClose}
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1.5rem',
-                    cursor: 'pointer',
-                    color: '#6b7280',
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'background 0.2s ease'
-                }}
-                onMouseEnter={e => {
-                    e.target.style.background = 'rgba(107, 114, 128, 0.1)';
-                }}
-                onMouseLeave={e => {
-                    e.target.style.background = 'none';
-                }}
-            >
-                ✕
-            </button>
-
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -157,12 +128,14 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                 </button>
             </div>
 
+            {/* Medical Information Grid */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                 gap: '1.5rem',
                 marginBottom: '2rem'
             }}>
+                {/* Contact Information */}
                 <div style={{
                     background: 'rgba(5, 150, 105, 0.05)',
                     borderRadius: '12px',
@@ -189,29 +162,103 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                     </div>
                 </div>
 
-                <div style={{
-                    background: 'rgba(59, 130, 246, 0.05)',
-                    borderRadius: '12px',
-                    padding: '1rem',
-                    border: '1px solid rgba(59, 130, 246, 0.1)'
-                }}>
+                {/* Emergency Contact */}
+                {(patient.emergencyContactName || patient.emergencyPhone) && (
                     <div style={{
-                        fontSize: '0.8rem',
-                        fontWeight: '600',
-                        color: '#6b7280',
-                        textTransform: 'uppercase',
-                        marginBottom: '0.5rem'
+                        background: 'rgba(239, 68, 68, 0.05)',
+                        borderRadius: '12px',
+                        padding: '1rem',
+                        border: '1px solid rgba(239, 68, 68, 0.1)'
                     }}>
-                        Next Appointment
+                        <div style={{
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            textTransform: 'uppercase',
+                            marginBottom: '0.5rem'
+                        }}>
+                            Emergency Contact
+                        </div>
+                        {patient.emergencyContactName && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
+                                👤 {patient.emergencyContactName}
+                            </div>
+                        )}
+                        {patient.emergencyContactRelationship && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
+                                🔗 {patient.emergencyContactRelationship}
+                            </div>
+                        )}
+                        {patient.emergencyPhone && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151' }}>
+                                📞 {patient.emergencyPhone}
+                            </div>
+                        )}
                     </div>
-                    <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
-                        📅 {formatDate(patient.nextAppointment)}
-                    </div>
-                    <div style={{ fontSize: '0.9rem', color: '#374151' }}>
-                        🕐 {formatTime(patient.nextAppointment)}
-                    </div>
-                </div>
+                )}
 
+                {/* Physical Measurements */}
+                {(patient.height || patient.weight || patient.bmi) && (
+                    <div style={{
+                        background: 'rgba(99, 102, 241, 0.05)',
+                        borderRadius: '12px',
+                        padding: '1rem',
+                        border: '1px solid rgba(99, 102, 241, 0.1)'
+                    }}>
+                        <div style={{
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            textTransform: 'uppercase',
+                            marginBottom: '0.5rem'
+                        }}>
+                            Physical Measurements
+                        </div>
+                        {patient.height && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
+                                📏 Height: {patient.height} cm
+                            </div>
+                        )}
+                        {patient.weight && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
+                                ⚖️ Weight: {patient.weight} kg
+                            </div>
+                        )}
+                        {patient.bmi && (
+                            <div style={{ fontSize: '0.9rem', color: '#374151' }}>
+                                📊 BMI: {patient.bmi}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Next Appointment */}
+                {patient.nextAppointment && (
+                    <div style={{
+                        background: 'rgba(59, 130, 246, 0.05)',
+                        borderRadius: '12px',
+                        padding: '1rem',
+                        border: '1px solid rgba(59, 130, 246, 0.1)'
+                    }}>
+                        <div style={{
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            textTransform: 'uppercase',
+                            marginBottom: '0.5rem'
+                        }}>
+                            Next Appointment
+                        </div>
+                        <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
+                            📅 {formatDate(patient.nextAppointment)}
+                        </div>
+                        <div style={{ fontSize: '0.9rem', color: '#374151' }}>
+                            🕐 {formatTime(patient.nextAppointment)}
+                        </div>
+                    </div>
+                )}
+
+                {/* Medical Conditions */}
                 {patient.conditions && patient.conditions.length > 0 && patient.conditions[0] !== 'None' && (
                     <div style={{
                         background: 'rgba(220, 38, 38, 0.05)',
@@ -240,6 +287,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                     </div>
                 )}
 
+                {/* Allergies */}
                 {patient.allergies && patient.allergies.length > 0 && patient.allergies[0] !== 'None known' && (
                     <div style={{
                         background: 'rgba(245, 158, 11, 0.05)',
@@ -268,6 +316,156 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                     </div>
                 )}
             </div>
+
+            {/* Detailed Medical Information */}
+            {(patient.chronicConditions || patient.currentMedications || patient.pastSurgeries || patient.familyMedicalHistory) && (
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '16px',
+                    padding: '2rem',
+                    marginBottom: '2rem',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid rgba(107, 114, 128, 0.1)'
+                }}>
+                    <h3 style={{
+                        fontSize: '1.3rem',
+                        fontWeight: '700',
+                        color: '#374151',
+                        margin: '0 0 1.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        🏥 Comprehensive Medical Information
+                    </h3>
+
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                        gap: '1.5rem'
+                    }}>
+                        {/* Chronic Conditions */}
+                        {patient.chronicConditions && (
+                            <div style={{
+                                background: '#fef3f2',
+                                borderRadius: '12px',
+                                padding: '1.5rem',
+                                border: '1px solid #fecaca'
+                            }}>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
+                                    color: '#dc2626',
+                                    marginBottom: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    🩺 Chronic Conditions
+                                </div>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {patient.chronicConditions}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Current Medications */}
+                        {patient.currentMedications && (
+                            <div style={{
+                                background: '#f0f9ff',
+                                borderRadius: '12px',
+                                padding: '1.5rem',
+                                border: '1px solid #bae6fd'
+                            }}>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
+                                    color: '#0369a1',
+                                    marginBottom: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    💊 Current Medications
+                                </div>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {patient.currentMedications}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Past Surgeries */}
+                        {patient.pastSurgeries && (
+                            <div style={{
+                                background: '#fef7f0',
+                                borderRadius: '12px',
+                                padding: '1.5rem',
+                                border: '1px solid #fed7aa'
+                            }}>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
+                                    color: '#ea580c',
+                                    marginBottom: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    🔪 Past Surgeries
+                                </div>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {patient.pastSurgeries}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Family Medical History */}
+                        {patient.familyMedicalHistory && (
+                            <div style={{
+                                background: '#f7f5ff',
+                                borderRadius: '12px',
+                                padding: '1.5rem',
+                                border: '1px solid #d8b4fe'
+                            }}>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
+                                    color: '#7c3aed',
+                                    marginBottom: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    👨‍👩‍👧‍👦 Family Medical History
+                                </div>
+                                <div style={{
+                                    fontSize: '0.9rem',
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {patient.familyMedicalHistory}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             <div>
                 <h3 style={{

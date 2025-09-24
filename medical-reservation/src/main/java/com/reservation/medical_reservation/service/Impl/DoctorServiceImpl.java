@@ -6,6 +6,7 @@ import com.reservation.medical_reservation.model.dto.UserDTO;
 import com.reservation.medical_reservation.model.entity.DoctorEntity;
 import com.reservation.medical_reservation.model.entity.UserEntity;
 import com.reservation.medical_reservation.model.entity.AppointmentEntity;
+import com.reservation.medical_reservation.model.entity.PatientProfileEntity;
 import com.reservation.medical_reservation.model.enums.AppointmentStatus;
 import com.reservation.medical_reservation.repository.DoctorRepository;
 import com.reservation.medical_reservation.repository.AppointmentRepository;
@@ -178,12 +179,39 @@ public class DoctorServiceImpl implements DoctorService {
             dto.setAge(Period.between(patient.getDateOfBirth(), java.time.LocalDate.now()).getYears());
         }
         
-        dto.setGender("Not specified");
-        
-        dto.setBloodType(patient.getBloodType() != null ? patient.getBloodType().getDisplayName() : null);
-        
-        dto.setAllergies(Arrays.asList("None known"));
-        dto.setConditions(Arrays.asList());
+        // Extract comprehensive medical information from patient profile
+        PatientProfileEntity profile = patient.getPatientProfile();
+        if (profile != null) {
+            dto.setGender(profile.getGender() != null ? profile.getGender().name() : "Not specified");
+            dto.setBloodType(profile.getBloodType() != null ? profile.getBloodType().getDisplayName() : null);
+            dto.setEmergencyContactName(profile.getEmergencyContactName());
+            dto.setEmergencyContactRelationship(profile.getEmergencyContactRelationship());
+            dto.setChronicConditions(profile.getChronicConditions());
+            dto.setCurrentMedications(profile.getCurrentMedications());
+            dto.setPastSurgeries(profile.getPastSurgeries());
+            dto.setFamilyMedicalHistory(profile.getFamilyMedicalHistory());
+            dto.setHeight(profile.getHeight());
+            dto.setWeight(profile.getWeight());
+            dto.setBmi(profile.getBmi());
+            
+            // Parse allergies and conditions from text fields
+            if (profile.getAllergies() != null && !profile.getAllergies().trim().isEmpty()) {
+                dto.setAllergies(Arrays.asList(profile.getAllergies().split(",\\s*")));
+            } else {
+                dto.setAllergies(Arrays.asList("None known"));
+            }
+            
+            if (profile.getChronicConditions() != null && !profile.getChronicConditions().trim().isEmpty()) {
+                dto.setConditions(Arrays.asList(profile.getChronicConditions().split(",\\s*")));
+            } else {
+                dto.setConditions(Arrays.asList());
+            }
+        } else {
+            dto.setGender("Not specified");
+            dto.setBloodType(null);
+            dto.setAllergies(Arrays.asList("None known"));
+            dto.setConditions(Arrays.asList());
+        }
         
         List<AppointmentEntity> patientAppointments = appointmentRepository.findByPatientOrderByAppointmentTimeDesc(patient);
         LocalDateTime lastVisit = patientAppointments.stream()

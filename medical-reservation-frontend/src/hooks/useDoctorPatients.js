@@ -45,6 +45,17 @@ export const useDoctorPatients = () => {
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
                         visitCount: patient.visitCount || 0,
                         status: patient.status?.toLowerCase() || 'active',
+                        // Additional comprehensive medical information
+                        emergencyPhone: patient.emergencyPhone || patient.emergencyContact,
+                        emergencyContactName: patient.emergencyContactName,
+                        emergencyContactRelationship: patient.emergencyContactRelationship,
+                        chronicConditions: patient.chronicConditions,
+                        currentMedications: patient.currentMedications,
+                        pastSurgeries: patient.pastSurgeries,
+                        familyMedicalHistory: patient.familyMedicalHistory,
+                        height: patient.height,
+                        weight: patient.weight,
+                        bmi: patient.bmi,
                         medicalRecords: medicalHistory.map(record => ({
                             id: record.id,
                             date: new Date(record.recordDate || record.createdAt),
@@ -73,6 +84,17 @@ export const useDoctorPatients = () => {
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
                         visitCount: patient.visitCount || 0,
                         status: patient.status?.toLowerCase() || 'active',
+                        // Additional comprehensive medical information
+                        emergencyPhone: patient.emergencyPhone || patient.emergencyContact,
+                        emergencyContactName: patient.emergencyContactName,
+                        emergencyContactRelationship: patient.emergencyContactRelationship,
+                        chronicConditions: patient.chronicConditions,
+                        currentMedications: patient.currentMedications,
+                        pastSurgeries: patient.pastSurgeries,
+                        familyMedicalHistory: patient.familyMedicalHistory,
+                        height: patient.height,
+                        weight: patient.weight,
+                        bmi: patient.bmi,
                         medicalRecords: []
                     };
                 }

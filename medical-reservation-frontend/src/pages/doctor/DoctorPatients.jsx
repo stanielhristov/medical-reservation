@@ -88,66 +88,117 @@ const DoctorPatientsRefactored = () => {
             position: 'relative'
         }}>
             <main style={{
-                maxWidth: '1400px',
+                maxWidth: selectedPatient ? '1600px' : '1400px',
                 margin: '0 auto',
                 padding: '2rem',
                 position: 'relative',
-                zIndex: 1
+                zIndex: 1,
+                transition: 'max-width 0.3s ease'
             }}>
-                <div style={{
-                    background: 'rgba(255, 255, 255, 0.98)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: '24px',
-                    padding: '3rem',
-                    marginBottom: '2rem',
-                    textAlign: 'center'
-                }}>
-                    <h1 style={{
-                        fontSize: '2.5rem',
-                        fontWeight: '800',
-                        color: '#374151',
-                        margin: '0 0 1rem'
+                {!selectedPatient ? (
+                    <div style={{
+                        animation: 'fadeIn 0.3s ease-in-out'
                     }}>
-                        Patient Management
-                    </h1>
-                </div>
-
-                <PatientFilters
-                    filters={filters}
-                    selectedFilter={selectedFilter}
-                    onFilterChange={setSelectedFilter}
-                    searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
-                    patientCounts={getPatientCounts()}
-                />
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: selectedPatient ? '1fr 1fr' : '1fr',
-                    gap: '2rem',
-                    alignItems: 'flex-start'
-                }}>
-                    <div>
-                        {filteredPatients.map(patient => (
-                            <PatientCard
-                                key={patient.id}
-                                patient={patient}
-                                onClick={setSelectedPatient}
-                                isSelected={selectedPatient?.id === patient.id}
-                            />
-                        ))}
-                    </div>
-
-                    {selectedPatient && (
-                        <div style={{ position: 'sticky', top: '2rem' }}>
-                            <PatientDetails
-                                patient={selectedPatient}
-                                onAddRecord={() => setShowAddRecord(true)}
-                                onClose={() => setSelectedPatient(null)}
-                            />
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.98)',
+                            backdropFilter: 'blur(20px)',
+                            borderRadius: '24px',
+                            padding: '3rem',
+                            marginBottom: '2rem',
+                            textAlign: 'center'
+                        }}>
+                            <h1 style={{
+                                fontSize: '2.5rem',
+                                fontWeight: '800',
+                                color: '#374151',
+                                margin: '0 0 1rem'
+                            }}>
+                                Patient Management
+                            </h1>
                         </div>
-                    )}
-                </div>
+
+                        <PatientFilters
+                            filters={filters}
+                            selectedFilter={selectedFilter}
+                            onFilterChange={setSelectedFilter}
+                            searchTerm={searchTerm}
+                            onSearchChange={setSearchTerm}
+                            patientCounts={getPatientCounts()}
+                        />
+
+                        <div>
+                            {filteredPatients.map(patient => (
+                                <PatientCard
+                                    key={patient.id}
+                                    patient={patient}
+                                    onClick={setSelectedPatient}
+                                    isSelected={false}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div style={{
+                        animation: 'fadeIn 0.3s ease-in-out'
+                    }}>
+                        {/* Back Navigation Header */}
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.98)',
+                            backdropFilter: 'blur(20px)',
+                            borderRadius: '24px',
+                            padding: '2rem 3rem',
+                            marginBottom: '2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem'
+                        }}>
+                            <button
+                                onClick={() => setSelectedPatient(null)}
+                                style={{
+                                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    padding: '0.75rem 1.5rem',
+                                    cursor: 'pointer',
+                                    fontWeight: '600',
+                                    fontSize: '0.9rem',
+                                    transition: 'all 0.2s ease',
+                                    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}
+                                onMouseEnter={e => {
+                                    e.target.style.transform = 'translateY(-2px)';
+                                    e.target.style.boxShadow = '0 6px 20px rgba(5, 150, 105, 0.4)';
+                                }}
+                                onMouseLeave={e => {
+                                    e.target.style.transform = 'translateY(0)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                                }}
+                            >
+                                ← Back to Patients
+                            </button>
+                            <h1 style={{
+                                fontSize: '2rem',
+                                fontWeight: '700',
+                                color: '#374151',
+                                margin: '0',
+                                flex: 1
+                            }}>
+                                Patient Details - {selectedPatient.name}
+                            </h1>
+                        </div>
+
+                        {/* Full Page Patient Details */}
+                        <PatientDetails
+                            patient={selectedPatient}
+                            onAddRecord={() => setShowAddRecord(true)}
+                            onClose={() => setSelectedPatient(null)}
+                        />
+                    </div>
+                )}
             </main>
 
             <MedicalRecordModal
@@ -161,6 +212,16 @@ const DoctorPatientsRefactored = () => {
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
+                }
+                @keyframes fadeIn {
+                    0% { 
+                        opacity: 0; 
+                        transform: translateY(20px);
+                    }
+                    100% { 
+                        opacity: 1; 
+                        transform: translateY(0);
+                    }
                 }
             `}</style>
         </div>
