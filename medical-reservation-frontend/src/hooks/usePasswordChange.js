@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import { changePassword } from '../api/profile';
+import { useAuth } from '../context/AuthContext';
 
 export const usePasswordChange = () => {
+    const { user } = useAuth();
     const [saving, setSaving] = useState(false);
     const [passwordData, setPasswordData] = useState({
         currentPassword: '',
@@ -26,7 +28,13 @@ export const usePasswordChange = () => {
                 throw new Error('New password must be at least 8 characters long');
             }
 
-            await changePassword(passwordData.currentPassword, passwordData.newPassword);
+            // Create the proper DTO object and pass userId
+            const changePasswordDTO = {
+                currentPassword: passwordData.currentPassword,
+                newPassword: passwordData.newPassword
+            };
+
+            await changePassword(user.id, changePasswordDTO);
             
             setPasswordData({
                 currentPassword: '',
