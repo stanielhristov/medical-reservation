@@ -4,19 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleDTO {
+public class DoctorAvailabilityDTO {
     private Long id;
     private Long doctorId;
     private String doctorName;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private boolean available;
-    private String status; 
-    private String blockedReason; 
-    private Long appointmentId; 
+    private DayOfWeek dayOfWeek;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private Integer slotDuration;
 }

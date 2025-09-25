@@ -3,7 +3,13 @@ const ScheduleList = ({
     onEdit, 
     onDelete, 
     onToggleAvailability, 
-    loading 
+    loading,
+    // Selection props
+    selectedSchedules = new Set(),
+    onToggleSelection,
+    onSelectAll,
+    onClearSelection,
+    onBulkDelete
 }) => {
     const formatDateTime = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -103,16 +109,151 @@ const ScheduleList = ({
         );
     }
 
+    const selectedCount = selectedSchedules.size;
+    const allSelected = schedules.length > 0 && schedules.every(schedule => selectedSchedules.has(schedule.id));
+    const someSelected = schedules.some(schedule => selectedSchedules.has(schedule.id));
+
+    const handleSelectAll = () => {
+        if (allSelected) {
+            onClearSelection?.();
+        } else {
+            onSelectAll?.(schedules.map(s => s.id));
+        }
+    };
+
+    const handleBulkDelete = () => {
+        if (selectedCount === 0) return;
+        
+        const selectedIds = Array.from(selectedSchedules);
+        const confirmed = window.confirm(`Are you sure you want to delete ${selectedCount} selected schedule${selectedCount > 1 ? 's' : ''}?`);
+        
+        if (confirmed) {
+            onBulkDelete?.(selectedIds);
+        }
+    };
+
     return (
-        <div style={{
-            display: 'grid',
-            gap: '1rem'
-        }}>
-            {schedules.map((schedule) => {
+        <div>
+            {/* Bulk Actions Toolbar */}
+            <div style={{
+                background: 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '16px',
+                padding: '1rem 1.5rem',
+                marginBottom: '1rem',
+                boxShadow: '0 4px 16px rgba(21, 128, 61, 0.08)',
+                border: '1px solid rgba(21, 128, 61, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '1rem'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        color: '#374151'
+                    }}>
+                        <input
+                            type="checkbox"
+                            checked={allSelected}
+                            ref={checkbox => {
+                                if (checkbox) checkbox.indeterminate = someSelected && !allSelected;
+                            }}
+                            onChange={handleSelectAll}
+                            style={{
+                                width: '18px',
+                                height: '18px',
+                                cursor: 'pointer',
+                                accentColor: '#15803d'
+                            }}
+                        />
+                        Select All ({schedules.length})
+                    </label>
+
+                    {selectedCount > 0 && (
+                        <span style={{
+                            padding: '0.25rem 0.75rem',
+                            borderRadius: '12px',
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            background: 'rgba(21, 128, 61, 0.1)',
+                            color: '#15803d'
+                        }}>
+                            {selectedCount} selected
+                        </span>
+                    )}
+                </div>
+
+                {selectedCount > 0 && (
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                            onClick={onClearSelection}
+                            style={{
+                                background: 'rgba(107, 114, 128, 0.1)',
+                                border: '1px solid rgba(107, 114, 128, 0.2)',
+                                borderRadius: '8px',
+                                padding: '0.5rem 1rem',
+                                cursor: 'pointer',
+                                color: '#6b7280',
+                                fontSize: '0.9rem',
+                                fontWeight: '500',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.background = 'rgba(107, 114, 128, 0.15)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.background = 'rgba(107, 114, 128, 0.1)';
+                            }}
+                        >
+                            Clear Selection
+                        </button>
+                        <button
+                            onClick={handleBulkDelete}
+                            style={{
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                borderRadius: '8px',
+                                padding: '0.5rem 1rem',
+                                cursor: 'pointer',
+                                color: '#dc2626',
+                                fontSize: '0.9rem',
+                                fontWeight: '500',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.background = 'rgba(239, 68, 68, 0.15)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            🗑️ Delete Selected ({selectedCount})
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Schedule List */}
+            <div style={{
+                display: 'grid',
+                gap: '1rem'
+            }}>
+                {schedules.map((schedule) => {
                 const startFormat = formatDateTime(schedule.startTime);
                 const endFormat = formatDateTime(schedule.endTime);
                 const duration = getDuration(schedule.startTime, schedule.endTime);
                 const isPast = new Date(schedule.endTime) < new Date();
+
+                const isSelected = selectedSchedules.has(schedule.id);
 
                 return (
                     <div key={schedule.id} style={{
@@ -120,18 +261,27 @@ const ScheduleList = ({
                         backdropFilter: 'blur(20px)',
                         borderRadius: '16px',
                         padding: '1.5rem',
-                        boxShadow: '0 4px 16px rgba(21, 128, 61, 0.08)',
-                        border: `1px solid ${schedule.available ? '#22c55e' : '#ef4444'}20`,
+                        boxShadow: isSelected 
+                            ? '0 8px 24px rgba(21, 128, 61, 0.25)' 
+                            : '0 4px 16px rgba(21, 128, 61, 0.08)',
+                        border: isSelected 
+                            ? '2px solid #15803d' 
+                            : `1px solid ${schedule.available ? '#22c55e' : '#ef4444'}20`,
                         transition: 'all 0.2s ease',
-                        opacity: isPast ? 0.7 : 1
+                        opacity: isPast ? 0.7 : 1,
+                        position: 'relative'
                     }}
                     onMouseEnter={e => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(21, 128, 61, 0.15)';
+                        if (!isSelected) {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(21, 128, 61, 0.15)';
+                        }
                     }}
                     onMouseLeave={e => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(21, 128, 61, 0.08)';
+                        if (!isSelected) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(21, 128, 61, 0.08)';
+                        }
                     }}>
                         <div style={{
                             display: 'flex',
@@ -139,7 +289,33 @@ const ScheduleList = ({
                             alignItems: 'flex-start',
                             marginBottom: '1rem'
                         }}>
-                            <div style={{ flex: 1 }}>
+                            <div style={{ 
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: '1rem',
+                                flex: 1
+                            }}>
+                                {/* Selection Checkbox */}
+                                <label style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    cursor: 'pointer',
+                                    marginTop: '0.25rem'
+                                }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => onToggleSelection?.(schedule.id)}
+                                        style={{
+                                            width: '18px',
+                                            height: '18px',
+                                            cursor: 'pointer',
+                                            accentColor: '#15803d'
+                                        }}
+                                    />
+                                </label>
+
+                                <div style={{ flex: 1 }}>
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -228,6 +404,7 @@ const ScheduleList = ({
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
 
                             <div style={{ 
@@ -291,6 +468,7 @@ const ScheduleList = ({
                     </div>
                 );
             })}
+            </div>
         </div>
     );
 };

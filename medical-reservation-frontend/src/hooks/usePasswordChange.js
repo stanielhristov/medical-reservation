@@ -28,7 +28,6 @@ export const usePasswordChange = () => {
                 throw new Error('New password must be at least 8 characters long');
             }
 
-            // Create the proper DTO object and pass userId
             const changePasswordDTO = {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword

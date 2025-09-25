@@ -54,4 +54,12 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     
     @Query("SELECT COUNT(a) FROM AppointmentEntity a WHERE a.patient.id = :patientId")
     long countByPatientId(@Param("patientId") Long patientId);
+    
+    @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND " +
+           "a.appointmentTime >= :startTime AND a.appointmentTime <= :endTime AND " +
+           "a.status != 'CANCELLED' ORDER BY a.appointmentTime")
+    List<AppointmentEntity> findByDoctorAndDateRange(
+            @Param("doctor") DoctorEntity doctor,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
 }

@@ -5,8 +5,7 @@ const NotificationFilters = ({
     selectedCategory, 
     onCategorySelect, 
     notifications, 
-    onMarkAllAsRead, 
-    onShowSettings 
+    onMarkAllAsRead 
 }) => {
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
@@ -55,26 +54,6 @@ const NotificationFilters = ({
                             Mark All Read ({unreadCount})
                         </button>
                     )}
-                    
-                    <button
-                        onClick={onShowSettings}
-                        style={{
-                            background: 'rgba(107, 114, 128, 0.1)',
-                            color: '#374151',
-                            border: '1px solid rgba(107, 114, 128, 0.2)',
-                            borderRadius: '12px',
-                            padding: '0.75rem 1.5rem',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem'
-                        }}
-                    >
-                        ⚙️ Settings
-                    </button>
                 </div>
             </div>
             

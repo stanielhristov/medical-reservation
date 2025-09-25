@@ -11,7 +11,6 @@ const PatientNotifications = () => {
     const { user } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedNotification, setSelectedNotification] = useState(null);
-    const [showSettings, setShowSettings] = useState(false);
 
     const {
         loading,
@@ -70,7 +69,6 @@ const PatientNotifications = () => {
                     onCategorySelect={setSelectedCategory}
                     notifications={notifications}
                     onMarkAllAsRead={markAllAsRead}
-                    onShowSettings={() => setShowSettings(true)}
                 />
 
                 <section style={{

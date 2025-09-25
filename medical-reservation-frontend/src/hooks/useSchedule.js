@@ -5,13 +5,15 @@ import {
     updateSchedule, 
     deleteSchedule,
     markSlotAvailable,
-    markSlotUnavailable 
+    markSlotUnavailable,
+    deleteMultipleSchedules
 } from '../api/schedule';
 
 export const useSchedule = (doctorId) => {
     const [schedules, setSchedules] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedSchedules, setSelectedSchedules] = useState(new Set());
 
     const fetchSchedules = useCallback(async () => {
         if (!doctorId) return;
@@ -131,6 +133,50 @@ export const useSchedule = (doctorId) => {
         }
     }, [schedules]);
 
+    // Selection management functions
+    const toggleScheduleSelection = useCallback((scheduleId) => {
+        setSelectedSchedules(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(scheduleId)) {
+                newSet.delete(scheduleId);
+            } else {
+                newSet.add(scheduleId);
+            }
+            return newSet;
+        });
+    }, []);
+
+    const selectAllSchedules = useCallback((scheduleIds) => {
+        setSelectedSchedules(new Set(scheduleIds));
+    }, []);
+
+    const clearSelection = useCallback(() => {
+        setSelectedSchedules(new Set());
+    }, []);
+
+    const isScheduleSelected = useCallback((scheduleId) => {
+        return selectedSchedules.has(scheduleId);
+    }, [selectedSchedules]);
+
+    const getSelectedCount = useCallback(() => {
+        return selectedSchedules.size;
+    }, [selectedSchedules]);
+
+    // Bulk delete function
+    const deleteBulkSchedules = useCallback(async (scheduleIds) => {
+        if (!scheduleIds || scheduleIds.length === 0) return;
+        
+        try {
+            await deleteMultipleSchedules(scheduleIds);
+            setSchedules(prev => prev.filter(s => !scheduleIds.includes(s.id)));
+            setSelectedSchedules(new Set()); // Clear selection after deletion
+        } catch (err) {
+            console.error('Error deleting schedules:', err);
+            setError(err.message);
+            throw err;
+        }
+    }, []);
+
     return {
         schedules,
         loading,
@@ -140,6 +186,14 @@ export const useSchedule = (doctorId) => {
         editSchedule,
         removeSchedule,
         toggleAvailability,
-        getFilteredSchedules
+        getFilteredSchedules,
+        // Selection management
+        selectedSchedules,
+        toggleScheduleSelection,
+        selectAllSchedules,
+        clearSelection,
+        isScheduleSelected,
+        getSelectedCount,
+        deleteBulkSchedules
     };
 };

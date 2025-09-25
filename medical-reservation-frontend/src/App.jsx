@@ -19,7 +19,7 @@ import PatientMedicalHistory from './pages/patient/PatientMedicalHistory';
 import PatientNotifications from './pages/patient/PatientNotifications';
 
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
-import DoctorSchedule from './pages/doctor/DoctorSchedule';
+import DoctorSchedule from './pages/doctor/DoctorScheduleRefactored';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
 import DoctorNotifications from './pages/doctor/DoctorNotifications';

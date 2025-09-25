@@ -6,26 +6,29 @@ import ScheduleHeader from '../../components/ScheduleHeader';
 import ScheduleStats from '../../components/ScheduleStats';
 import ScheduleControls from '../../components/ScheduleControls';
 import ScheduleList from '../../components/ScheduleList';
-import ScheduleModal from '../../components/ScheduleModal';
+import WeeklyAvailabilityManager from '../../components/WeeklyAvailabilityManager';
 
 const DoctorScheduleRefactored = () => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [selectedView, setSelectedView] = useState('week');
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [editingSchedule, setEditingSchedule] = useState(null);
     const [doctorId, setDoctorId] = useState(null);
+    const [showAvailabilityManager, setShowAvailabilityManager] = useState(false);
+    
 
     const {
         schedules,
         loading: scheduleLoading,
         fetchSchedules,
-        addSchedule,
-        editSchedule,
         removeSchedule,
         toggleAvailability,
-        getFilteredSchedules
+        getFilteredSchedules,
+        selectedSchedules,
+        toggleScheduleSelection,
+        selectAllSchedules,
+        clearSelection,
+        deleteBulkSchedules
     } = useSchedule(doctorId);
 
     const views = [
@@ -66,29 +69,6 @@ const DoctorScheduleRefactored = () => {
         }
     };
 
-    const handleAddSchedule = () => {
-        setEditingSchedule(null);
-        setShowAddModal(true);
-    };
-
-    const handleEditSchedule = (schedule) => {
-        setEditingSchedule(schedule);
-        setShowAddModal(true);
-    };
-
-    const handleSaveSchedule = async (scheduleData) => {
-        try {
-            if (editingSchedule) {
-                await editSchedule(scheduleData);
-            } else {
-                await addSchedule(scheduleData);
-            }
-            setShowAddModal(false);
-            setEditingSchedule(null);
-        } catch (error) {
-            console.error('Error saving schedule:', error);
-        }
-    };
 
     const handleDeleteSchedule = async (schedule) => {
         if (window.confirm('Are you sure you want to delete this schedule?')) {
@@ -108,9 +88,31 @@ const DoctorScheduleRefactored = () => {
         }
     };
 
-    const handleRefresh = () => {
-        fetchSchedules();
+
+    const handleBulkDelete = async (scheduleIds) => {
+        try {
+            console.log('Starting bulk delete for IDs:', scheduleIds);
+            await deleteBulkSchedules(scheduleIds);
+            console.log('Bulk delete completed successfully');
+
+        } catch (error) {
+            console.error('Error deleting schedules:', error);
+            console.error('Error type:', typeof error);
+            console.error('Error stack:', error.stack);
+            
+            let errorMessage = 'Failed to delete selected schedules. Please try again.';
+            
+            if (error && error.message) {
+                errorMessage = error.message;
+            } else if (typeof error === 'string') {
+                errorMessage = error;
+            }
+            
+            console.error('Final error message:', errorMessage);
+            console.error('Bulk delete error:', errorMessage);
+        }
     };
+
 
     const filteredSchedules = getFilteredSchedules(selectedView, currentDate);
 
@@ -196,29 +198,38 @@ const DoctorScheduleRefactored = () => {
                     selectedView={selectedView}
                     currentDate={currentDate}
                     onDateChange={setCurrentDate}
-                    onAddSchedule={handleAddSchedule}
-                    onRefresh={handleRefresh}
+                    onManageAvailability={() => {
+                        setShowAvailabilityManager(true);
+                    }}
                 />
 
                 <ScheduleList
                     schedules={filteredSchedules}
-                    onEdit={handleEditSchedule}
                     onDelete={handleDeleteSchedule}
                     onToggleAvailability={handleToggleAvailability}
                     loading={scheduleLoading}
+                    selectedSchedules={selectedSchedules}
+                    onToggleSelection={toggleScheduleSelection}
+                    onSelectAll={selectAllSchedules}
+                    onClearSelection={clearSelection}
+                    onBulkDelete={handleBulkDelete}
                 />
             </main>
 
-            <ScheduleModal
-                isOpen={showAddModal}
-                onClose={() => {
-                    setShowAddModal(false);
-                    setEditingSchedule(null);
-                }}
-                onSave={handleSaveSchedule}
-                schedule={editingSchedule}
-                title={editingSchedule ? 'Edit Time Slot' : 'Add New Time Slot'}
-            />
+
+            {showAvailabilityManager && (
+                <WeeklyAvailabilityManager
+                    doctorId={doctorId}
+                    onClose={() => {
+                        setShowAvailabilityManager(false);
+                    }}
+                    onSave={() => {
+                        setShowAvailabilityManager(false);
+                        fetchSchedules(); 
+                    }}
+                />
+            )}
+
 
             <style jsx>{`
                 @keyframes spin {

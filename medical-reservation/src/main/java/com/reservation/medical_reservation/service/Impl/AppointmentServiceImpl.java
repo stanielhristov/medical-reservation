@@ -13,6 +13,7 @@ import com.reservation.medical_reservation.repository.ServiceRepository;
 import com.reservation.medical_reservation.repository.UserRepository;
 import com.reservation.medical_reservation.service.AppointmentService;
 import com.reservation.medical_reservation.service.NotificationService;
+import com.reservation.medical_reservation.util.DateFormatterUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,14 +79,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         notificationService.createNotification(
                 patient,
                 "Appointment Requested",
-                "Your appointment request has been submitted and is pending confirmation.",
+                "Your appointment request for " + DateFormatterUtil.formatForNotification(saved.getAppointmentTime()) + 
+                " has been submitted and is pending confirmation.",
                 NotificationType.APPOINTMENT_CONFIRMATION
         );
 
         notificationService.createNotification(
                 doctor.getUser(),
                 "New Appointment Request",
-                "You have a new appointment request from " + patient.getFullName(),
+                "You have a new appointment request from " + patient.getFullName() + 
+                " for " + DateFormatterUtil.formatForNotification(saved.getAppointmentTime()),
                 NotificationType.APPOINTMENT_CONFIRMATION
         );
 
@@ -173,14 +176,15 @@ public class AppointmentServiceImpl implements AppointmentService {
             notificationService.createNotification(
                     appointment.getPatient(),
                     "Appointment Confirmed",
-                    "Your appointment has been confirmed for " + appointment.getAppointmentTime(),
+                    "Your appointment has been confirmed for " + DateFormatterUtil.formatForNotification(appointment.getAppointmentTime()),
                     NotificationType.APPOINTMENT_CONFIRMATION
             );
         } else if (status == AppointmentStatus.CANCELLED) {
             notificationService.createNotification(
                     appointment.getPatient(),
                     "Appointment Cancelled",
-                    "Your appointment has been cancelled. " + (reason != null ? "Reason: " + reason : ""),
+                    "Your appointment scheduled for " + DateFormatterUtil.formatForNotification(appointment.getAppointmentTime()) + 
+                    " has been cancelled. " + (reason != null ? "Reason: " + reason : ""),
                     NotificationType.APPOINTMENT_CANCELLATION
             );
         }
@@ -209,7 +213,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         notificationService.createNotification(
                 appointment.getPatient(),
                 "Appointment Rescheduled",
-                "Your appointment has been rescheduled to " + newDateTime,
+                "Your appointment has been rescheduled to " + DateFormatterUtil.formatForNotification(newDateTime),
                 NotificationType.APPOINTMENT_RESCHEDULED
         );
 

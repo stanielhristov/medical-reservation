@@ -2,9 +2,11 @@ const ScheduleControls = ({
     selectedView, 
     currentDate, 
     onDateChange, 
-    onAddSchedule,
-    onRefresh 
+    onManageAvailability
 }) => {
+    console.log('ScheduleControls rendering with:', {
+        onManageAvailability: !!onManageAvailability
+    });
     const formatDateForView = () => {
         const options = { 
             year: 'numeric', 
@@ -111,63 +113,40 @@ const ScheduleControls = ({
                 )}
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
-                <button
-                    onClick={onRefresh}
-                    style={{
-                        background: 'rgba(59, 130, 246, 0.1)',
-                        border: '1px solid rgba(59, 130, 246, 0.2)',
-                        borderRadius: '8px',
-                        padding: '0.75rem 1.5rem',
-                        cursor: 'pointer',
-                        fontSize: '1rem',
-                        color: '#3b82f6',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                    }}
-                    onMouseEnter={e => {
-                        e.target.style.background = 'rgba(59, 130, 246, 0.15)';
-                        e.target.style.transform = 'translateY(-1px)';
-                    }}
-                    onMouseLeave={e => {
-                        e.target.style.background = 'rgba(59, 130, 246, 0.1)';
-                        e.target.style.transform = 'translateY(0)';
-                    }}
-                >
-                    🔄 Refresh
-                </button>
-                
-                <button
-                    onClick={onAddSchedule}
-                    style={{
-                        background: 'linear-gradient(135deg, #15803d 0%, #14532d 100%)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '0.75rem 1.5rem',
-                        cursor: 'pointer',
-                        fontSize: '1rem',
-                        color: 'white',
-                        fontWeight: '600',
-                        transition: 'all 0.2s ease',
-                        boxShadow: '0 4px 12px rgba(21, 128, 61, 0.3)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                    }}
-                    onMouseEnter={e => {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 6px 20px rgba(21, 128, 61, 0.4)';
-                    }}
-                    onMouseLeave={e => {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.3)';
-                    }}
-                >
-                    ➕ Add Time Slot
-                </button>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                {onManageAvailability && (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onManageAvailability();
+                        }}
+                        style={{
+                            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '0.75rem 1.5rem',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            color: 'white',
+                            fontWeight: '600',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                        onMouseEnter={e => {
+                            e.target.style.transform = 'translateY(-2px)';
+                            e.target.style.boxShadow = '0 6px 20px rgba(5, 150, 105, 0.4)';
+                        }}
+                        onMouseLeave={e => {
+                            e.target.style.transform = 'translateY(0)';
+                            e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                        }}
+                    >
+                        🗓️ Available Slots
+                    </button>
+                )}
             </div>
         </section>
     );

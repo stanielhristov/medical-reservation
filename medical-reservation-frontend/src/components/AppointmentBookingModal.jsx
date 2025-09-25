@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAvailableSlots } from '../api/schedule';
+import { getAvailableSlots, getDoctorScheduleWithStatus } from '../api/schedule';
 import { createAppointment } from '../api/appointments';
 
 const AppointmentBookingModal = ({ 
@@ -48,9 +48,17 @@ const AppointmentBookingModal = ({
                 selectedDate
             });
             
-            const slots = await getAvailableSlots(doctor.id, startDate, endDate);
-            console.log('Received slots:', slots);
-            setAvailableSlots(slots);
+            // Use the enhanced API that includes slot status
+            const slots = await getDoctorScheduleWithStatus(
+                doctor.id, 
+                startDate.toISOString(), 
+                endDate.toISOString()
+            );
+            console.log('Received slots with status:', slots);
+            
+            // Filter to only show available slots for booking
+            const availableSlots = slots.filter(slot => slot.status === 'FREE');
+            setAvailableSlots(availableSlots);
         } catch (error) {
             console.error('Error fetching available slots:', error);
             console.error('Error response:', error.response?.data);
