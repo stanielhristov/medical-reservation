@@ -18,16 +18,12 @@ export const useDoctorPatients = () => {
             setLoading(true);
             setError(null);
             
-            // First get the doctor's data using their user ID
             const doctorData = await getDoctorByUserId(user.id);
             
-            // Then get patients for this doctor
             const patientsData = await getDoctorPatients(doctorData.id);
             
-            // Transform backend data to match frontend structure
             const transformedPatients = await Promise.all(patientsData.map(async (patient) => {
                 try {
-                    // Get medical history for each patient
                     const medicalHistory = await getPatientMedicalHistory(patient.id);
                     
                     return {
@@ -45,7 +41,6 @@ export const useDoctorPatients = () => {
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
                         visitCount: patient.visitCount || 0,
                         status: patient.status?.toLowerCase() || 'active',
-                        // Additional comprehensive medical information
                         emergencyPhone: patient.emergencyPhone || patient.emergencyContact,
                         emergencyContactName: patient.emergencyContactName,
                         emergencyContactRelationship: patient.emergencyContactRelationship,
@@ -84,7 +79,6 @@ export const useDoctorPatients = () => {
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
                         visitCount: patient.visitCount || 0,
                         status: patient.status?.toLowerCase() || 'active',
-                        // Additional comprehensive medical information
                         emergencyPhone: patient.emergencyPhone || patient.emergencyContact,
                         emergencyContactName: patient.emergencyContactName,
                         emergencyContactRelationship: patient.emergencyContactRelationship,
@@ -119,7 +113,6 @@ export const useDoctorPatients = () => {
     const getFilteredPatients = useMemo(() => {
         let filtered = patients;
 
-        // Apply search filter
         if (searchTerm) {
             filtered = filtered.filter(patient =>
                 patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,7 +121,6 @@ export const useDoctorPatients = () => {
             );
         }
 
-        // Apply status filter
         const now = new Date();
         switch (selectedFilter) {
             case 'recent':
@@ -148,7 +140,6 @@ export const useDoctorPatients = () => {
                 );
                 break;
             default:
-                // 'all' - no additional filtering
                 break;
         }
 
@@ -157,11 +148,8 @@ export const useDoctorPatients = () => {
 
     const handleSaveRecord = useCallback(async (recordData) => {
         try {
-            // This would need to call a create medical record API
             console.log('Saving medical record:', recordData);
-            // For now, just close the modal
             setShowAddRecord(false);
-            // Refresh patients to get updated medical records
             await fetchPatients();
         } catch (error) {
             console.error('Error saving medical record:', error);

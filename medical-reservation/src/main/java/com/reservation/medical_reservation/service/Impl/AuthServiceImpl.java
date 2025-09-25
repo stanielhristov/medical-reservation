@@ -50,16 +50,12 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        // Check if user account is active
         if (!user.getIsActive()) {
-            // Only auto-reactivate if it was self-deactivated
             if (user.getDeactivationType() == DeactivationType.SELF_DEACTIVATED) {
-                // Auto-reactivate the account on login (for self-deactivated accounts only)
                 user.setIsActive(true);
-                user.setDeactivationType(null); // Clear deactivation type
+                user.setDeactivationType(null); 
                 userRepository.save(user);
                 
-                // Create notification for successful reactivation
                 notificationService.createNotification(
                         user,
                         "Account Reactivated",
@@ -67,12 +63,10 @@ public class AuthServiceImpl implements AuthService {
                         NotificationType.SYSTEM_NOTIFICATION
                 );
             } else {
-                // Admin deactivated - require admin to reactivate
                 throw new IllegalArgumentException("Your account has been deactivated by an administrator. Please contact support for assistance.");
             }
         }
 
-        // Update last login timestamp
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
@@ -117,8 +111,6 @@ public class AuthServiceImpl implements AuthService {
             }
         } else {
             System.out.println("⚠️ Password reset requested for non-existent email: " + forgotPasswordDTO.getEmail());
-//
-//             throw new IllegalArgumentException("Email address not found");
         }
 
     }

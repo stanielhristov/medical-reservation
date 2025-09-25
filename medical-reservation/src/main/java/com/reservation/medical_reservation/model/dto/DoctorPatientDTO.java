@@ -34,8 +34,6 @@ public class DoctorPatientDTO {
     private LocalDateTime nextAppointment;
     private Long visitCount;
     private String status;
-    
-    // Additional comprehensive medical information
     private String emergencyContactName;
     private String emergencyContactRelationship;
     private String chronicConditions;

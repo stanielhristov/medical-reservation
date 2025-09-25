@@ -332,8 +332,7 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(false);
         user.setDeactivationType(DeactivationType.SELF_DEACTIVATED);
         userRepository.save(user);
-
-        // Create notification for the user
+        
         notificationService.createNotification(
                 user,
                 "Account Deactivated",

@@ -118,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
         }
         
         user.setIsActive(true);
-        user.setDeactivationType(null); // Clear deactivation type when reactivated by admin
+        user.setDeactivationType(null); 
         userRepository.save(user);
 
         notificationService.createNotification(

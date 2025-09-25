@@ -178,8 +178,7 @@ public class DoctorServiceImpl implements DoctorService {
         if (patient.getDateOfBirth() != null) {
             dto.setAge(Period.between(patient.getDateOfBirth(), java.time.LocalDate.now()).getYears());
         }
-        
-        // Extract comprehensive medical information from patient profile
+    
         PatientProfileEntity profile = patient.getPatientProfile();
         if (profile != null) {
             dto.setGender(profile.getGender() != null ? profile.getGender().name() : "Not specified");
@@ -194,7 +193,6 @@ public class DoctorServiceImpl implements DoctorService {
             dto.setWeight(profile.getWeight());
             dto.setBmi(profile.getBmi());
             
-            // Parse allergies and conditions from text fields
             if (profile.getAllergies() != null && !profile.getAllergies().trim().isEmpty()) {
                 dto.setAllergies(Arrays.asList(profile.getAllergies().split(",\\s*")));
             } else {
