@@ -45,32 +45,6 @@ public class ScheduleController {
         return ResponseEntity.ok(availableSlots);
     }
 
-    @GetMapping("/test-endpoint")
-    public ResponseEntity<String> testEndpoint() {
-        System.out.println("Test endpoint called successfully!");
-        return ResponseEntity.ok("Test endpoint working");
-    }
-
-    @GetMapping("/test-delete")
-    public ResponseEntity<String> testDelete() {
-        System.out.println("Test delete endpoint called!");
-        return ResponseEntity.ok("Test delete endpoint working");
-    }
-
-    @PostMapping("/delete-multiple")
-    // @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')") // Temporarily disabled for testing
-    public ResponseEntity<Void> deleteMultipleSchedules(@RequestBody BulkDeleteRequest request) {
-        try {
-            System.out.println("Received bulk delete request for schedule IDs: " + request.getScheduleIds());
-            scheduleService.deleteMultipleSchedules(request.getScheduleIds());
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            System.err.println("Error in bulk delete: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
     @PutMapping("/{scheduleId}")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public ResponseEntity<ScheduleDTO> updateSchedule(
@@ -110,6 +84,16 @@ public class ScheduleController {
         return ResponseEntity.ok(schedules);
     }
 
+    @GetMapping("/doctor/{doctorId}/with-status-for-doctor")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<ScheduleDTO>> getDoctorScheduleWithStatusForDoctor(
+            @PathVariable Long doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        List<ScheduleDTO> schedules = scheduleService.getDoctorScheduleWithStatusForDoctor(doctorId, startDate, endDate);
+        return ResponseEntity.ok(schedules);
+    }
+
     @PostMapping("/doctor/{doctorId}/generate-from-availability")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public ResponseEntity<Void> generateScheduleFromAvailability(
@@ -117,6 +101,13 @@ public class ScheduleController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         scheduleService.generateScheduleFromAvailability(doctorId, startDate, endDate);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/delete-multiple")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteMultipleSchedules(@Valid @RequestBody BulkDeleteRequest request) {
+        scheduleService.deleteMultipleSchedules(request.getScheduleIds());
         return ResponseEntity.ok().build();
     }
 

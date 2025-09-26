@@ -50,6 +50,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         DoctorEntity doctor = doctorRepository.findById(scheduleDTO.getDoctorId())
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
+        LocalDateTime now = LocalDateTime.now();
+        if (scheduleDTO.getStartTime().isBefore(now)) {
+            throw new IllegalArgumentException("Cannot create schedule slots for past dates or times. Please select a future date and time.");
+        }
+
+        if (scheduleDTO.getEndTime().isBefore(scheduleDTO.getStartTime()) || 
+            scheduleDTO.getEndTime().equals(scheduleDTO.getStartTime())) {
+            throw new IllegalArgumentException("End time must be after start time.");
+        }
+
         ScheduleEntity schedule = new ScheduleEntity();
         schedule.setDoctor(doctor);
         schedule.setStartTime(scheduleDTO.getStartTime());
@@ -81,8 +91,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
+        LocalDateTime now = LocalDateTime.now();
         return scheduleRepository.findAvailableSlots(doctor, startDate, endDate)
                 .stream()
+                .filter(schedule -> schedule.getStartTime().isAfter(now))
                 .map(schedule -> {
                     ScheduleDTO dto = modelMapper.map(schedule, ScheduleDTO.class);
                     dto.setDoctorId(doctor.getId());
@@ -97,6 +109,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDTO updateSchedule(Long scheduleId, ScheduleDTO scheduleDTO) {
         ScheduleEntity schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+
+        LocalDateTime now = LocalDateTime.now();
+        if (scheduleDTO.getStartTime().isBefore(now)) {
+            throw new IllegalArgumentException("Cannot update schedule to past dates or times. Please select a future date and time.");
+        }
+
+        if (scheduleDTO.getEndTime().isBefore(scheduleDTO.getStartTime()) || 
+            scheduleDTO.getEndTime().equals(scheduleDTO.getStartTime())) {
+            throw new IllegalArgumentException("End time must be after start time.");
+        }
 
         schedule.setStartTime(scheduleDTO.getStartTime());
         schedule.setEndTime(scheduleDTO.getEndTime());
@@ -135,19 +157,22 @@ public class ScheduleServiceImpl implements ScheduleService {
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
-        List<ScheduleEntity> schedules = scheduleRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
+        LocalDateTime now = LocalDateTime.now();
+
+        List<ScheduleEntity> schedules = scheduleRepository.findFutureSlotsByDoctorAndDateRange(doctor, startDate, endDate, now);
         List<BlockedSlotEntity> blockedSlots = blockedSlotRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
         List<AppointmentEntity> appointments = appointmentRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
 
         List<ScheduleDTO> result = new ArrayList<>();
 
         for (ScheduleEntity schedule : schedules) {
+
             ScheduleDTO dto = modelMapper.map(schedule, ScheduleDTO.class);
             dto.setDoctorId(doctor.getId());
             dto.setDoctorName(doctor.getUser().getFullName());
 
             boolean isBlocked = blockedSlots.stream().anyMatch(blocked -> 
-                isTimeOverlapping(schedule.getStartTime(), schedule.getEndTime(), 
+                                isTimeOverlapping(schedule.getStartTime(), schedule.getEndTime(), 
                                 blocked.getStartTime(), blocked.getEndTime()));
 
             if (isBlocked) {
@@ -169,8 +194,73 @@ public class ScheduleServiceImpl implements ScheduleService {
                     dto.setAppointmentId(appointment.getId());
                     dto.setAvailable(false);
                 } else {
-                    dto.setStatus("FREE");
-                    dto.setAvailable(true);
+                    // Check if doctor has marked this slot as unavailable
+                    if (!schedule.isAvailable()) {
+                        dto.setStatus("UNAVAILABLE");
+                        dto.setAvailable(false);
+                    } else {
+                        dto.setStatus("FREE");
+                        dto.setAvailable(true);
+                    }
+                }
+            }
+
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<ScheduleDTO> getDoctorScheduleWithStatusForDoctor(Long doctorId, LocalDateTime startDate, LocalDateTime endDate) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+
+        List<ScheduleEntity> schedules = scheduleRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
+        List<BlockedSlotEntity> blockedSlots = blockedSlotRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
+        List<AppointmentEntity> appointments = appointmentRepository.findByDoctorAndDateRange(doctor, startDate, endDate);
+
+        List<ScheduleDTO> result = new ArrayList<>();
+
+        for (ScheduleEntity schedule : schedules) {
+            ScheduleDTO dto = modelMapper.map(schedule, ScheduleDTO.class);
+            dto.setDoctorId(doctor.getId());
+            dto.setDoctorName(doctor.getUser().getFullName());
+
+            boolean isBlocked = blockedSlots.stream().anyMatch(blocked -> 
+                                isTimeOverlapping(schedule.getStartTime(), schedule.getEndTime(), 
+                                blocked.getStartTime(), blocked.getEndTime()));
+
+            if (isBlocked) {
+                BlockedSlotEntity blockingSlot = blockedSlots.stream()
+                    .filter(blocked -> isTimeOverlapping(schedule.getStartTime(), schedule.getEndTime(), 
+                                                       blocked.getStartTime(), blocked.getEndTime()))
+                    .findFirst().orElse(null);
+                dto.setStatus("BLOCKED");
+                dto.setBlockedReason(blockingSlot != null ? blockingSlot.getReason() : "Unavailable");
+                dto.setAvailable(false);
+            } else {
+                AppointmentEntity appointment = appointments.stream()
+                    .filter(apt -> isTimeOverlapping(schedule.getStartTime(), schedule.getEndTime(), 
+                                                   apt.getAppointmentTime(), apt.getEndTime()))
+                    .findFirst().orElse(null);
+
+                if (appointment != null) {
+                    dto.setStatus("BOOKED");
+                    dto.setAppointmentId(appointment.getId());
+                    dto.setAvailable(false);
+                } else {
+                    LocalDateTime now = LocalDateTime.now();
+                    if (schedule.getStartTime().isBefore(now)) {
+                        dto.setStatus("PAST");
+                        dto.setAvailable(false);
+                    } else if (!schedule.isAvailable()) {
+                        dto.setStatus("UNAVAILABLE");
+                        dto.setAvailable(false);
+                    } else {
+                        dto.setStatus("FREE");
+                        dto.setAvailable(true);
+                    }
                 }
             }
 

@@ -19,6 +19,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
     const [weekSchedule, setWeekSchedule] = useState({});
     const [saving, setSaving] = useState(false);
     const [showSlotDisplay, setShowSlotDisplay] = useState(false);
+    const [selectedWeekOffset, setSelectedWeekOffset] = useState(0); // 0 = current week, 1 = next week, etc.
     const [confirmationPopup, setConfirmationPopup] = useState({
         isOpen: false,
         title: '',
@@ -70,12 +71,33 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         }
     }, [doctorId, fetchAvailabilities]);
 
+    // Reset schedule when week changes
+    useEffect(() => {
+        // Reset to default schedule when week changes
+        const schedule = {};
+        daysOfWeek.forEach(day => {
+            const defaultStartTime = generateTimeOptions(day.key)[0] || '09:00';
+            const defaultEndTime = generateTimeOptions(day.key, true, defaultStartTime)[0] || '17:00';
+            
+            schedule[day.key] = {
+                enabled: false,
+                startTime: defaultStartTime,
+                endTime: defaultEndTime,
+                slotDuration: 30,
+                id: null
+            };
+        });
+        setWeekSchedule(schedule);
+    }, [selectedWeekOffset]);
+
     useEffect(() => {
         // Initialize week schedule from existing availabilities
         const schedule = {};
         daysOfWeek.forEach(day => {
             const availability = availabilities.find(av => av.dayOfWeek === day.key);
-            schedule[day.key] = availability ? {
+            const isPast = isPastDay(day.key);
+            
+            schedule[day.key] = availability && !isPast ? {
                 enabled: true,
                 startTime: availability.startTime,
                 endTime: availability.endTime,
@@ -86,7 +108,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 startTime: '09:00',
                 endTime: '17:00',
                 slotDuration: 30,
-                id: null
+                id: isPast ? null : (availability?.id || null)
             };
         });
         setWeekSchedule(schedule);
@@ -113,11 +135,22 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
     };
 
     const validateSchedule = () => {
+        const now = new Date();
+        const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+        const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][now.getDay()];
+        
         for (const [dayKey, schedule] of Object.entries(weekSchedule)) {
+            // Skip validation for past days
+            if (isPastDay(dayKey)) {
+                continue;
+            }
+            
             if (schedule.enabled) {
                 if (schedule.startTime >= schedule.endTime) {
                     throw new Error(`${daysOfWeek.find(d => d.key === dayKey).label}: Start time must be before end time`);
                 }
+                
+                // No need to validate past times since dropdown only shows valid options
                 
                 const startMinutes = timeToMinutes(schedule.startTime);
                 const endMinutes = timeToMinutes(schedule.endTime);
@@ -144,6 +177,53 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         return hours * 60 + minutes;
     };
 
+    const generateTimeOptions = (dayKey, isEndTime = false, startTime = null) => {
+        const options = [];
+        const today = new Date();
+        const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
+        const isToday = selectedWeekOffset === 0 && dayKey === currentDayOfWeek;
+        
+        // Start from earliest hour (6 AM) to latest hour (11 PM)
+        let startHour = 6;
+        let startMinute = 0;
+        
+        if (isToday && !isEndTime) {
+            // For today's start time, start from next available slot after current time
+            const currentHour = today.getHours();
+            const currentMinute = today.getMinutes();
+            
+            // Round up to next 30-minute slot
+            if (currentMinute <= 30) {
+                startHour = currentHour;
+                startMinute = 30;
+            } else {
+                startHour = currentHour + 1;
+                startMinute = 0;
+            }
+            
+            // If it's too late in the day (after 11 PM), no slots available
+            if (startHour >= 23) {
+                return [];
+            }
+        } else if (isEndTime && startTime) {
+            // For end time, start from 30 minutes after start time
+            const [startHours, startMinutes] = startTime.split(':').map(Number);
+            const startTotalMinutes = startHours * 60 + startMinutes + 30; // Add 30 minutes minimum
+            startHour = Math.floor(startTotalMinutes / 60);
+            startMinute = startTotalMinutes % 60;
+        }
+        
+        // Generate 30-minute slots
+        for (let hour = startHour; hour <= 23; hour++) {
+            for (let minute = (hour === startHour ? startMinute : 0); minute < 60; minute += 30) {
+                const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                options.push(timeString);
+            }
+        }
+        
+        return options;
+    };
+
     const handleSave = async () => {
         try {
             setSaving(true);
@@ -164,6 +244,11 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
             const promises = [];
             
             for (const [dayKey, schedule] of Object.entries(weekSchedule)) {
+                // Skip past days completely
+                if (isPastDay(dayKey)) {
+                    continue;
+                }
+                
                 if (schedule.enabled) {
                     // Create or update availability
                     const availabilityData = {
@@ -186,24 +271,24 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
             
             await Promise.all(promises);
             
-            // Generate schedule slots for the current week only
+            // Generate schedule slots for the selected week
             try {
-                const today = new Date();
-                const startOfWeek = new Date(today);
-                const day = today.getDay();
-                const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-                startOfWeek.setDate(diff);
+                const { startOfSelectedWeek, endOfSelectedWeek } = getSelectedWeekDates();
+                let startDate = startOfSelectedWeek;
                 
-                const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                // For current week, start from today
+                if (selectedWeekOffset === 0) {
+                    const today = new Date();
+                    startDate = today > startOfSelectedWeek ? today : startOfSelectedWeek;
+                }
                 
                 await generateScheduleFromAvailability(
                     doctorId,
-                    startOfWeek.toISOString().split('T')[0], // Format as YYYY-MM-DD
-                    endOfWeek.toISOString().split('T')[0]
+                    startDate.toISOString().split('T')[0],
+                    endOfSelectedWeek.toISOString().split('T')[0]
                 );
                 
-                console.log('Successfully generated schedule slots for the current week');
+                console.log('Successfully generated schedule slots for selected week');
             } catch (slotGenerationErr) {
                 console.error('Error generating schedule slots:', slotGenerationErr);
                 // Don't fail the whole operation if slot generation fails
@@ -212,13 +297,13 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                     'Your availability has been saved, but there was an issue generating schedule slots for this week. You may need to generate them manually.',
                     'warning'
                 );
-                return; // Don't close the modal yet, let user see the warning
+                return; 
             }
             
             // Show success confirmation
             showConfirmation(
-                'Week Slots Saved Successfully! 🎉',
-                'Your availability has been saved and schedule slots have been generated for the current week.',
+                'Availability Saved Successfully! 🎉',
+                'Your availability has been saved and schedule slots have been generated.',
                 'success'
             );
             
@@ -243,16 +328,56 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         return weekSchedule[dayKey]?.enabled ? '#15803d' : '#9ca3af';
     };
 
+    const getSelectedWeekDates = () => {
+        const today = new Date();
+        const startOfSelectedWeek = new Date(today);
+        const day = today.getDay();
+        const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Monday
+        startOfSelectedWeek.setDate(diff + (selectedWeekOffset * 7));
+        
+        const endOfSelectedWeek = new Date(startOfSelectedWeek);
+        endOfSelectedWeek.setDate(startOfSelectedWeek.getDate() + 6);
+        
+        return { startOfSelectedWeek, endOfSelectedWeek };
+    };
+
+    const isPastDay = (dayKey) => {
+        // If we're looking at future weeks, no days are past
+        if (selectedWeekOffset > 0) {
+            return false;
+        }
+        
+        // For current week, check if day is in the past
+        const today = new Date();
+        const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
+        
+        const dayOrder = {
+            'MONDAY': 1,
+            'TUESDAY': 2,
+            'WEDNESDAY': 3,
+            'THURSDAY': 4,
+            'FRIDAY': 5,
+            'SATURDAY': 6,
+            'SUNDAY': 7
+        };
+        
+        return dayOrder[dayKey] < dayOrder[currentDayOfWeek];
+    };
+
+    const getDayDisplayLabel = (dayKey) => {
+        const today = new Date();
+        const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
+        
+        // Only show "Today" for current week
+        if (selectedWeekOffset === 0 && dayKey === currentDayOfWeek) {
+            return `${daysOfWeek.find(d => d.key === dayKey).label} (Today)`;
+        }
+        return daysOfWeek.find(d => d.key === dayKey).label;
+    };
+
     const getCurrentWeekRange = () => {
         try {
-            const today = new Date();
-            const startOfWeek = new Date(today);
-            const day = today.getDay();
-            const diff = today.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
-            startOfWeek.setDate(diff);
-            
-            const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            const { startOfSelectedWeek, endOfSelectedWeek } = getSelectedWeekDates();
             
             const formatDate = (date) => {
                 return date.toLocaleDateString('en-US', { 
@@ -261,10 +386,14 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 });
             };
             
-            return `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
+            const weekLabel = selectedWeekOffset === 0 ? 'Current Week' : 
+                             selectedWeekOffset === 1 ? 'Next Week' : 
+                             `Week +${selectedWeekOffset}`;
+            
+            return `${weekLabel}: ${formatDate(startOfSelectedWeek)} - ${formatDate(endOfSelectedWeek)}`;
         } catch (err) {
             console.error('Error calculating week range:', err);
-            return 'Current Week';
+            return 'Selected Week';
         }
     };
 
@@ -384,7 +513,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                         fontSize: '1.5rem',
                         fontWeight: '600'
                     }}>
-                        🗓️ Available Slots - Current Week
+                        🗓️ Weekly Availability Manager
                     </h2>
                     <button
                         onClick={onClose}
@@ -398,6 +527,69 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                         }}
                     >
                         ✕
+                    </button>
+                </div>
+
+                {/* Week Navigation */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    marginBottom: '2rem',
+                    padding: '1rem',
+                    background: '#f8fafc',
+                    borderRadius: '12px',
+                    border: '1px solid #e2e8f0'
+                }}>
+                    <button
+                        onClick={() => setSelectedWeekOffset(Math.max(0, selectedWeekOffset - 1))}
+                        disabled={selectedWeekOffset === 0}
+                        style={{
+                            background: selectedWeekOffset === 0 ? '#e5e7eb' : '#15803d',
+                            color: selectedWeekOffset === 0 ? '#9ca3af' : 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '0.75rem 1rem',
+                            cursor: selectedWeekOffset === 0 ? 'not-allowed' : 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                    >
+                        ← Previous Week
+                    </button>
+                    
+                    <div style={{
+                        fontWeight: '600',
+                        color: '#374151',
+                        fontSize: '1rem',
+                        textAlign: 'center',
+                        minWidth: '200px'
+                    }}>
+                        {getCurrentWeekRange()}
+                    </div>
+                    
+                    <button
+                        onClick={() => setSelectedWeekOffset(selectedWeekOffset + 1)}
+                        disabled={selectedWeekOffset >= 4} // Limit to 4 weeks ahead
+                        style={{
+                            background: selectedWeekOffset >= 4 ? '#e5e7eb' : '#15803d',
+                            color: selectedWeekOffset >= 4 ? '#9ca3af' : 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '0.75rem 1rem',
+                            cursor: selectedWeekOffset >= 4 ? 'not-allowed' : 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                    >
+                        Next Week →
                     </button>
                 </div>
 
@@ -421,22 +613,12 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
 
                 <div style={{ marginBottom: '2rem' }}>
                     <p style={{ color: '#666', margin: '0 0 1rem 0' }}>
-                        Configure your available time slots for this week only. Set your working hours for each day and the system will generate appointment slots for the current week.
+                        Configure your available time slots for the selected week. Use the navigation above to choose different weeks.
                     </p>
-                    <div style={{ 
-                        background: '#f0fdf4', 
-                        border: '1px solid #bbf7d0', 
-                        borderRadius: '8px', 
-                        padding: '0.75rem',
-                        fontSize: '0.9rem',
-                        color: '#166534'
-                    }}>
-                        📅 Current Week: {getCurrentWeekRange()}
-                    </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {daysOfWeek.map(day => {
+                    {daysOfWeek.filter(day => !isPastDay(day.key)).map(day => {
                         const daySchedule = weekSchedule[day.key] || {};
                         
                         return (
@@ -457,7 +639,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                         alignItems: 'center',
                                         gap: '0.5rem',
                                         cursor: 'pointer',
-                                        minWidth: '120px',
+                                        minWidth: '160px',
                                         fontWeight: '600',
                                         color: getDayColor(day.key)
                                     }}>
@@ -471,7 +653,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 accentColor: '#15803d'
                                             }}
                                         />
-                                        {day.label}
+                                        {getDayDisplayLabel(day.key)}
                                     </label>
                                     
                                     {!daySchedule.enabled && (
@@ -498,18 +680,24 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                             }}>
                                                 Start Time
                                             </label>
-                                            <input
-                                                type="time"
-                                                value={daySchedule.startTime || '09:00'}
+                                            <select
+                                                value={daySchedule.startTime || generateTimeOptions(day.key)[0] || '09:00'}
                                                 onChange={(e) => handleTimeChange(day.key, 'startTime', e.target.value)}
                                                 style={{
                                                     width: '100%',
                                                     padding: '0.5rem',
                                                     border: '1px solid #d1d5db',
                                                     borderRadius: '6px',
-                                                    fontSize: '1rem'
+                                                    fontSize: '1rem',
+                                                    background: 'white'
                                                 }}
-                                            />
+                                            >
+                                                {generateTimeOptions(day.key).map(time => (
+                                                    <option key={time} value={time}>
+                                                        {time}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div>
@@ -522,18 +710,24 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                             }}>
                                                 End Time
                                             </label>
-                                            <input
-                                                type="time"
-                                                value={daySchedule.endTime || '17:00'}
+                                            <select
+                                                value={daySchedule.endTime || generateTimeOptions(day.key, true, daySchedule.startTime)[0] || '17:00'}
                                                 onChange={(e) => handleTimeChange(day.key, 'endTime', e.target.value)}
                                                 style={{
                                                     width: '100%',
                                                     padding: '0.5rem',
                                                     border: '1px solid #d1d5db',
                                                     borderRadius: '6px',
-                                                    fontSize: '1rem'
+                                                    fontSize: '1rem',
+                                                    background: 'white'
                                                 }}
-                                            />
+                                            >
+                                                {generateTimeOptions(day.key, true, daySchedule.startTime).map(time => (
+                                                    <option key={time} value={time}>
+                                                        {time}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div>
@@ -660,6 +854,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
             {showSlotDisplay && (
                 <WeeklySlotDisplay
                     doctorId={doctorId}
+                    weekOffset={selectedWeekOffset}
                     onClose={() => setShowSlotDisplay(false)}
                 />
             )}

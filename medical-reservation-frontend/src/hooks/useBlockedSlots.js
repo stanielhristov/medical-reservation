@@ -51,7 +51,6 @@ export const useBlockedSlots = (doctorId) => {
                 doctorId: doctorId
             });
             
-            // Update local state
             setBlockedSlots(prev => [...prev, created].sort((a, b) => 
                 new Date(a.startTime) - new Date(b.startTime)
             ));
@@ -69,7 +68,6 @@ export const useBlockedSlots = (doctorId) => {
             setError(null);
             const updated = await updateBlockedSlot(blockedSlotId, blockedSlotData);
             
-            // Update local state
             setBlockedSlots(prev => 
                 prev.map(slot => slot.id === blockedSlotId ? updated : slot)
                     .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
@@ -88,7 +86,6 @@ export const useBlockedSlots = (doctorId) => {
             setError(null);
             await deleteBlockedSlot(blockedSlotId);
             
-            // Update local state
             setBlockedSlots(prev => prev.filter(slot => slot.id !== blockedSlotId));
         } catch (err) {
             console.error('Error deleting blocked slot:', err);
@@ -124,7 +121,6 @@ export const useBlockedSlots = (doctorId) => {
         });
     }, [blockedSlots]);
 
-    // Helper to check if a specific time range conflicts with blocked slots
     const isTimeRangeBlocked = useCallback((startTime, endTime) => {
         return blockedSlots.some(slot => {
             const slotStart = new Date(slot.startTime);
@@ -132,7 +128,6 @@ export const useBlockedSlots = (doctorId) => {
             const rangeStart = new Date(startTime);
             const rangeEnd = new Date(endTime);
             
-            // Check for overlap
             return rangeStart < slotEnd && rangeEnd > slotStart;
         });
     }, [blockedSlots]);

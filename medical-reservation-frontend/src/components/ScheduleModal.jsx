@@ -9,12 +9,34 @@ const ScheduleModal = ({
     
     if (!isOpen) return null;
 
+    const getMinDateTime = () => {
+        const now = new Date();
+        return now.toISOString().slice(0, 16);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
+        const startTime = formData.get('startTime');
+        const endTime = formData.get('endTime');
+
+        // Validate that start time is not in the past
+        const now = new Date();
+        const startDateTime = new Date(startTime);
+        
+        if (startDateTime < now) {
+            alert('Cannot create slots for past dates or times. Please select a future date and time.');
+            return;
+        }
+
+        if (new Date(endTime) <= startDateTime) {
+            alert('End time must be after start time.');
+            return;
+        }
+
         const scheduleData = {
-            startTime: formData.get('startTime'),
-            endTime: formData.get('endTime'),
+            startTime,
+            endTime,
             available: formData.get('available') === 'true'
         };
         
@@ -133,6 +155,7 @@ const ScheduleModal = ({
                                     defaultValue={schedule?.startTime ? 
                                         new Date(schedule.startTime).toISOString().slice(0, 16) : ''
                                     }
+                                    min={getMinDateTime()}
                                     required
                                     style={{
                                         width: '100%',
@@ -169,6 +192,7 @@ const ScheduleModal = ({
                                     defaultValue={schedule?.endTime ? 
                                         new Date(schedule.endTime).toISOString().slice(0, 16) : ''
                                     }
+                                    min={getMinDateTime()}
                                     required
                                     style={{
                                         width: '100%',

@@ -79,6 +79,14 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
                     backgroundColor: '#fef2f2',
                     color: '#991b1b'
                 };
+            case 'UNAVAILABLE':
+                return {
+                    ...baseStyle,
+                    borderColor: '#f97316',
+                    backgroundColor: '#fff7ed',
+                    color: '#9a3412',
+                    opacity: 0.7
+                };
             default:
                 return {
                     ...baseStyle,
@@ -97,6 +105,8 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
                 return '📅';
             case 'BLOCKED':
                 return '🚫';
+            case 'UNAVAILABLE':
+                return '⏸️';
             default:
                 return '❓';
         }
@@ -109,6 +119,8 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
             case 'BOOKED':
                 return 'Booked';
             case 'BLOCKED':
+                return 'Blocked';
+            case 'UNAVAILABLE':
                 return 'Unavailable';
             default:
                 return 'Unknown';

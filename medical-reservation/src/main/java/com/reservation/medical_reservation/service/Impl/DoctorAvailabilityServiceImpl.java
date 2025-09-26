@@ -180,6 +180,24 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
         LocalTime endTime = availability.getEndTime();
         int slotDuration = availability.getSlotDuration();
         
+        // Check if this is today and adjust start time to current time if necessary
+        LocalDateTime now = LocalDateTime.now();
+        if (date.equals(now.toLocalDate()) && currentTime.isBefore(now.toLocalTime())) {
+            // For today, start from the next available slot after current time
+            LocalTime nextSlotTime = now.toLocalTime();
+            // Round up to the next slot boundary
+            int minutesToNextSlot = slotDuration - (nextSlotTime.getMinute() % slotDuration);
+            if (minutesToNextSlot == slotDuration) {
+                minutesToNextSlot = 0; // If we're exactly on a slot boundary
+            }
+            currentTime = nextSlotTime.plusMinutes(minutesToNextSlot);
+            
+            // If the rounded time is past the end time, no slots can be generated for today
+            if (currentTime.isAfter(endTime) || currentTime.equals(endTime)) {
+                return slots; // Return empty list
+            }
+        }
+        
         while (currentTime.isBefore(endTime)) {
             LocalTime slotEndTime = currentTime.plusMinutes(slotDuration);
 
@@ -189,6 +207,12 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
             
             LocalDateTime slotStart = LocalDateTime.of(date, currentTime);
             LocalDateTime slotEnd = LocalDateTime.of(date, slotEndTime);
+
+            // For today, completely skip slots that start in the past or at current time
+            if (date.equals(now.toLocalDate()) && (slotStart.isBefore(now) || slotStart.equals(now))) {
+                currentTime = slotEndTime;
+                continue;
+            }
 
             boolean slotExists = scheduleRepository.findByDoctorAndDateRange(doctor, slotStart, slotEnd)
                     .stream()

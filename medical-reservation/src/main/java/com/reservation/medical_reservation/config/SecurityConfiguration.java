@@ -44,8 +44,7 @@ public class SecurityConfiguration {
                                 "/api/auth/reset-password",
                                 "/public/**", 
                                 "/api/test/**",
-                                "/api/schedules/test-endpoint",
-                                "/api/schedules/delete-multiple"  // Temporarily permit for testing
+                                "/api/schedules/test-endpoint"
                         ).permitAll()
                         .requestMatchers("/api/doctors", "/api/doctors/**").hasAnyRole("USER", "DOCTOR", "ADMIN")
                         .requestMatchers("/api/ratings/doctor/*/stats").permitAll()

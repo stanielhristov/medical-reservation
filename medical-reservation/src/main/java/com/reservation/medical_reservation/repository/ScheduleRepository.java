@@ -28,4 +28,11 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> 
             @Param("doctor") DoctorEntity doctor,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
+    
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.doctor = :doctor AND s.startTime >= :startDate AND s.endTime <= :endDate AND s.startTime > :currentTime ORDER BY s.startTime")
+    List<ScheduleEntity> findFutureSlotsByDoctorAndDateRange(
+            @Param("doctor") DoctorEntity doctor,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("currentTime") LocalDateTime currentTime);
 }

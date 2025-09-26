@@ -59,7 +59,6 @@ export const useAvailability = (doctorId) => {
                 doctorId: doctorId
             });
             
-            // Update local state
             setAvailabilities(prev => {
                 const filtered = prev.filter(av => av.dayOfWeek !== created.dayOfWeek);
                 return [...filtered, created].sort((a, b) => {
@@ -81,7 +80,6 @@ export const useAvailability = (doctorId) => {
             setError(null);
             const updated = await updateDoctorAvailability(availabilityId, availabilityData);
             
-            // Update local state
             setAvailabilities(prev => 
                 prev.map(av => av.id === availabilityId ? updated : av)
             );
@@ -138,12 +136,10 @@ export const useAvailability = (doctorId) => {
         }
     }, [doctorId]);
 
-    // Helper to get availability by day of week
     const getAvailabilityByDay = useCallback((dayOfWeek) => {
         return availabilities.find(av => av.dayOfWeek === dayOfWeek) || null;
     }, [availabilities]);
 
-    // Helper to check if doctor has availability set up
     const hasAvailabilitySetup = useCallback(() => {
         return availabilities.length > 0;
     }, [availabilities]);

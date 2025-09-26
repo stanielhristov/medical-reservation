@@ -14,9 +14,8 @@ public interface ScheduleService {
     void deleteSchedule(Long scheduleId);
     void markSlotUnavailable(Long scheduleId);
     void markSlotAvailable(Long scheduleId);
-    
-    // Enhanced methods for availability and blocked slots
     List<ScheduleDTO> getDoctorScheduleWithStatus(Long doctorId, LocalDateTime startDate, LocalDateTime endDate);
+    List<ScheduleDTO> getDoctorScheduleWithStatusForDoctor(Long doctorId, LocalDateTime startDate, LocalDateTime endDate);
     ScheduleDTO createScheduleFromAvailability(ScheduleDTO scheduleDTO);
     void generateScheduleFromAvailability(Long doctorId, LocalDate startDate, LocalDate endDate);
     void deleteMultipleSchedules(List<Long> scheduleIds);

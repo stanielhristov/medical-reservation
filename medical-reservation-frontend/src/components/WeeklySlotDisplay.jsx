@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDoctorScheduleWithStatus } from '../api/schedule';
+import { getDoctorScheduleWithStatusForDoctor } from '../api/schedule';
 
 const WeeklySlotDisplay = ({ doctorId, onClose }) => {
     const [weekSlots, setWeekSlots] = useState([]);
@@ -47,7 +47,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                 const endDateTime = new Date(endOfWeek);
                 endDateTime.setHours(23, 59, 59, 999);
 
-                const slots = await getDoctorScheduleWithStatus(
+                const slots = await getDoctorScheduleWithStatusForDoctor(
                     doctorId,
                     startDateTime.toISOString(),
                     endDateTime.toISOString()
@@ -99,15 +99,23 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
     };
 
     const getSlotStatusColor = (slot) => {
-        if (!slot.available) return '#ef4444'; // red for unavailable
-        if (slot.booked) return '#f59e0b'; // orange for booked
-        return '#10b981'; // green for available
+        switch (slot.status) {
+            case 'FREE': return '#10b981'; // green for available
+            case 'BOOKED': return '#f59e0b'; // orange for booked
+            case 'BLOCKED': return '#ef4444'; // red for blocked
+            case 'PAST': return '#9ca3af'; // gray for past slots (for doctor view only)
+            default: return '#ef4444'; // red for unavailable
+        }
     };
 
     const getSlotStatusText = (slot) => {
-        if (!slot.available) return 'Unavailable';
-        if (slot.booked) return 'Booked';
-        return 'Available';
+        switch (slot.status) {
+            case 'FREE': return 'Available';
+            case 'BOOKED': return 'Booked';
+            case 'BLOCKED': return slot.blockedReason || 'Blocked';
+            case 'PAST': return 'Past';
+            default: return 'Unavailable';
+        }
     };
 
     if (loading) {

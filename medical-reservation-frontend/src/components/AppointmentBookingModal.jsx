@@ -47,8 +47,7 @@ const AppointmentBookingModal = ({
                 endDate: endDate.toISOString(),
                 selectedDate
             });
-            
-            // Use the enhanced API that includes slot status
+
             const slots = await getDoctorScheduleWithStatus(
                 doctor.id, 
                 startDate.toISOString(), 
@@ -56,9 +55,10 @@ const AppointmentBookingModal = ({
             );
             console.log('Received slots with status:', slots);
             
-            // Filter to only show available slots for booking
-            const availableSlots = slots.filter(slot => slot.status === 'FREE');
-            setAvailableSlots(availableSlots);
+            const relevantSlots = slots.filter(slot => 
+                slot.status === 'FREE' || slot.status === 'UNAVAILABLE'
+            );
+            setAvailableSlots(relevantSlots);
         } catch (error) {
             console.error('Error fetching available slots:', error);
             console.error('Error response:', error.response?.data);
@@ -72,6 +72,11 @@ const AppointmentBookingModal = ({
     const handleBooking = async () => {
         if (!selectedSlot || !reason.trim()) {
             onBookingError('Please select a time slot and provide a reason for the appointment.');
+            return;
+        }
+
+        if (selectedSlot.status !== 'FREE') {
+            onBookingError('This time slot is not available for booking. Please select another slot.');
             return;
         }
 
@@ -305,28 +310,44 @@ const AppointmentBookingModal = ({
                                 gap: '1rem'
                             }}>
                                 {availableSlots.map((slot) => (
-                                    <button
+                                    <div
                                         key={slot.id}
-                                        onClick={() => setSelectedSlot(slot)}
+                                        onClick={slot.status === 'FREE' ? () => setSelectedSlot(slot) : undefined}
                                         style={{
                                             padding: '1rem',
-                                            border: selectedSlot?.id === slot.id 
-                                                ? '2px solid #22c55e' 
-                                                : '2px solid rgba(34, 197, 94, 0.2)',
+                                            border: slot.status === 'UNAVAILABLE' 
+                                                ? '2px solid rgba(239, 68, 68, 0.3)'
+                                                : selectedSlot?.id === slot.id 
+                                                    ? '2px solid #22c55e' 
+                                                    : '2px solid rgba(34, 197, 94, 0.2)',
                                             borderRadius: '12px',
-                                            background: selectedSlot?.id === slot.id 
-                                                ? 'rgba(34, 197, 94, 0.1)' 
-                                                : 'white',
-                                            cursor: 'pointer',
+                                            background: slot.status === 'UNAVAILABLE' 
+                                                ? 'rgba(239, 68, 68, 0.05)'
+                                                : selectedSlot?.id === slot.id 
+                                                    ? 'rgba(34, 197, 94, 0.1)' 
+                                                    : 'white',
+                                            cursor: slot.status === 'FREE' ? 'pointer' : 'not-allowed',
                                             fontSize: '1rem',
                                             fontWeight: '600',
-                                            color: '#374151',
+                                            color: slot.status === 'UNAVAILABLE' ? '#9ca3af' : '#374151',
                                             transition: 'all 0.2s ease',
-                                            textAlign: 'center'
+                                            textAlign: 'center',
+                                            opacity: slot.status === 'UNAVAILABLE' ? 0.7 : 1,
+                                            position: 'relative'
                                         }}
                                     >
                                         {formatSlotTime(slot.startTime, slot.endTime)}
-                                    </button>
+                                        {slot.status === 'UNAVAILABLE' && (
+                                            <div style={{
+                                                fontSize: '0.8rem',
+                                                color: '#ef4444',
+                                                marginTop: '0.25rem',
+                                                fontWeight: '500'
+                                            }}>
+                                                Unavailable
+                                            </div>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         )}

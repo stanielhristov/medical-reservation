@@ -82,6 +82,20 @@ export const getDoctorScheduleWithStatus = async (doctorId, startDate, endDate) 
     }
 };
 
+export const getDoctorScheduleWithStatusForDoctor = async (doctorId, startDate, endDate) => {
+    try {
+        const response = await api.get(`/schedules/doctor/${doctorId}/with-status-for-doctor`, {
+            params: {
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || error.message);
+    }
+};
+
 export const generateScheduleFromAvailability = async (doctorId, startDate, endDate) => {
     try {
         await api.post(`/schedules/doctor/${doctorId}/generate-from-availability`, null, {
