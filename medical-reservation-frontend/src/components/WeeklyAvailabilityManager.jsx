@@ -125,13 +125,31 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
     };
 
     const handleTimeChange = (dayKey, field, value) => {
-        setWeekSchedule(prev => ({
-            ...prev,
-            [dayKey]: {
+        setWeekSchedule(prev => {
+            const updatedSchedule = {
                 ...prev[dayKey],
                 [field]: value
+            };
+            
+            // If start time is changed, automatically update end time to ensure it's valid
+            if (field === 'startTime') {
+                const endTimeOptions = generateTimeOptions(dayKey, true, value);
+                const currentEndTime = updatedSchedule.endTime;
+                const startMinutes = timeToMinutes(value);
+                const endMinutes = timeToMinutes(currentEndTime);
+                
+                // If current end time is invalid (before or equal to start time), 
+                // set it to the first available end time option
+                if (endMinutes <= startMinutes && endTimeOptions.length > 0) {
+                    updatedSchedule.endTime = endTimeOptions[0];
+                }
             }
-        }));
+            
+            return {
+                ...prev,
+                [dayKey]: updatedSchedule
+            };
+        });
     };
 
     const validateSchedule = () => {
@@ -146,14 +164,15 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
             }
             
             if (schedule.enabled) {
-                if (schedule.startTime >= schedule.endTime) {
+                const startMinutes = timeToMinutes(schedule.startTime);
+                const endMinutes = timeToMinutes(schedule.endTime);
+                
+                if (startMinutes >= endMinutes) {
                     throw new Error(`${daysOfWeek.find(d => d.key === dayKey).label}: Start time must be before end time`);
                 }
                 
                 // No need to validate past times since dropdown only shows valid options
                 
-                const startMinutes = timeToMinutes(schedule.startTime);
-                const endMinutes = timeToMinutes(schedule.endTime);
                 const duration = endMinutes - startMinutes;
                 
                 if (duration < schedule.slotDuration) {

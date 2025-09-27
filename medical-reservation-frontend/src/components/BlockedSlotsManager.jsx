@@ -104,14 +104,31 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
     const getDuration = (startTime, endTime) => {
         const start = new Date(startTime);
         const end = new Date(endTime);
-        const diffHours = (end - start) / (1000 * 60 * 60);
+        const diffInMinutes = (end - start) / (1000 * 60);
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
         
-        if (diffHours < 24) {
-            return `${Math.round(diffHours * 10) / 10} hours`;
+        if (diffInMinutes < 60) {
+            return `${minutes}m`;
+        } else if (diffInMinutes < 1440) { // Less than 24 hours
+            if (minutes > 0) {
+                return `${hours}h ${minutes}m`;
+            } else {
+                return `${hours}h`;
+            }
         } else {
-            const days = Math.floor(diffHours / 24);
-            const hours = Math.round((diffHours % 24) * 10) / 10;
-            return `${days} day${days > 1 ? 's' : ''}${hours > 0 ? ` and ${hours} hours` : ''}`;
+            const days = Math.floor(diffInMinutes / 1440);
+            const remainingHours = Math.floor((diffInMinutes % 1440) / 60);
+            const remainingMinutes = diffInMinutes % 60;
+            
+            let result = `${days} day${days > 1 ? 's' : ''}`;
+            if (remainingHours > 0) {
+                result += ` ${remainingHours}h`;
+            }
+            if (remainingMinutes > 0) {
+                result += ` ${remainingMinutes}m`;
+            }
+            return result;
         }
     };
 

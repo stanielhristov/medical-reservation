@@ -108,7 +108,6 @@ export const useBlockedSlots = (doctorId) => {
         }
     }, [doctorId]);
 
-    // Helper to get blocked slots for a specific date
     const getBlockedSlotsForDate = useCallback((date) => {
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);

@@ -97,7 +97,6 @@ export const useAvailability = (doctorId) => {
             setError(null);
             await deleteDoctorAvailability(availabilityId);
             
-            // Update local state
             setAvailabilities(prev => prev.filter(av => av.id !== availabilityId));
         } catch (err) {
             console.error('Error deleting availability:', err);
@@ -113,7 +112,6 @@ export const useAvailability = (doctorId) => {
             setError(null);
             await deleteDoctorAvailabilityForDay(doctorId, dayOfWeek);
             
-            // Update local state
             setAvailabilities(prev => prev.filter(av => av.dayOfWeek !== dayOfWeek));
         } catch (err) {
             console.error('Error deleting availability for day:', err);
