@@ -1,6 +1,5 @@
 const ScheduleList = ({ 
     schedules, 
-    onEdit, 
     onDelete, 
     onToggleAvailability, 
     loading,
@@ -430,22 +429,6 @@ const ScheduleList = ({
                                     title={schedule.available ? 'Mark as Unavailable' : 'Mark as Available'}
                                 >
                                     {schedule.available ? '🚫' : '✅'}
-                                </button>
-                                
-                                <button
-                                    onClick={() => onEdit(schedule)}
-                                    style={{
-                                        background: 'rgba(59, 130, 246, 0.1)',
-                                        border: '1px solid rgba(59, 130, 246, 0.2)',
-                                        borderRadius: '8px',
-                                        padding: '0.5rem',
-                                        cursor: 'pointer',
-                                        color: '#3b82f6',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    title="Edit Schedule"
-                                >
-                                    ✏️
                                 </button>
                                 
                                 <button

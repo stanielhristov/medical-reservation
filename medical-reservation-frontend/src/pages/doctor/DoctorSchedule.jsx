@@ -14,7 +14,6 @@ const DoctorScheduleRefactored = () => {
     const [selectedView, setSelectedView] = useState('week');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showAddModal, setShowAddModal] = useState(false);
-    const [editingSchedule, setEditingSchedule] = useState(null);
     const [doctorId, setDoctorId] = useState(null);
 
     const {
@@ -22,7 +21,6 @@ const DoctorScheduleRefactored = () => {
         loading: scheduleLoading,
         fetchSchedules,
         addSchedule,
-        editSchedule,
         removeSchedule,
         toggleAvailability,
         getFilteredSchedules
@@ -67,24 +65,16 @@ const DoctorScheduleRefactored = () => {
     };
 
     const handleAddSchedule = () => {
-        setEditingSchedule(null);
         setShowAddModal(true);
     };
 
-    const handleEditSchedule = (schedule) => {
-        setEditingSchedule(schedule);
-        setShowAddModal(true);
-    };
 
     const handleSaveSchedule = async (scheduleData) => {
         try {
-            if (editingSchedule) {
-                await editSchedule(scheduleData);
-            } else {
+            {
                 await addSchedule(scheduleData);
             }
             setShowAddModal(false);
-            setEditingSchedule(null);
         } catch (error) {
             console.error('Error saving schedule:', error);
         }
@@ -202,7 +192,6 @@ const DoctorScheduleRefactored = () => {
 
                 <ScheduleList
                     schedules={filteredSchedules}
-                    onEdit={handleEditSchedule}
                     onDelete={handleDeleteSchedule}
                     onToggleAvailability={handleToggleAvailability}
                     loading={scheduleLoading}
@@ -213,11 +202,10 @@ const DoctorScheduleRefactored = () => {
                 isOpen={showAddModal}
                 onClose={() => {
                     setShowAddModal(false);
-                    setEditingSchedule(null);
                 }}
                 onSave={handleSaveSchedule}
-                schedule={editingSchedule}
-                title={editingSchedule ? 'Edit Time Slot' : 'Add New Time Slot'}
+                schedule={null}
+                title={'Add New Time Slot'}
             />
 
             <style jsx>{`
