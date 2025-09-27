@@ -110,7 +110,7 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
         
         if (diffInMinutes < 60) {
             return `${minutes}m`;
-        } else if (diffInMinutes < 1440) { // Less than 24 hours
+        } else if (diffInMinutes < 1440) { 
             if (minutes > 0) {
                 return `${hours}h ${minutes}m`;
             } else {

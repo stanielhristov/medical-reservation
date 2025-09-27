@@ -32,11 +32,11 @@ export default function RegisterForm() {
         city: '',
         stateProvince: '',
         postalCode: '',
-        countryCode: 'US'
+        countryCode: 'BG'
     });
 
-    const [phoneCountry, setPhoneCountry] = useState('US');
-    const [emergencyPhoneCountry, setEmergencyPhoneCountry] = useState('US');
+    const [phoneCountry, setPhoneCountry] = useState('BG');
+    const [emergencyPhoneCountry, setEmergencyPhoneCountry] = useState('BG');
 
     const [doctorData, setDoctorData] = useState({
         specialization: '',
