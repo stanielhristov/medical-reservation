@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import LandingPage from './pages/LandingPage';
@@ -36,8 +37,9 @@ import EditProfilePage from './pages/EditProfilePage';
 
 function App() {
     return (
-        <AuthProvider>
-            <Router>
+        <NotificationProvider>
+            <AuthProvider>
+                <Router>
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<LandingPage />} />
@@ -147,8 +149,9 @@ function App() {
                     {/* Catch all route */}
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
-            </Router>
-        </AuthProvider>
+                </Router>
+            </AuthProvider>
+        </NotificationProvider>
     );
 }
 

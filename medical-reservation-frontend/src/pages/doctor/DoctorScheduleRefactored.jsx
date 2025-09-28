@@ -7,6 +7,7 @@ import ScheduleStats from '../../components/ScheduleStats';
 import ScheduleControls from '../../components/ScheduleControls';
 import ScheduleList from '../../components/ScheduleList';
 import WeeklyAvailabilityManager from '../../components/WeeklyAvailabilityManager';
+import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
 
 const DoctorScheduleRefactored = () => {
     const { user } = useAuth();
@@ -15,6 +16,11 @@ const DoctorScheduleRefactored = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [doctorId, setDoctorId] = useState(null);
     const [showAvailabilityManager, setShowAvailabilityManager] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState({
+        isOpen: false,
+        schedule: null,
+        type: 'single' // 'single' or 'bulk'
+    });
     
 
     const {
@@ -70,14 +76,32 @@ const DoctorScheduleRefactored = () => {
     };
 
 
-    const handleDeleteSchedule = async (schedule) => {
-        if (window.confirm('Are you sure you want to delete this schedule?')) {
-            try {
-                await removeSchedule(schedule.id);
-            } catch (error) {
-                console.error('Error deleting schedule:', error);
+    const handleDeleteSchedule = (schedule) => {
+        setDeleteConfirmation({
+            isOpen: true,
+            schedule: schedule,
+            type: 'single'
+        });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            if (deleteConfirmation.type === 'single' && deleteConfirmation.schedule) {
+                await removeSchedule(deleteConfirmation.schedule.id);
+            } else if (deleteConfirmation.type === 'bulk' && deleteConfirmation.schedule?.ids) {
+                console.log('Starting bulk delete for IDs:', deleteConfirmation.schedule.ids);
+                await deleteBulkSchedules(deleteConfirmation.schedule.ids);
+                console.log('Bulk delete completed successfully');
             }
+        } catch (error) {
+            console.error('Error deleting schedule:', error);
+        } finally {
+            setDeleteConfirmation({ isOpen: false, schedule: null, type: 'single' });
         }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmation({ isOpen: false, schedule: null, type: 'single' });
     };
 
     const handleToggleAvailability = async (schedule) => {
@@ -89,29 +113,14 @@ const DoctorScheduleRefactored = () => {
     };
 
 
-    const handleBulkDelete = async (scheduleIds) => {
-        try {
-            console.log('Starting bulk delete for IDs:', scheduleIds);
-            await deleteBulkSchedules(scheduleIds);
-            console.log('Bulk delete completed successfully');
-
-        } catch (error) {
-            console.error('Error deleting schedules:', error);
-            console.error('Error type:', typeof error);
-            console.error('Error stack:', error.stack);
-            
-            let errorMessage = 'Failed to delete selected schedules. Please try again.';
-            
-            if (error && error.message) {
-                errorMessage = error.message;
-            } else if (typeof error === 'string') {
-                errorMessage = error;
-            }
-            
-            console.error('Final error message:', errorMessage);
-            console.error('Bulk delete error:', errorMessage);
-        }
+    const handleBulkDelete = (scheduleIds) => {
+        setDeleteConfirmation({
+            isOpen: true,
+            schedule: { ids: scheduleIds, count: scheduleIds.length },
+            type: 'bulk'
+        });
     };
+
 
 
     const filteredSchedules = getFilteredSchedules(selectedView, currentDate);
@@ -230,6 +239,19 @@ const DoctorScheduleRefactored = () => {
                 />
             )}
 
+            <DeleteConfirmationDialog
+                isOpen={deleteConfirmation.isOpen}
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+                title={deleteConfirmation.type === 'bulk' ? 'Delete Multiple Schedules' : 'Delete Schedule'}
+                message={
+                    deleteConfirmation.type === 'bulk' 
+                        ? `Are you sure you want to delete ${deleteConfirmation.schedule?.count || 0} selected schedule${deleteConfirmation.schedule?.count > 1 ? 's' : ''}? This action cannot be undone.`
+                        : 'Are you sure you want to delete this schedule? This action cannot be undone.'
+                }
+                confirmText="Yes"
+                cancelText="No"
+            />
 
             <style jsx>{`
                 @keyframes spin {

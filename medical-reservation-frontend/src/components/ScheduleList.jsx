@@ -124,11 +124,7 @@ const ScheduleList = ({
         if (selectedCount === 0) return;
         
         const selectedIds = Array.from(selectedSchedules);
-        const confirmed = window.confirm(`Are you sure you want to delete ${selectedCount} selected schedule${selectedCount > 1 ? 's' : ''}?`);
-        
-        if (confirmed) {
-            onBulkDelete?.(selectedIds);
-        }
+        onBulkDelete?.(selectedIds);
     };
 
     return (

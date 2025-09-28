@@ -7,6 +7,7 @@ import ScheduleStats from '../../components/ScheduleStats';
 import ScheduleControls from '../../components/ScheduleControls';
 import ScheduleList from '../../components/ScheduleList';
 import ScheduleModal from '../../components/ScheduleModal';
+import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
 
 const DoctorScheduleRefactored = () => {
     const { user } = useAuth();
@@ -14,6 +15,10 @@ const DoctorScheduleRefactored = () => {
     const [selectedView, setSelectedView] = useState('week');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showAddModal, setShowAddModal] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState({
+        isOpen: false,
+        schedule: null
+    });
     const [doctorId, setDoctorId] = useState(null);
 
     const {
@@ -80,14 +85,27 @@ const DoctorScheduleRefactored = () => {
         }
     };
 
-    const handleDeleteSchedule = async (schedule) => {
-        if (window.confirm('Are you sure you want to delete this schedule?')) {
-            try {
-                await removeSchedule(schedule.id);
-            } catch (error) {
-                console.error('Error deleting schedule:', error);
+    const handleDeleteSchedule = (schedule) => {
+        setDeleteConfirmation({
+            isOpen: true,
+            schedule: schedule
+        });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            if (deleteConfirmation.schedule) {
+                await removeSchedule(deleteConfirmation.schedule.id);
             }
+        } catch (error) {
+            console.error('Error deleting schedule:', error);
+        } finally {
+            setDeleteConfirmation({ isOpen: false, schedule: null });
         }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmation({ isOpen: false, schedule: null });
     };
 
     const handleToggleAvailability = async (schedule) => {
@@ -206,6 +224,16 @@ const DoctorScheduleRefactored = () => {
                 onSave={handleSaveSchedule}
                 schedule={null}
                 title={'Add New Time Slot'}
+            />
+
+            <DeleteConfirmationDialog
+                isOpen={deleteConfirmation.isOpen}
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+                title="Delete Schedule"
+                message="Are you sure you want to delete this schedule? This action cannot be undone."
+                confirmText="Yes"
+                cancelText="No"
             />
 
             <style jsx>{`

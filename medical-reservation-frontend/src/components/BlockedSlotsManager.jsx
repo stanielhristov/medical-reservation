@@ -20,11 +20,33 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
         reason: ''
     });
 
+    const [deleteConfirmation, setDeleteConfirmation] = useState({
+        isOpen: false,
+        slotId: null,
+        slotInfo: ''
+    });
+
+    const [notification, setNotification] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'error'
+    });
+
     useEffect(() => {
         if (doctorId) {
             fetchBlockedSlots();
         }
     }, [doctorId, fetchBlockedSlots]);
+
+    const showNotification = (title, message, type = 'error') => {
+        setNotification({
+            isOpen: true,
+            title,
+            message,
+            type
+        });
+    };
 
     const resetForm = () => {
         setFormData({
@@ -42,12 +64,12 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
         try {
             // Validate form
             if (!formData.startTime || !formData.endTime || !formData.reason.trim()) {
-                alert('Please fill in all fields');
+                showNotification('Validation Error', 'Please fill in all fields', 'error');
                 return;
             }
 
             if (new Date(formData.startTime) >= new Date(formData.endTime)) {
-                alert('End time must be after start time');
+                showNotification('Validation Error', 'End time must be after start time', 'error');
                 return;
             }
 
@@ -65,7 +87,7 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
 
             resetForm();
         } catch (err) {
-            alert(err.message || 'Failed to save blocked slot');
+            showNotification('Save Error', err.message || 'Failed to save blocked slot', 'error');
         }
     };
 
@@ -79,14 +101,29 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
         setShowAddForm(true);
     };
 
-    const handleDelete = async (slotId) => {
-        if (window.confirm('Are you sure you want to delete this blocked period?')) {
-            try {
-                await removeBlockedSlot(slotId);
-            } catch (err) {
-                alert(err.message || 'Failed to delete blocked slot');
-            }
+    const handleDelete = (slotId) => {
+        const slot = blockedSlots.find(s => s.id === slotId);
+        const slotInfo = slot ? `${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}` : 'this blocked period';
+        
+        setDeleteConfirmation({
+            isOpen: true,
+            slotId: slotId,
+            slotInfo: slotInfo
+        });
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await removeBlockedSlot(deleteConfirmation.slotId);
+            setDeleteConfirmation({ isOpen: false, slotId: null, slotInfo: '' });
+        } catch (err) {
+            showNotification('Delete Error', err.message || 'Failed to delete blocked slot', 'error');
+            setDeleteConfirmation({ isOpen: false, slotId: null, slotInfo: '' });
         }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmation({ isOpen: false, slotId: null, slotInfo: '' });
     };
 
     const formatDateTime = (dateTimeStr) => {
@@ -505,6 +542,161 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
                     )}
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirmation.isOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 10000
+                }}>
+                    <div style={{
+                        background: 'white',
+                        borderRadius: '16px',
+                        padding: '2rem',
+                        maxWidth: '400px',
+                        width: '90%',
+                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem'
+                        }}>
+                            🗑️
+                        </div>
+                        
+                        <h3 style={{
+                            margin: '0 0 1rem 0',
+                            color: '#dc2626',
+                            fontSize: '1.25rem',
+                            fontWeight: '600'
+                        }}>
+                            Delete Blocked Period
+                        </h3>
+                        
+                        <p style={{
+                            margin: '0 0 2rem 0',
+                            color: '#374151',
+                            lineHeight: '1.5'
+                        }}>
+                            Are you sure you want to delete the blocked period for <strong>{deleteConfirmation.slotInfo}</strong>? 
+                            This action cannot be undone.
+                        </p>
+                        
+                        <div style={{
+                            display: 'flex',
+                            gap: '1rem',
+                            justifyContent: 'center'
+                        }}>
+                            <button
+                                onClick={handleDeleteCancel}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '8px',
+                                    background: 'white',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: '500'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            
+                            <button
+                                onClick={handleDeleteConfirm}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    background: '#dc2626',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: '500'
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Notification Modal */}
+            {notification.isOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 10001
+                }}>
+                    <div style={{
+                        background: 'white',
+                        borderRadius: '16px',
+                        padding: '2rem',
+                        maxWidth: '400px',
+                        width: '90%',
+                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem'
+                        }}>
+                            {notification.type === 'error' ? '❌' : '✅'}
+                        </div>
+                        
+                        <h3 style={{
+                            margin: '0 0 1rem 0',
+                            color: notification.type === 'error' ? '#dc2626' : '#15803d',
+                            fontSize: '1.25rem',
+                            fontWeight: '600'
+                        }}>
+                            {notification.title}
+                        </h3>
+                        
+                        <p style={{
+                            margin: '0 0 2rem 0',
+                            color: '#374151',
+                            lineHeight: '1.5'
+                        }}>
+                            {notification.message}
+                        </p>
+                        
+                        <button
+                            onClick={() => setNotification({ ...notification, isOpen: false })}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                border: 'none',
+                                borderRadius: '8px',
+                                background: notification.type === 'error' ? '#dc2626' : '#15803d',
+                                color: 'white',
+                                cursor: 'pointer',
+                                fontSize: '1rem',
+                                fontWeight: '500'
+                            }}
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
                 @keyframes spin {

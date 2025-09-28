@@ -3,12 +3,11 @@ import { getActiveDoctors, getAvailableSpecializations } from '../api/doctors';
 import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../api/ratings';
 import { getDoctorScheduleWithStatus } from '../api/schedule';
 
-// Helper function to get the next available slot for a doctor
 const getNextAvailableSlot = async (doctorId) => {
     try {
         const today = new Date();
         const endDate = new Date();
-        endDate.setDate(today.getDate() + 30); // Look ahead 30 days
+        endDate.setDate(today.getDate() + 30); 
         
         const slots = await getDoctorScheduleWithStatus(
             doctorId,
@@ -16,17 +15,14 @@ const getNextAvailableSlot = async (doctorId) => {
             endDate.toISOString()
         );
         
-        // Find the first available (FREE) slot
         const availableSlots = slots.filter(slot => slot.status === 'FREE');
         if (availableSlots.length === 0) {
             return 'No available slots';
         }
         
-        // Sort by start time and get the earliest
         availableSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
         const nextSlot = availableSlots[0];
         
-        // Format the time
         const startTime = new Date(nextSlot.startTime);
         const now = new Date();
         const isToday = startTime.toDateString() === now.toDateString();
