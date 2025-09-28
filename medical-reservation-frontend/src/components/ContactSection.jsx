@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import BackgroundDecorations from '../components/BackgroundDecorations';
 
-const ContactPage = () => {
+const ContactSection = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -26,102 +24,22 @@ const ContactPage = () => {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            width: '100vw',
-            background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+        <section id="contact" style={{
+            padding: '6rem 2rem',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
             position: 'relative',
-            overflow: 'hidden',
-            boxSizing: 'border-box'
+            zIndex: 5
         }}>
-            <BackgroundDecorations />
-            
-            <nav style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                padding: '1.5rem 2rem',
-                boxShadow: '0 8px 32px rgba(34, 197, 94, 0.1)',
-                border: '1px solid rgba(34, 197, 94, 0.1)',
-                position: 'relative',
-                zIndex: 10
-            }}>
-                <div style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{
-                            width: '50px',
-                            height: '50px',
-                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)'
-                        }}>
-                            <span style={{ fontSize: '1.5rem', color: 'white' }}>🏥</span>
-                        </div>
-                        <Link to="/" style={{
-                            fontSize: '1.8rem',
-                            fontWeight: '800',
-                            color: '#374151',
-                            textDecoration: 'none',
-                            letterSpacing: '-0.02em'
-                        }}>
-                            MedReserve
-                        </Link>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                        <Link to="/" style={{
-                            color: '#6b7280',
-                            textDecoration: 'none',
-                            fontWeight: '600',
-                            fontSize: '1rem',
-                            transition: 'all 0.3s ease',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '8px'
-                        }}>Home</Link>
-                        <Link to="/about" style={{
-                            color: '#6b7280',
-                            textDecoration: 'none',
-                            fontWeight: '600',
-                            fontSize: '1rem',
-                            transition: 'all 0.3s ease',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '8px'
-                        }}>About</Link>
-                        <Link to="/login" style={{
-                            padding: '0.75rem 1.5rem',
-                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                            color: 'white',
-                            textDecoration: 'none',
-                            borderRadius: '12px',
-                            fontWeight: '600',
-                            fontSize: '1rem',
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
-                        }}>Login</Link>
-                    </div>
-                </div>
-            </nav>
-
             <div style={{
-                padding: '6rem 2rem',
                 maxWidth: '1200px',
-                margin: '0 auto',
-                position: 'relative',
-                zIndex: 5
+                margin: '0 auto'
             }}>
                 {/* Section Header */}
                 <div style={{
                     textAlign: 'center',
                     marginBottom: '4rem'
                 }}>
-                    <h1 style={{
+                    <h2 style={{
                         fontSize: '3rem',
                         fontWeight: '800',
                         color: '#1f2937',
@@ -129,7 +47,7 @@ const ContactPage = () => {
                         letterSpacing: '-0.02em'
                     }}>
                         Get In Touch
-                    </h1>
+                    </h2>
                     <p style={{
                         fontSize: '1.25rem',
                         color: '#6b7280',
@@ -155,14 +73,14 @@ const ContactPage = () => {
                         boxShadow: '0 20px 40px rgba(34, 197, 94, 0.1)',
                         border: '1px solid rgba(34, 197, 94, 0.1)'
                     }}>
-                        <h2 style={{
+                        <h3 style={{
                             fontSize: '1.5rem',
                             fontWeight: '700',
                             color: '#1f2937',
                             marginBottom: '2rem'
                         }}>
                             Contact Information
-                        </h2>
+                        </h3>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                             {/* Email Support */}
@@ -181,14 +99,14 @@ const ContactPage = () => {
                                     <span style={{ fontSize: '1.2rem' }}>📧</span>
                                 </div>
                                 <div>
-                                    <h3 style={{
+                                    <h4 style={{
                                         fontSize: '1.1rem',
                                         fontWeight: '600',
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
                                         Email Support
-                                    </h3>
+                                    </h4>
                                     <p style={{ color: '#22c55e', fontWeight: '600', marginBottom: '0.25rem' }}>
                                         support@medreserve.com
                                     </p>
@@ -214,14 +132,14 @@ const ContactPage = () => {
                                     <span style={{ fontSize: '1.2rem' }}>📞</span>
                                 </div>
                                 <div>
-                                    <h3 style={{
+                                    <h4 style={{
                                         fontSize: '1.1rem',
                                         fontWeight: '600',
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
                                         Phone Support
-                                    </h3>
+                                    </h4>
                                     <p style={{ color: '#22c55e', fontWeight: '600', marginBottom: '0.25rem' }}>
                                         +359 (2) 123-4567
                                     </p>
@@ -247,14 +165,14 @@ const ContactPage = () => {
                                     <span style={{ fontSize: '1.2rem' }}>🚨</span>
                                 </div>
                                 <div>
-                                    <h3 style={{
+                                    <h4 style={{
                                         fontSize: '1.1rem',
                                         fontWeight: '600',
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
                                         Emergency
-                                    </h3>
+                                    </h4>
                                     <p style={{ color: '#ef4444', fontWeight: '600', marginBottom: '0.25rem' }}>
                                         For medical emergencies, call 112
                                     </p>
@@ -273,14 +191,14 @@ const ContactPage = () => {
                             borderRadius: '12px',
                             border: '1px solid rgba(34, 197, 94, 0.1)'
                         }}>
-                            <h3 style={{
+                            <h4 style={{
                                 fontSize: '1.1rem',
                                 fontWeight: '600',
                                 color: '#1f2937',
                                 marginBottom: '1rem'
                             }}>
                                 Quick FAQ
-                            </h3>
+                            </h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.5' }}>
                                     <strong>Q:</strong> How do I book an appointment?<br />
@@ -303,14 +221,14 @@ const ContactPage = () => {
                         boxShadow: '0 20px 40px rgba(34, 197, 94, 0.1)',
                         border: '1px solid rgba(34, 197, 94, 0.1)'
                     }}>
-                        <h2 style={{
+                        <h3 style={{
                             fontSize: '1.5rem',
                             fontWeight: '700',
                             color: '#1f2937',
                             marginBottom: '2rem'
                         }}>
                             Send us a Message
-                        </h2>
+                        </h3>
 
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             <div>
@@ -338,6 +256,14 @@ const ContactPage = () => {
                                         transition: 'all 0.3s ease',
                                         background: 'rgba(255, 255, 255, 0.8)',
                                         boxSizing: 'border-box'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = '#22c55e';
+                                        e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                                        e.target.style.boxShadow = 'none';
                                     }}
                                     placeholder="Enter your full name"
                                 />
@@ -369,6 +295,14 @@ const ContactPage = () => {
                                         background: 'rgba(255, 255, 255, 0.8)',
                                         boxSizing: 'border-box'
                                     }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = '#22c55e';
+                                        e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                                        e.target.style.boxShadow = 'none';
+                                    }}
                                     placeholder="Enter your email address"
                                 />
                             </div>
@@ -398,6 +332,14 @@ const ContactPage = () => {
                                         transition: 'all 0.3s ease',
                                         background: 'rgba(255, 255, 255, 0.8)',
                                         boxSizing: 'border-box'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = '#22c55e';
+                                        e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                                        e.target.style.boxShadow = 'none';
                                     }}
                                     placeholder="What is this regarding?"
                                 />
@@ -431,6 +373,14 @@ const ContactPage = () => {
                                         minHeight: '120px',
                                         boxSizing: 'border-box'
                                     }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = '#22c55e';
+                                        e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                                        e.target.style.boxShadow = 'none';
+                                    }}
                                     placeholder="Tell us how we can help you..."
                                 />
                             </div>
@@ -449,6 +399,14 @@ const ContactPage = () => {
                                     transition: 'all 0.3s ease',
                                     boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
                                 }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.transform = 'translateY(-2px)';
+                                    e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.4)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.transform = 'translateY(0)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
+                                }}
                             >
                                 Send Message
                             </button>
@@ -456,8 +414,8 @@ const ContactPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
-export default ContactPage;
+export default ContactSection;

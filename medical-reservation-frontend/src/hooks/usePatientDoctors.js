@@ -1,6 +1,61 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getActiveDoctors, getAvailableSpecializations } from '../api/doctors';
 import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../api/ratings';
+import { getDoctorScheduleWithStatus } from '../api/schedule';
+
+// Helper function to get the next available slot for a doctor
+const getNextAvailableSlot = async (doctorId) => {
+    try {
+        const today = new Date();
+        const endDate = new Date();
+        endDate.setDate(today.getDate() + 30); // Look ahead 30 days
+        
+        const slots = await getDoctorScheduleWithStatus(
+            doctorId,
+            today.toISOString(),
+            endDate.toISOString()
+        );
+        
+        // Find the first available (FREE) slot
+        const availableSlots = slots.filter(slot => slot.status === 'FREE');
+        if (availableSlots.length === 0) {
+            return 'No available slots';
+        }
+        
+        // Sort by start time and get the earliest
+        availableSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+        const nextSlot = availableSlots[0];
+        
+        // Format the time
+        const startTime = new Date(nextSlot.startTime);
+        const now = new Date();
+        const isToday = startTime.toDateString() === now.toDateString();
+        const isTomorrow = startTime.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
+        
+        let datePrefix = '';
+        if (isToday) {
+            datePrefix = 'Today ';
+        } else if (isTomorrow) {
+            datePrefix = 'Tomorrow ';
+        } else {
+            datePrefix = startTime.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            }) + ' ';
+        }
+        
+        const timeString = startTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+        
+        return `${datePrefix}${timeString}`;
+    } catch (error) {
+        console.error(`Error fetching next available slot for doctor ${doctorId}:`, error);
+        return 'Contact for availability';
+    }
+};
 
 export const usePatientDoctors = (user) => {
     const [loading, setLoading] = useState(true);
@@ -30,7 +85,11 @@ export const usePatientDoctors = (user) => {
 
             const transformedDoctors = await Promise.all(doctorsData.map(async (doctor) => {
                 try {
-                    const ratingStats = await getDoctorRatingStats(doctor.id);
+                    const [ratingStats, nextAvailable] = await Promise.all([
+                        getDoctorRatingStats(doctor.id),
+                        getNextAvailableSlot(doctor.id)
+                    ]);
+                    
                     setDoctorRatingStats(prev => ({
                         ...prev,
                         [doctor.id]: ratingStats
@@ -44,14 +103,15 @@ export const usePatientDoctors = (user) => {
                         rating: ratingStats.averageRating || 0,
                         reviews: ratingStats.totalRatings || 0,
                         location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
-                        nextAvailable: "Contact for availability",
+                        nextAvailable: nextAvailable,
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
                         consultationFee: doctor.price ? `$${doctor.price}` : "Price not set"
                     };
                 } catch (error) {
-                    console.error(`Error fetching rating stats for doctor ${doctor.id}:`, error);
+                    console.error(`Error fetching data for doctor ${doctor.id}:`, error);
+                    const nextAvailable = await getNextAvailableSlot(doctor.id);
                     return {
                         id: doctor.id,
                         name: doctor.fullName,
@@ -60,7 +120,7 @@ export const usePatientDoctors = (user) => {
                         rating: doctor.rating || 0,
                         reviews: doctor.totalRatings || 0,
                         location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
-                        nextAvailable: "Contact for availability",
+                        nextAvailable: nextAvailable,
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",

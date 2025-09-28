@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import LandingHeader from '../components/LandingHeader';
 import HeroSection from '../components/HeroSection';
 import FeaturesSection from '../components/FeaturesSection';
+import AboutSection from '../components/AboutSection';
+import ContactSection from '../components/ContactSection';
 import BackgroundDecorations from '../components/BackgroundDecorations';
 
 export default function LandingPage() {
@@ -38,6 +40,10 @@ export default function LandingPage() {
             />
 
             <FeaturesSection />
+            
+            <AboutSection />
+            
+            <ContactSection />
         </div>
     );
 }
