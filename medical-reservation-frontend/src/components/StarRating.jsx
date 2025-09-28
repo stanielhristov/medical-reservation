@@ -19,11 +19,11 @@ const StarRating = ({
     const getSizeStyles = () => {
         switch (size) {
             case 'small':
-                return { fontSize: '0.9rem', gap: '0.1rem' };
+                return { fontSize: '16px', gap: '0.1rem' };
             case 'large':
-                return { fontSize: '1.5rem', gap: '0.2rem' };
+                return { fontSize: '28px', gap: '0.2rem' };
             default:
-                return { fontSize: '1.2rem', gap: '0.15rem' };
+                return { fontSize: '20px', gap: '0.15rem' };
         }
     };
 
@@ -53,7 +53,7 @@ const StarRating = ({
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             const isFilled = i <= displayRating;
-            const isPartiallyFilled = i - 0.5 <= displayRating && displayRating < i;
+            const isHovered = interactive && !disabled && hoverRating > 0 && i <= hoverRating;
             
             stars.push(
                 <span
@@ -61,17 +61,28 @@ const StarRating = ({
                     onClick={() => handleStarClick(i)}
                     onMouseEnter={() => handleMouseEnter(i)}
                     style={{
-                        color: isFilled ? '#f59e0b' : isPartiallyFilled ? '#f59e0b' : '#d1d5db',
                         cursor: interactive && !disabled ? 'pointer' : 'default',
-                        transition: 'color 0.2s ease',
+                        transition: 'all 0.2s ease',
                         opacity: disabled ? 0.6 : 1,
-                        ...(interactive && !disabled && hoverRating > 0 && i <= hoverRating ? { 
-                            color: '#f59e0b',
-                            transform: 'scale(1.1)' 
-                        } : {})
+                        transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+                        display: 'inline-block'
                     }}
                 >
-                    ⭐
+                    <svg
+                        width={sizeStyles.fontSize}
+                        height={sizeStyles.fontSize}
+                        viewBox="0 0 24 24"
+                        style={{
+                            display: 'block'
+                        }}
+                    >
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                            fill={isFilled || isHovered ? '#22c55e' : 'none'}
+                            stroke={isFilled || isHovered ? '#22c55e' : '#d1d5db'}
+                            strokeWidth="2"
+                        />
+                    </svg>
                 </span>
             );
         }

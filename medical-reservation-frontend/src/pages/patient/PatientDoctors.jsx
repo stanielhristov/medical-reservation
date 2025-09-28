@@ -131,7 +131,7 @@ const PatientDoctors = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                <DoctorSearchHeader onRefresh={refreshDoctors} />
+                <DoctorSearchHeader />
 
                 <DoctorSearchFilters
                     searchTerm={searchTerm}

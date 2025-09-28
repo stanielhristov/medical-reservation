@@ -69,16 +69,6 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                             transform: 'translateY(-50%)',
                             boxShadow: '0 3px 12px rgba(0,0,0,0.15)'
                         }} />
-                        <div style={{
-                            position: 'absolute',
-                            top: '15px',
-                            left: '50%',
-                            width: '20px',
-                            height: '2px',
-                            background: 'rgba(220, 252, 231, 0.9)',
-                            borderRadius: '1px',
-                            transform: 'translateX(-50%)'
-                        }} />
                     </div>
                 </div>
                 

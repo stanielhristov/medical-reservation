@@ -170,11 +170,11 @@ const RatingModal = ({
                                 fontSize: '0.9rem',
                                 fontWeight: '500'
                             }}>
-                                {rating === 1 && '⭐ Poor'}
-                                {rating === 2 && '⭐⭐ Fair'}
-                                {rating === 3 && '⭐⭐⭐ Good'}
-                                {rating === 4 && '⭐⭐⭐⭐ Very Good'}
-                                {rating === 5 && '⭐⭐⭐⭐⭐ Excellent'}
+                                {rating === 1 && `${rating} Star - Poor`}
+                                {rating === 2 && `${rating} Stars - Fair`}
+                                {rating === 3 && `${rating} Stars - Good`}
+                                {rating === 4 && `${rating} Stars - Very Good`}
+                                {rating === 5 && `${rating} Stars - Excellent`}
                             </p>
                         )}
                     </div>
