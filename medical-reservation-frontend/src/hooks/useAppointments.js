@@ -19,6 +19,7 @@ export const useAppointments = () => {
             const response = await getPatientAppointments(user.id);
             const transformedAppointments = response.map(appointment => ({
                 id: appointment.id,
+                doctorId: appointment.doctorId,
                 doctorName: appointment.doctorName || 'Unknown Doctor',
                 specialization: appointment.doctorSpecialization || 'General Practice',
                 date: new Date(appointment.appointmentTime),
@@ -96,6 +97,7 @@ export const useAppointments = () => {
         appointments,
         getFilteredAppointments,
         handleCancelAppointment,
-        handleRescheduleAppointment
+        handleRescheduleAppointment,
+        fetchAppointments
     };
 };

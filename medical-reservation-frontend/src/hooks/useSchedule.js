@@ -6,7 +6,8 @@ import {
     deleteSchedule,
     markSlotAvailable,
     markSlotUnavailable,
-    deleteMultipleSchedules
+    deleteMultipleSchedules,
+    getDoctorScheduleWithStatusForDoctor
 } from '../api/schedule';
 
 export const useSchedule = (doctorId) => {
@@ -21,7 +22,17 @@ export const useSchedule = (doctorId) => {
         try {
             setLoading(true);
             setError(null);
-            const scheduleData = await getDoctorSchedule(doctorId);
+            
+            // Get date range for fetching schedules with status
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1); // Start from last month
+            const endDate = new Date(now.getFullYear(), now.getMonth() + 3, 0); // End 3 months from now
+            
+            const scheduleData = await getDoctorScheduleWithStatusForDoctor(
+                doctorId, 
+                startDate.toISOString(), 
+                endDate.toISOString()
+            );
             setSchedules(scheduleData);
         } catch (err) {
             console.error('Error fetching schedule:', err);

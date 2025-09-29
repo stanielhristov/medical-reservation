@@ -24,6 +24,7 @@ import DoctorSchedule from './pages/doctor/DoctorScheduleRefactored';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
 import DoctorNotifications from './pages/doctor/DoctorNotifications';
+import DoctorRescheduleRequests from './pages/doctor/DoctorRescheduleRequests';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -116,6 +117,11 @@ function App() {
                     <Route path="/doctor/notifications" element={
                         <ProtectedRoute requiredRoles={['DOCTOR']}>
                             <Layout><DoctorNotifications /></Layout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/doctor/reschedule-requests" element={
+                        <ProtectedRoute requiredRoles={['DOCTOR']}>
+                            <Layout><DoctorRescheduleRequests /></Layout>
                         </ProtectedRoute>
                     } />
 

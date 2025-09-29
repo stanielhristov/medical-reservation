@@ -246,10 +246,12 @@ const DoctorScheduleRefactored = () => {
                 title={deleteConfirmation.type === 'bulk' ? 'Delete Multiple Schedules' : 'Delete Schedule'}
                 message={
                     deleteConfirmation.type === 'bulk' 
-                        ? `Are you sure you want to delete ${deleteConfirmation.schedule?.count || 0} selected schedule${deleteConfirmation.schedule?.count > 1 ? 's' : ''}? This action cannot be undone.`
-                        : 'Are you sure you want to delete this schedule? This action cannot be undone.'
+                        ? `Are you sure you want to delete ${deleteConfirmation.schedule?.count || 0} selected schedule${deleteConfirmation.schedule?.count > 1 ? 's' : ''}? Any existing appointments will be automatically cancelled and patients will be notified. This action cannot be undone.`
+                        : deleteConfirmation.schedule?.status === 'BOOKED'
+                            ? `This schedule slot is currently reserved by ${deleteConfirmation.schedule?.patientName || 'a patient'}. Deleting it will automatically cancel the appointment and notify the patient. Are you sure you want to proceed?`
+                            : 'Are you sure you want to delete this schedule? This action cannot be undone.'
                 }
-                confirmText="Yes"
+                confirmText={deleteConfirmation.schedule?.status === 'BOOKED' ? "Cancel & Delete" : "Yes"}
                 cancelText="No"
             />
 

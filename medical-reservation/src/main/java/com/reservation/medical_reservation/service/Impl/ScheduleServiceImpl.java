@@ -11,6 +11,7 @@ import com.reservation.medical_reservation.repository.BlockedSlotRepository;
 import com.reservation.medical_reservation.repository.AppointmentRepository;
 import com.reservation.medical_reservation.service.ScheduleService;
 import com.reservation.medical_reservation.service.DoctorAvailabilityService;
+import com.reservation.medical_reservation.service.AppointmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final BlockedSlotRepository blockedSlotRepository;
     private final AppointmentRepository appointmentRepository;
     private final DoctorAvailabilityService availabilityService;
+    private final AppointmentService appointmentService;
     private final ModelMapper modelMapper;
 
     public ScheduleServiceImpl(ScheduleRepository scheduleRepository, 
@@ -35,12 +37,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                              BlockedSlotRepository blockedSlotRepository,
                              AppointmentRepository appointmentRepository,
                              DoctorAvailabilityService availabilityService,
+                             AppointmentService appointmentService,
                              ModelMapper modelMapper) {
         this.scheduleRepository = scheduleRepository;
         this.doctorRepository = doctorRepository;
         this.blockedSlotRepository = blockedSlotRepository;
         this.appointmentRepository = appointmentRepository;
         this.availabilityService = availabilityService;
+        this.appointmentService = appointmentService;
         this.modelMapper = modelMapper;
     }
 
@@ -131,6 +135,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public void deleteSchedule(Long scheduleId) {
+        ScheduleEntity schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+    
+        List<AppointmentEntity> conflictingAppointments = appointmentRepository.findConflictingAppointments(
+            schedule.getDoctor(), 
+            schedule.getStartTime(), 
+            schedule.getEndTime()
+        );
+        
+        for (AppointmentEntity appointment : conflictingAppointments) {
+            appointmentService.cancelAppointment(appointment.getId(), 
+                "Schedule slot cancelled by doctor. Please contact the doctor to reschedule.");
+        }
+        
         scheduleRepository.deleteById(scheduleId);
     }
 
@@ -192,9 +210,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                 if (appointment != null) {
                     dto.setStatus("BOOKED");
                     dto.setAppointmentId(appointment.getId());
+                    dto.setPatientId(appointment.getPatient().getId());
+                    dto.setPatientName(appointment.getPatient().getFullName());
                     dto.setAvailable(false);
                 } else {
-                    // Check if doctor has marked this slot as unavailable
+    
                     if (!schedule.isAvailable()) {
                         dto.setStatus("UNAVAILABLE");
                         dto.setAvailable(false);
@@ -248,6 +268,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 if (appointment != null) {
                     dto.setStatus("BOOKED");
                     dto.setAppointmentId(appointment.getId());
+                    dto.setPatientId(appointment.getPatient().getId());
+                    dto.setPatientName(appointment.getPatient().getFullName());
                     dto.setAvailable(false);
                 } else {
                     LocalDateTime now = LocalDateTime.now();
@@ -301,14 +323,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         
         List<ScheduleEntity> schedulesToDelete = scheduleRepository.findAllById(scheduleIds);
         for (ScheduleEntity schedule : schedulesToDelete) {
-            List<AppointmentEntity> appointments = appointmentRepository.findConflictingAppointments(
+        
+            List<AppointmentEntity> conflictingAppointments = appointmentRepository.findConflictingAppointments(
                 schedule.getDoctor(), 
                 schedule.getStartTime(), 
                 schedule.getEndTime()
             );
-            if (!appointments.isEmpty()) {
-                throw new RuntimeException("Cannot delete schedule with ID " + schedule.getId() + 
-                    " because it has existing appointments. Please cancel the appointments first.");
+            
+            for (AppointmentEntity appointment : conflictingAppointments) {
+                appointmentService.cancelAppointment(appointment.getId(), 
+                    "Schedule slot cancelled by doctor. Please contact the doctor to reschedule.");
             }
         }
         

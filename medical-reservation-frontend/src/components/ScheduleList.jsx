@@ -322,12 +322,21 @@ const ScheduleList = ({
                                         borderRadius: '20px',
                                         fontSize: '0.8rem',
                                         fontWeight: '600',
-                                        background: schedule.available 
-                                            ? 'rgba(34, 197, 94, 0.1)' 
-                                            : 'rgba(239, 68, 68, 0.1)',
-                                        color: schedule.available ? '#15803d' : '#dc2626'
+                                        background: 
+                                            schedule.status === 'BOOKED' ? 'rgba(59, 130, 246, 0.1)' :
+                                            schedule.status === 'BLOCKED' ? 'rgba(156, 163, 175, 0.1)' :
+                                            schedule.status === 'PAST' ? 'rgba(107, 114, 128, 0.1)' :
+                                            schedule.available ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                        color: 
+                                            schedule.status === 'BOOKED' ? '#2563eb' :
+                                            schedule.status === 'BLOCKED' ? '#6b7280' :
+                                            schedule.status === 'PAST' ? '#6b7280' :
+                                            schedule.available ? '#15803d' : '#dc2626'
                                     }}>
-                                        {schedule.available ? '✅ Available' : '❌ Unavailable'}
+                                        {schedule.status === 'BOOKED' ? '👤 Reserved' :
+                                         schedule.status === 'BLOCKED' ? '🚫 Blocked' :
+                                         schedule.status === 'PAST' ? '⏰ Past' :
+                                         schedule.available ? '✅ Available' : '❌ Unavailable'}
                                     </span>
                                     {isPast && (
                                         <span style={{
@@ -343,6 +352,41 @@ const ScheduleList = ({
                                     )}
                                 </div>
                                 
+                                {/* Patient Information for Reserved Slots */}
+                                {schedule.status === 'BOOKED' && schedule.patientName && (
+                                    <div style={{
+                                        padding: '0.75rem',
+                                        background: 'rgba(59, 130, 246, 0.05)',
+                                        borderRadius: '12px',
+                                        border: '1px solid rgba(59, 130, 246, 0.1)',
+                                        marginBottom: '1rem'
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem',
+                                            marginBottom: '0.25rem'
+                                        }}>
+                                            <span style={{ fontSize: '0.9rem' }}>👤</span>
+                                            <span style={{
+                                                color: '#1f2937',
+                                                fontWeight: '600',
+                                                fontSize: '0.9rem'
+                                            }}>
+                                                Reserved by:
+                                            </span>
+                                        </div>
+                                        <div style={{
+                                            color: '#2563eb',
+                                            fontWeight: '600',
+                                            fontSize: '1rem',
+                                            marginLeft: '1.5rem'
+                                        }}>
+                                            {schedule.patientName}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -408,40 +452,83 @@ const ScheduleList = ({
                                 flexShrink: 0,
                                 marginLeft: '1rem'
                             }}>
-                                <button
-                                    onClick={() => onToggleAvailability(schedule)}
-                                    style={{
-                                        background: schedule.available 
-                                            ? 'rgba(239, 68, 68, 0.1)' 
-                                            : 'rgba(34, 197, 94, 0.1)',
-                                        border: `1px solid ${schedule.available ? '#ef4444' : '#22c55e'}20`,
-                                        borderRadius: '8px',
-                                        padding: '0.5rem',
-                                        cursor: 'pointer',
-                                        color: schedule.available ? '#dc2626' : '#15803d',
-                                        transition: 'all 0.2s ease',
-                                        fontSize: '0.8rem'
-                                    }}
-                                    title={schedule.available ? 'Mark as Unavailable' : 'Mark as Available'}
-                                >
-                                    {schedule.available ? '🚫' : '✅'}
-                                </button>
+                                {/* Show availability toggle only for FREE, UNAVAILABLE slots */}
+                                {(schedule.status === 'FREE' || schedule.status === 'UNAVAILABLE') && (
+                                    <button
+                                        onClick={() => onToggleAvailability(schedule)}
+                                        style={{
+                                            background: schedule.available 
+                                                ? 'rgba(239, 68, 68, 0.1)' 
+                                                : 'rgba(34, 197, 94, 0.1)',
+                                            border: `1px solid ${schedule.available ? '#ef4444' : '#22c55e'}20`,
+                                            borderRadius: '8px',
+                                            padding: '0.5rem',
+                                            cursor: 'pointer',
+                                            color: schedule.available ? '#dc2626' : '#15803d',
+                                            transition: 'all 0.2s ease',
+                                            fontSize: '0.8rem'
+                                        }}
+                                        title={schedule.available ? 'Mark as Unavailable' : 'Mark as Available'}
+                                    >
+                                        {schedule.available ? '🚫' : '✅'}
+                                    </button>
+                                )}
                                 
-                                <button
-                                    onClick={() => onDelete(schedule)}
-                                    style={{
-                                        background: 'rgba(239, 68, 68, 0.1)',
-                                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                                {/* Show different information for booked slots */}
+                                {schedule.status === 'BOOKED' && (
+                                    <div style={{
+                                        background: 'rgba(59, 130, 246, 0.1)',
+                                        border: '1px solid rgba(59, 130, 246, 0.2)',
                                         borderRadius: '8px',
                                         padding: '0.5rem',
-                                        cursor: 'pointer',
-                                        color: '#dc2626',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    title="Delete Schedule"
-                                >
-                                    🗑️
-                                </button>
+                                        color: '#2563eb',
+                                        fontSize: '0.8rem',
+                                        fontWeight: '500'
+                                    }}>
+                                        📅 Booked
+                                    </div>
+                                )}
+                                
+                                {/* Show different information for blocked slots */}
+                                {schedule.status === 'BLOCKED' && (
+                                    <div style={{
+                                        background: 'rgba(156, 163, 175, 0.1)',
+                                        border: '1px solid rgba(156, 163, 175, 0.2)',
+                                        borderRadius: '8px',
+                                        padding: '0.5rem',
+                                        color: '#6b7280',
+                                        fontSize: '0.8rem',
+                                        fontWeight: '500'
+                                    }}>
+                                        🚫 Blocked
+                                    </div>
+                                )}
+                                
+                                {/* Allow deletion for all slots except BLOCKED and PAST */}
+                                {(schedule.status !== 'BLOCKED' && schedule.status !== 'PAST') && (
+                                    <button
+                                        onClick={() => onDelete(schedule)}
+                                        style={{
+                                            background: schedule.status === 'BOOKED' 
+                                                ? 'rgba(239, 68, 68, 0.15)' 
+                                                : 'rgba(239, 68, 68, 0.1)',
+                                            border: schedule.status === 'BOOKED' 
+                                                ? '2px solid rgba(239, 68, 68, 0.4)' 
+                                                : '1px solid rgba(239, 68, 68, 0.2)',
+                                            borderRadius: '8px',
+                                            padding: '0.5rem',
+                                            cursor: 'pointer',
+                                            color: '#dc2626',
+                                            transition: 'all 0.2s ease',
+                                            fontWeight: schedule.status === 'BOOKED' ? '600' : 'normal'
+                                        }}
+                                        title={schedule.status === 'BOOKED' 
+                                            ? "Cancel appointment and delete schedule" 
+                                            : "Delete Schedule"}
+                                    >
+                                        {schedule.status === 'BOOKED' ? '❌' : '🗑️'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

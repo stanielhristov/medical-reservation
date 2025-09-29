@@ -33,6 +33,7 @@ export const getRoleRoutes = (role) => {
                 { path: '/doctor/schedule', name: 'Schedule Management' },
                 { path: '/doctor/appointments', name: 'Appointments' },
                 { path: '/doctor/patients', name: 'Patients' },
+                { path: '/doctor/reschedule-requests', name: 'Reschedule Requests' },
                 { path: '/doctor/notifications', name: 'Notifications' }
             ];
         case 'USER':

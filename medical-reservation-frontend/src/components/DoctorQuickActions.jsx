@@ -30,6 +30,15 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/schedule'
         },
         {
+            title: 'Reschedule Requests',
+            description: 'Review and approve patient reschedule requests',
+            icon: '🔄',
+            color: '#8b5cf6',
+            bgColor: 'rgba(139, 92, 246, 0.1)',
+            borderColor: 'rgba(139, 92, 246, 0.2)',
+            path: '/doctor/reschedule-requests'
+        },
+        {
             title: 'Notifications',
             description: 'View appointment alerts and system messages',
             icon: '🔔',

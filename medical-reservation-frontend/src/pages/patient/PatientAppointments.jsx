@@ -6,6 +6,8 @@ import AppointmentHeader from '../../components/AppointmentHeader';
 import AppointmentTabs from '../../components/AppointmentTabs';
 import AppointmentCard from '../../components/AppointmentCard';
 import CancelAppointmentModal from '../../components/CancelAppointmentModal';
+import RescheduleModal from '../../components/RescheduleModal';
+import PatientRescheduleStatus from '../../components/PatientRescheduleStatus';
 
 const PatientAppointments = () => {
     const { user } = useAuth();
@@ -24,7 +26,8 @@ const PatientAppointments = () => {
         appointments,
         getFilteredAppointments,
         handleCancelAppointment,
-        handleRescheduleAppointment
+        handleRescheduleAppointment,
+        fetchAppointments
     } = useAppointments();
 
     const filteredAppointments = getFilteredAppointments(selectedTab);
@@ -34,15 +37,11 @@ const PatientAppointments = () => {
         setShowRescheduleModal(true);
     };
 
-    const confirmReschedule = () => {
-        if (selectedDate && selectedTime && selectedAppointment) {
-            const newDateTime = new Date(`${selectedDate}T${selectedTime}`);
-            handleRescheduleAppointment(selectedAppointment.id, newDateTime);
-            setShowRescheduleModal(false);
-            setSelectedAppointment(null);
-            setSelectedDate('');
-            setSelectedTime('');
-        }
+    const handleRescheduleSuccess = () => {
+        // Refresh appointments after successful reschedule request
+        fetchAppointments();
+        setSelectedAppointment(null);
+        setShowRescheduleModal(false);
     };
 
     const handleCancelClick = (appointment) => {
@@ -110,6 +109,9 @@ const PatientAppointments = () => {
                     onTabSelect={setSelectedTab}
                     appointments={appointments}
                 />
+
+                {/* Show pending reschedule requests */}
+                <PatientRescheduleStatus />
 
                 <div style={{
                     display: 'flex',
@@ -199,6 +201,14 @@ const PatientAppointments = () => {
                     onConfirm={handleConfirmCancel}
                     appointment={appointmentToCancel}
                     loading={cancelLoading}
+                />
+
+                {/* Reschedule Appointment Modal */}
+                <RescheduleModal
+                    isOpen={showRescheduleModal}
+                    onClose={() => setShowRescheduleModal(false)}
+                    appointment={selectedAppointment}
+                    onSuccess={handleRescheduleSuccess}
                 />
             </main>
         </div>
