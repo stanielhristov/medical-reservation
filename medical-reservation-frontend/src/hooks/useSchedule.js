@@ -23,10 +23,9 @@ export const useSchedule = (doctorId) => {
             setLoading(true);
             setError(null);
             
-            // Get date range for fetching schedules with status
             const now = new Date();
-            const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1); // Start from last month
-            const endDate = new Date(now.getFullYear(), now.getMonth() + 3, 0); // End 3 months from now
+            const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1); 
+            const endDate = new Date(now.getFullYear(), now.getMonth() + 3, 0); 
             
             const scheduleData = await getDoctorScheduleWithStatusForDoctor(
                 doctorId, 
@@ -144,7 +143,6 @@ export const useSchedule = (doctorId) => {
         }
     }, [schedules]);
 
-    // Selection management functions
     const toggleScheduleSelection = useCallback((scheduleId) => {
         setSelectedSchedules(prev => {
             const newSet = new Set(prev);
@@ -173,14 +171,13 @@ export const useSchedule = (doctorId) => {
         return selectedSchedules.size;
     }, [selectedSchedules]);
 
-    // Bulk delete function
     const deleteBulkSchedules = useCallback(async (scheduleIds) => {
         if (!scheduleIds || scheduleIds.length === 0) return;
         
         try {
             await deleteMultipleSchedules(scheduleIds);
             setSchedules(prev => prev.filter(s => !scheduleIds.includes(s.id)));
-            setSelectedSchedules(new Set()); // Clear selection after deletion
+            setSelectedSchedules(new Set()); 
         } catch (err) {
             console.error('Error deleting schedules:', err);
             setError(err.message);
@@ -198,7 +195,6 @@ export const useSchedule = (doctorId) => {
         removeSchedule,
         toggleAvailability,
         getFilteredSchedules,
-        // Selection management
         selectedSchedules,
         toggleScheduleSelection,
         selectAllSchedules,

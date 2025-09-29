@@ -18,10 +18,9 @@ const PatientRescheduleStatus = () => {
         try {
             setLoading(true);
             const response = await getPatientRescheduleRequests(user.id);
-            // Only show recent pending requests
             const recentRequests = response.filter(request => 
                 request.status === 'PENDING' && 
-                new Date(request.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Last 7 days
+                new Date(request.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
             );
             setRequests(recentRequests);
         } catch (error) {
@@ -49,7 +48,7 @@ const PatientRescheduleStatus = () => {
     }
 
     if (requests.length === 0) {
-        return null; // Don't show anything if no pending requests
+        return null; 
     }
 
     return (

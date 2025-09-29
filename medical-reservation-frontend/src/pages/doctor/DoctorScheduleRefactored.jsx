@@ -16,6 +16,7 @@ const DoctorScheduleRefactored = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [doctorId, setDoctorId] = useState(null);
     const [showAvailabilityManager, setShowAvailabilityManager] = useState(false);
+    const [clickedSlotData, setClickedSlotData] = useState(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState({
         isOpen: false,
         schedule: null,
@@ -106,7 +107,18 @@ const DoctorScheduleRefactored = () => {
 
     const handleToggleAvailability = async (schedule) => {
         try {
-            await toggleAvailability(schedule);
+            // If marking as unavailable, just toggle without opening manager
+            if (schedule.available) {
+                await toggleAvailability(schedule);
+            } else {
+                // If marking as available, open availability manager with slot data
+                setClickedSlotData({
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    date: schedule.startTime // Extract date from startTime
+                });
+                setShowAvailabilityManager(true);
+            }
         } catch (error) {
             console.error('Error toggling availability:', error);
         }
@@ -208,6 +220,7 @@ const DoctorScheduleRefactored = () => {
                     currentDate={currentDate}
                     onDateChange={setCurrentDate}
                     onManageAvailability={() => {
+                        setClickedSlotData(null); // No specific slot clicked
                         setShowAvailabilityManager(true);
                     }}
                 />
@@ -231,9 +244,11 @@ const DoctorScheduleRefactored = () => {
                     doctorId={doctorId}
                     onClose={() => {
                         setShowAvailabilityManager(false);
+                        setClickedSlotData(null);
                     }}
                     onSave={() => {
                         setShowAvailabilityManager(false);
+                        setClickedSlotData(null);
                         fetchSchedules(); 
                     }}
                 />

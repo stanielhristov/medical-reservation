@@ -1,5 +1,6 @@
 import React from 'react';
 import { getAppointmentTypeIcon, getPriorityLevel, getPriorityColor } from '../utils/doctorAppointmentUtils';
+import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const DoctorAppointmentCard = ({ 
     appointment, 
@@ -147,20 +148,12 @@ const DoctorAppointmentCard = ({
                             Date & Time
                         </p>
                         <p style={{
-                            fontSize: '1rem',
-                            color: '#374151',
-                            margin: 0,
-                            fontWeight: '600'
-                        }}>
-                            {formatDate(appointment.appointmentDate)}
-                        </p>
-                        <p style={{
                             fontSize: '1.1rem',
                             color: '#3b82f6',
-                            margin: '0.25rem 0 0',
+                            margin: 0,
                             fontWeight: '700'
                         }}>
-                            {formatTime(appointment.appointmentDate)}
+                            {formatDoctorScheduleDateTime(appointment.appointmentDate)}
                         </p>
                     </div>
                     <div>

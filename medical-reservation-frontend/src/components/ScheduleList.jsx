@@ -12,17 +12,13 @@ const ScheduleList = ({
 }) => {
     const formatDateTime = (dateTimeString) => {
         const date = new Date(dateTimeString);
-        return {
-            date: date.toLocaleDateString('en-US', { 
-                weekday: 'short', 
-                month: 'short', 
-                day: 'numeric' 
-            }),
-            time: date.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            })
-        };
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = date.toLocaleDateString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        
+        return `${day} ${month} ${year} – ${hours}:${minutes}`;
     };
 
     const getDuration = (startTime, endTime) => {
@@ -243,8 +239,6 @@ const ScheduleList = ({
                 gap: '1rem'
             }}>
                 {schedules.map((schedule) => {
-                const startFormat = formatDateTime(schedule.startTime);
-                const endFormat = formatDateTime(schedule.endTime);
                 const duration = getDuration(schedule.startTime, schedule.endTime);
                 const isPast = new Date(schedule.endTime) < new Date();
 
@@ -405,7 +399,7 @@ const ScheduleList = ({
                                             fontWeight: '600',
                                             fontSize: '0.9rem'
                                         }}>
-                                            {startFormat.date} • {startFormat.time}
+                                            {formatDateTime(schedule.startTime)}
                                         </div>
                                     </div>
                                     
@@ -422,7 +416,7 @@ const ScheduleList = ({
                                             fontWeight: '600',
                                             fontSize: '0.9rem'
                                         }}>
-                                            {endFormat.date} • {endFormat.time}
+                                            {formatDateTime(schedule.endTime)}
                                         </div>
                                     </div>
                                     

@@ -19,6 +19,59 @@ export const getStatusColor = (status) => {
     }
 };
 
+// Doctor Schedule Format: dd MMM yyyy – HH:mm (24-hour format)
+export const formatDoctorScheduleDateTime = (dateTime) => {
+    if (!dateTime) return 'Invalid Date';
+    
+    const date = typeof dateTime === 'string' ? new Date(dateTime) : dateTime;
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+        return 'Invalid Date';
+    }
+    
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    return `${day} ${month} ${year} – ${hours}:${minutes}`;
+};
+
+// Patient UI Format: EEEE, MMM dd 'at' h:mm a (12-hour format with weekday)
+export const formatPatientDateTime = (dateTime) => {
+    if (!dateTime) return 'Invalid Date';
+    
+    const date = typeof dateTime === 'string' ? new Date(dateTime) : dateTime;
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+        return 'Invalid Date';
+    }
+    
+    // Check if it's today or tomorrow
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const appointmentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    const timeString = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+    
+    if (appointmentDate.getTime() === today.getTime()) {
+        return `Today at ${timeString}`;
+    } else if (appointmentDate.getTime() === tomorrow.getTime()) {
+        return `Tomorrow at ${timeString}`;
+    } else {
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
+        const month = date.toLocaleDateString('en-US', { month: 'short' });
+        const day = date.getDate();
+        return `${weekday}, ${month} ${day} at ${timeString}`;
+    }
+};
+
+// Legacy functions for backward compatibility
 export const formatAppointmentDate = (date) => {
     if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
         return 'Invalid Date';

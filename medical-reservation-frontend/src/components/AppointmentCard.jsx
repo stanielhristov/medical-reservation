@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStatusColor, formatAppointmentDate, formatAppointmentTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
+import { getStatusColor, formatPatientDateTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
 
 const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) => {
     const statusStyle = getStatusColor(appointment.status);
@@ -122,18 +122,10 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                     <p style={{
                         fontSize: '1.1rem',
                         fontWeight: '600',
-                        color: '#374151',
+                        color: '#3b82f6',
                         margin: '0 0 0.25rem 0'
                     }}>
-                        {formatAppointmentDate(appointment.date)}
-                    </p>
-                    <p style={{
-                        fontSize: '1rem',
-                        color: '#3b82f6',
-                        margin: '0 0 0.25rem 0',
-                        fontWeight: '600'
-                    }}>
-                        {formatAppointmentTime(appointment.date)}
+                        {formatPatientDateTime(appointment.date)}
                     </p>
                     <p style={{
                         fontSize: '0.9rem',

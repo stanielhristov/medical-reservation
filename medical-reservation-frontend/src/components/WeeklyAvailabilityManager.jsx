@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useAvailability } from '../hooks/useAvailability';
 import { generateScheduleFromAvailability } from '../api/schedule';
@@ -26,14 +26,18 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         message: '',
         type: 'success'
     });
-
-    const [deleteConfirmation, setDeleteConfirmation] = useState({
-        isOpen: false,
-        dayKey: null,
-        dayLabel: ''
+    
+    // Track manual changes to prevent useEffect from overriding them
+    const manualChangesRef = useRef(new Set());
+    const initialLoadRef = useRef(true);
+    
+    // Persistent slot duration across all days - load from localStorage
+    const [globalSlotDuration, setGlobalSlotDuration] = useState(() => {
+        const saved = localStorage.getItem('weeklyAvailabilitySlotDuration');
+        return saved ? parseInt(saved, 10) : 30;
     });
 
-    const [pendingToggle, setPendingToggle] = useState(null);
+   
 
     const daysOfWeek = [
         { key: 'MONDAY', label: 'Monday' },
@@ -58,113 +62,110 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         }
     }, [doctorId, fetchAvailabilities]);
 
+    // Save slot duration to localStorage whenever it changes
     useEffect(() => {
-        const schedule = {};
-        daysOfWeek.forEach(day => {
-            const defaultStartTime = generateTimeOptions(day.key, false, null, 30)[0] || '09:00';
-            const endTimeOptions = generateTimeOptions(day.key, true, defaultStartTime, 30);
-            
-            const startMinutes = timeToMinutes(defaultStartTime);
-            let finalEndTime;
-            
-            if (endTimeOptions.length > 0) {
-                finalEndTime = endTimeOptions[0];
-                const endMinutes = timeToMinutes(finalEndTime);
-                if (endMinutes <= startMinutes) {
-                    finalEndTime = minutesToTime(startMinutes + 30);
-                }
-            } else {
-                finalEndTime = minutesToTime(startMinutes + 30);
-            }
-            
-            const endMinutes = timeToMinutes(finalEndTime);
-            if (endMinutes > 23 * 60 + 30) {
-                finalEndTime = '23:30';
-            }
-            
-            schedule[day.key] = {
-                enabled: false,
-                startTime: defaultStartTime,
-                endTime: finalEndTime,
-                slotDuration: 30,
-                id: null
-            };
-        });
-        setWeekSchedule(schedule);
-    }, [selectedWeekOffset]);
+        localStorage.setItem('weeklyAvailabilitySlotDuration', globalSlotDuration.toString());
+    }, [globalSlotDuration]);
+
+
+    // Helper function to get default start time for today (rounded to next 30-min increment)
+    const getTodayDefaultStartTime = () => {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        
+        // Round up to next 30-minute increment
+        const roundedMinutes = Math.ceil(currentMinutes / 30) * 30;
+        
+        return minutesToTime(roundedMinutes);
+    };
 
     useEffect(() => {
-        const schedule = {};
-        daysOfWeek.forEach(day => {
-            const availability = availabilities.find(av => av.dayOfWeek === day.key);
-            const isPast = isPastDay(day.key);
+        setWeekSchedule(prevSchedule => {
+            const schedule = {};
+            const today = new Date();
+            const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
             
-            if (availability && !isPast) {
-                schedule[day.key] = {
-                    enabled: true,
-                    startTime: availability.startTime,
-                    endTime: availability.endTime,
-                    slotDuration: availability.slotDuration,
-                    id: availability.id
-                };
-            } else {
-                const defaultStartTime = generateTimeOptions(day.key, false, null, 30)[0] || '09:00';
-                const endTimeOptions = generateTimeOptions(day.key, true, defaultStartTime, 30);
-                const startMinutes = timeToMinutes(defaultStartTime);
-                let finalEndTime;
+            daysOfWeek.forEach(day => {
+                const availability = availabilities.find(av => av.dayOfWeek === day.key);
+                const isPast = isPastDay(day.key);
+                const hasManualChanges = manualChangesRef.current.has(day.key);
+                const isToday = selectedWeekOffset === 0 && day.key === currentDayOfWeek;
                 
-                if (endTimeOptions.length > 0) {
-                    finalEndTime = endTimeOptions[0];
-                    const endMinutes = timeToMinutes(finalEndTime);
-                    if (endMinutes <= startMinutes) {
-                        finalEndTime = minutesToTime(startMinutes + 30);
-                    }
+                // If this day has manual changes and it's not the initial load, preserve the current state
+                if (hasManualChanges && !initialLoadRef.current && prevSchedule[day.key]) {
+                    schedule[day.key] = {
+                        ...prevSchedule[day.key],
+                        slotDuration: globalSlotDuration // Always use global slot duration
+                    };
+                    return;
+                }
+                
+                if (availability && !isPast) {
+                    schedule[day.key] = {
+                        enabled: isToday, // Only enable today by default
+                        startTime: isToday ? getTodayDefaultStartTime() : '08:00',
+                        endTime: isToday ? minutesToTime(timeToMinutes(getTodayDefaultStartTime()) + globalSlotDuration) : '08:30',
+                        slotDuration: globalSlotDuration,
+                        id: availability.id
+                    };
                 } else {
-                    finalEndTime = minutesToTime(startMinutes + 30);
+                    // For days without availability, set up defaults
+                    const defaultStartTime = isToday ? getTodayDefaultStartTime() : '08:00';
+                    const defaultEndTime = minutesToTime(timeToMinutes(defaultStartTime) + globalSlotDuration);
+                    
+                    schedule[day.key] = {
+                        enabled: isToday, // Only enable today by default
+                        startTime: defaultStartTime,
+                        endTime: defaultEndTime,
+                        slotDuration: globalSlotDuration,
+                        id: isPast ? null : (availability?.id || null)
+                    };
                 }
-
-                const endMinutes = timeToMinutes(finalEndTime);
-                if (endMinutes > 23 * 60 + 30) {
-                    finalEndTime = '23:30';
-                }
-                schedule[day.key] = {
-                    enabled: false,
-                    startTime: defaultStartTime,
-                    endTime: finalEndTime,
-                    slotDuration: 30,
-                    id: isPast ? null : (availability?.id || null)
-                };
-            }
+            });
+            
+            initialLoadRef.current = false;
+            return schedule;
         });
-        setWeekSchedule(schedule);
-    }, [availabilities]);
+    }, [availabilities, selectedWeekOffset, globalSlotDuration]);
 
 
     const performDayToggle = (dayKey, willBeEnabled) => {
+        // Mark this day as manually changed
+        manualChangesRef.current.add(dayKey);
+        
         setWeekSchedule(prev => {
-            const currentSchedule = prev[dayKey];
+            const currentSchedule = prev[dayKey] || {};
             
             if (willBeEnabled) {
-                const currentStartTime = currentSchedule.startTime || generateTimeOptions(dayKey, false, null, currentSchedule.slotDuration || 30)[0] || '09:00';
-                const endTimeOptions = generateTimeOptions(dayKey, true, currentStartTime, currentSchedule.slotDuration || 30);
-                const validEndTime = endTimeOptions.length > 0 ? endTimeOptions[0] : '17:00';
+                const today = new Date();
+                const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
+                const isToday = selectedWeekOffset === 0 && dayKey === currentDayOfWeek;
+                
+                const defaultStartTime = isToday ? getTodayDefaultStartTime() : '08:00';
+                const currentStartTime = currentSchedule.startTime || defaultStartTime;
+                const endTimeOptions = generateTimeOptions(dayKey, true, currentStartTime, globalSlotDuration);
+                const validEndTime = endTimeOptions.length > 0 ? endTimeOptions[0] : minutesToTime(timeToMinutes(currentStartTime) + globalSlotDuration);
                 
                 const startMinutes = timeToMinutes(currentStartTime);
                 const endMinutes = timeToMinutes(validEndTime);
                 const finalEndTime = endMinutes <= startMinutes ? 
-                    minutesToTime(startMinutes + (currentSchedule.slotDuration || 30)) : validEndTime;
+                    minutesToTime(startMinutes + globalSlotDuration) : validEndTime;
+                
+                const updatedSchedule = {
+                    ...currentSchedule,
+                    enabled: true,
+                    startTime: currentStartTime,
+                    endTime: finalEndTime,
+                    slotDuration: globalSlotDuration
+                };
                 
                 return {
                     ...prev,
-                    [dayKey]: {
-                        ...currentSchedule,
-                        enabled: true,
-                        startTime: currentStartTime,
-                        endTime: finalEndTime
-                    }
+                    [dayKey]: updatedSchedule
                 };
             }
             
+            // When disabling, preserve the schedule data but mark as disabled
             return {
                 ...prev,
                 [dayKey]: {
@@ -175,43 +176,57 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         });
     };
 
-    const handleDeleteConfirm = () => {
-        const { dayKey } = deleteConfirmation;
-        performDayToggle(dayKey, false);
-        setDeleteConfirmation({ isOpen: false, dayKey: null, dayLabel: '' });
-        setPendingToggle(null);
-    };
-
-    const handleDeleteCancel = () => {
-        setDeleteConfirmation({ isOpen: false, dayKey: null, dayLabel: '' });
-        setPendingToggle(null);
-    };
 
     const handleTimeChange = (dayKey, field, value) => {
-        setWeekSchedule(prev => {
-            const updatedSchedule = {
-                ...prev[dayKey],
-                [field]: value
-            };
+        if (field === 'slotDuration') {
+            // Update global slot duration for all days
+            setGlobalSlotDuration(value);
             
-            if (field === 'startTime' || field === 'slotDuration') {
-                const currentStartTime = field === 'startTime' ? value : updatedSchedule.startTime;
-                const currentSlotDuration = field === 'slotDuration' ? value : updatedSchedule.slotDuration || 30;
+            // Update all enabled days with the new slot duration
+            setWeekSchedule(prev => {
+                const newSchedule = { ...prev };
                 
-                const endTimeOptions = generateTimeOptions(dayKey, true, currentStartTime, currentSlotDuration);
-                const currentEndTime = updatedSchedule.endTime;
-                const startMinutes = timeToMinutes(currentStartTime);
-                const endMinutes = timeToMinutes(currentEndTime);   
-                if (endMinutes < startMinutes + currentSlotDuration && endTimeOptions.length > 0) {
-                    updatedSchedule.endTime = endTimeOptions[0];
+                Object.keys(newSchedule).forEach(key => {
+                    if (newSchedule[key].enabled) {
+                        const startMinutes = timeToMinutes(newSchedule[key].startTime);
+                        const newEndTime = minutesToTime(startMinutes + value);
+                        
+                        newSchedule[key] = {
+                            ...newSchedule[key],
+                            slotDuration: value,
+                            endTime: newEndTime
+                        };
+                    }
+                });
+                
+                return newSchedule;
+            });
+        } else {
+            setWeekSchedule(prev => {
+                const updatedSchedule = {
+                    ...prev[dayKey],
+                    [field]: value
+                };
+                
+                if (field === 'startTime') {
+                    const currentStartTime = value;
+                    const currentSlotDuration = globalSlotDuration;
+                    
+                    const endTimeOptions = generateTimeOptions(dayKey, true, currentStartTime, currentSlotDuration);
+                    const currentEndTime = updatedSchedule.endTime;
+                    const startMinutes = timeToMinutes(currentStartTime);
+                    const endMinutes = timeToMinutes(currentEndTime);   
+                    if (endMinutes < startMinutes + currentSlotDuration && endTimeOptions.length > 0) {
+                        updatedSchedule.endTime = endTimeOptions[0];
+                    }
                 }
-            }
-            
-            return {
-                ...prev,
-                [dayKey]: updatedSchedule
-            };
-        });
+                
+                return {
+                    ...prev,
+                    [dayKey]: updatedSchedule
+                };
+            });
+        }
     };
 
     const validateSchedule = () => {
@@ -234,8 +249,8 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                    
                 const duration = endMinutes - startMinutes;
                 
-                if (duration < schedule.slotDuration) {
-                    throw new Error(`${daysOfWeek.find(d => d.key === dayKey).label}: Working hours (${Math.floor(duration/60)}h ${duration%60}m) too short for ${schedule.slotDuration}-minute slots. Minimum required: ${schedule.slotDuration} minutes.`);
+                if (duration < globalSlotDuration) {
+                    throw new Error(`${daysOfWeek.find(d => d.key === dayKey).label}: Working hours (${Math.floor(duration/60)}h ${duration%60}m) too short for ${globalSlotDuration}-minute slots. Minimum required: ${globalSlotDuration} minutes.`);
                 }
             }
         }
@@ -357,7 +372,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                         dayOfWeek: dayKey,
                         startTime: schedule.startTime,
                         endTime: schedule.endTime,
-                        slotDuration: schedule.slotDuration
+                        slotDuration: globalSlotDuration
                     };
                     
                     if (schedule.id) {
@@ -403,6 +418,9 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 'Your availability has been saved and schedule slots have been generated.',
                 'success'
             );
+            
+            // Clear manual changes after successful save
+            manualChangesRef.current.clear();
             
             setTimeout(() => {
                 onSave?.();
@@ -632,7 +650,10 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                     border: '1px solid #e2e8f0'
                 }}>
                     <button
-                        onClick={() => setSelectedWeekOffset(Math.max(0, selectedWeekOffset - 1))}
+                        onClick={() => {
+                            setSelectedWeekOffset(Math.max(0, selectedWeekOffset - 1));
+                            manualChangesRef.current.clear(); // Clear manual changes when changing weeks
+                        }}
                         disabled={selectedWeekOffset === 0}
                         style={{
                             background: selectedWeekOffset === 0 ? '#e5e7eb' : '#15803d',
@@ -662,7 +683,10 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                     </div>
                     
                     <button
-                        onClick={() => setSelectedWeekOffset(selectedWeekOffset + 1)}
+                        onClick={() => {
+                            setSelectedWeekOffset(selectedWeekOffset + 1);
+                            manualChangesRef.current.clear(); // Clear manual changes when changing weeks
+                        }}
                         disabled={selectedWeekOffset >= 4}
                         style={{
                             background: selectedWeekOffset >= 4 ? '#e5e7eb' : '#15803d',
@@ -732,38 +756,47 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                         fontWeight: '600',
                                         color: getDayColor(day.key)
                                     }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={daySchedule.enabled || false}
-                                            readOnly
+                                        <div
                                             onClick={(e) => {
-                                                e.preventDefault();
+                                                e.stopPropagation();
                                                 
-                                                const currentSchedule = weekSchedule[day.key];
-                                                const willBeEnabled = !currentSchedule.enabled;
-                                                
-                                                if (!willBeEnabled && currentSchedule.enabled) {
-                                                    const dayLabel = daysOfWeek.find(d => d.key === day.key)?.label || day.key;
-                                                    setPendingToggle(day.key);
-                                                    setDeleteConfirmation({
-                                                        isOpen: true,
-                                                        dayKey: day.key,
-                                                        dayLabel: dayLabel
-                                                    });
-                                                    return;
-                                                }
-                                                
-                                                if (willBeEnabled) {
-                                                    performDayToggle(day.key, willBeEnabled);
-                                                }
+                                                const willBeEnabled = !daySchedule.enabled;
+                                                performDayToggle(day.key, willBeEnabled);
                                             }}
                                             style={{
-                                                width: '18px',
-                                                height: '18px',
-                                                accentColor: '#15803d',
-                                                cursor: 'pointer'
+                                                width: '20px',
+                                                height: '20px',
+                                                border: '2px solid #15803d',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                marginRight: '0.5rem',
+                                                flexShrink: 0,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                backgroundColor: daySchedule.enabled ? '#15803d' : 'white',
+                                                transition: 'all 0.2s ease',
+                                                position: 'relative'
                                             }}
-                                        />
+                                        >
+                                            {daySchedule.enabled && (
+                                                <svg
+                                                    width="12"
+                                                    height="12"
+                                                    viewBox="0 0 12 12"
+                                                    fill="none"
+                                                    style={{ color: 'white' }}
+                                                >
+                                                    <path
+                                                        d="M10 3L4.5 8.5L2 6"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                            )}
+                                        </div>
                                         {getDayDisplayLabel(day.key)}
                                     </label>
                                     
@@ -792,7 +825,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 Start Time
                                             </label>
                                             <select
-                                                value={daySchedule.startTime || generateTimeOptions(day.key, false, null, daySchedule.slotDuration || 30)[0] || '09:00'}
+                                                value={daySchedule.startTime || generateTimeOptions(day.key, false, null, globalSlotDuration)[0] || '08:00'}
                                                 onChange={(e) => handleTimeChange(day.key, 'startTime', e.target.value)}
                                                 style={{
                                                     width: '100%',
@@ -803,7 +836,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                     background: 'white'
                                                 }}
                                             >
-                                                {generateTimeOptions(day.key, false, null, daySchedule.slotDuration || 30).map(time => (
+                                                {generateTimeOptions(day.key, false, null, globalSlotDuration).map(time => (
                                                     <option key={time} value={time}>
                                                         {time}
                                                     </option>
@@ -823,8 +856,8 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                             </label>
                                             <select
                                                 value={(() => {
-                                                    const currentStartTime = daySchedule.startTime || generateTimeOptions(day.key, false, null, daySchedule.slotDuration || 30)[0] || '09:00';
-                                                    const endTimeOptions = generateTimeOptions(day.key, true, currentStartTime, daySchedule.slotDuration || 30);
+                                                    const currentStartTime = daySchedule.startTime || generateTimeOptions(day.key, false, null, globalSlotDuration)[0] || '08:00';
+                                                    const endTimeOptions = generateTimeOptions(day.key, true, currentStartTime, globalSlotDuration);
                                                     const defaultEndTime = endTimeOptions.length > 0 ? endTimeOptions[0] : '17:00';
                                                     
                                                     if (daySchedule.endTime) {
@@ -848,8 +881,8 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 }}
                                             >
                                                 {(() => {
-                                                    const currentStartTime = daySchedule.startTime || generateTimeOptions(day.key, false, null, daySchedule.slotDuration || 30)[0] || '09:00';
-                                                    return generateTimeOptions(day.key, true, currentStartTime, daySchedule.slotDuration || 30);
+                                                    const currentStartTime = daySchedule.startTime || generateTimeOptions(day.key, false, null, globalSlotDuration)[0] || '08:00';
+                                                    return generateTimeOptions(day.key, true, currentStartTime, globalSlotDuration);
                                                 })().map(time => (
                                                     <option key={time} value={time}>
                                                         {time}
@@ -869,7 +902,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 Slot Duration
                                             </label>
                                             <select
-                                                value={daySchedule.slotDuration || 30}
+                                                value={globalSlotDuration}
                                                 onChange={(e) => handleTimeChange(day.key, 'slotDuration', parseInt(e.target.value))}
                                                 style={{
                                                     width: '100%',
@@ -995,107 +1028,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 type={confirmationPopup.type}
             />
 
-            {deleteConfirmation.isOpen && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 10000
-                }}>
-                    <div style={{
-                        background: 'white',
-                        borderRadius: '16px',
-                        padding: '2rem',
-                        maxWidth: '400px',
-                        width: '90%',
-                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-                        textAlign: 'center'
-                    }}>
-                        <div style={{
-                            fontSize: '3rem',
-                            marginBottom: '1rem'
-                        }}>
-                            🗑️
-                        </div>
-                        
-                        <h3 style={{
-                            margin: '0 0 1rem 0',
-                            color: '#dc2626',
-                            fontSize: '1.25rem',
-                            fontWeight: '600'
-                        }}>
-                            Delete Availability Slot
-                        </h3>
-                        
-                        <p style={{
-                            margin: '0 0 2rem 0',
-                            color: '#374151',
-                            lineHeight: '1.5'
-                        }}>
-                            Are you sure you want to delete the availability slot for <strong>{deleteConfirmation.dayLabel}</strong>? 
-                            This will remove all scheduled appointments for this day and cannot be undone.
-                        </p>
-                        
-                        <div style={{
-                            display: 'flex',
-                            gap: '1rem',
-                            justifyContent: 'center'
-                        }}>
-                            <button
-                                onClick={handleDeleteCancel}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '8px',
-                                    background: 'white',
-                                    color: '#374151',
-                                    cursor: 'pointer',
-                                    fontSize: '1rem',
-                                    fontWeight: '500',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                onMouseOver={(e) => {
-                                    e.target.style.background = '#f9fafb';
-                                }}
-                                onMouseOut={(e) => {
-                                    e.target.style.background = 'white';
-                                }}
-                            >
-                                Cancel
-                            </button>
-                            
-                            <button
-                                onClick={handleDeleteConfirm}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    background: '#dc2626',
-                                    color: 'white',
-                                    cursor: 'pointer',
-                                    fontSize: '1rem',
-                                    fontWeight: '500',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                onMouseOver={(e) => {
-                                    e.target.style.background = '#b91c1c';
-                                }}
-                                onMouseOut={(e) => {
-                                    e.target.style.background = '#dc2626';
-                                }}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <style jsx>{`
                 @keyframes spin {

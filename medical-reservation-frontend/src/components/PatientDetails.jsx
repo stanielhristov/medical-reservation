@@ -1,4 +1,5 @@
 import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
+import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const PatientDetails = ({ patient, onAddRecord, onClose }) => {
     if (!patient) return null;
@@ -249,11 +250,8 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         }}>
                             Next Appointment
                         </div>
-                        <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
-                            📅 {formatDate(patient.nextAppointment)}
-                        </div>
                         <div style={{ fontSize: '0.9rem', color: '#374151' }}>
-                            🕐 {formatTime(patient.nextAppointment)}
+                            📅 {formatDoctorScheduleDateTime(patient.nextAppointment)}
                         </div>
                     </div>
                 )}

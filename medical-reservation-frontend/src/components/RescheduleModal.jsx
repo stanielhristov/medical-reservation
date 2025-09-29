@@ -12,7 +12,6 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     const [slotsLoading, setSlotsLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Get next 30 days for date selection
     const getAvailableDates = () => {
         const dates = [];
         const today = new Date();

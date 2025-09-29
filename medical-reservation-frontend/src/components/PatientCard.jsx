@@ -1,4 +1,5 @@
 import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
+import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const PatientCard = ({ patient, onClick, isSelected = false }) => {
     const formatDate = (date) => {
@@ -202,7 +203,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                     }}>
                         {patient.nextAppointment ? (
                             <>
-                                {formatDate(patient.nextAppointment)}
+                                {formatDoctorScheduleDateTime(patient.nextAppointment)}
                                 <span style={{
                                     color: daysUntilNextAppointment <= 7 ? '#059669' : '#6b7280',
                                     fontSize: '0.75rem',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatDate, getStatusColor, onNavigation }) => {
     return (
@@ -197,8 +198,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                                                 color: '#059669',
                                                 fontWeight: '600'
                                             }}>
-                                                <span>📅 {formatDate(appointment.appointmentDate)}</span>
-                                                <span>🕐 {formatTime(appointment.appointmentDate)}</span>
+                                                <span>📅 {formatDoctorScheduleDateTime(appointment.appointmentDate)}</span>
                                             </div>
                                         </div>
                                     </div>

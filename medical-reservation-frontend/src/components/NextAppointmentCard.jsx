@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatAppointmentDate, formatAppointmentTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
+import { formatPatientDateTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
 
 const NextAppointmentCard = ({ appointment, onViewDetails }) => {
     if (!appointment) {
@@ -151,17 +151,7 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                             fontSize: '0.9rem',
                             fontWeight: '600'
                         }}>
-                            📅 {formatAppointmentDate(new Date(appointment.date))}
-                        </div>
-                        <div style={{
-                            background: 'rgba(16, 185, 129, 0.1)',
-                            color: '#059669',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '12px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600'
-                        }}>
-                            ⏰ {formatAppointmentTime(new Date(appointment.date))}
+                            📅 {formatPatientDateTime(new Date(appointment.date))}
                         </div>
                         <div style={{
                             background: 'rgba(245, 158, 11, 0.1)',

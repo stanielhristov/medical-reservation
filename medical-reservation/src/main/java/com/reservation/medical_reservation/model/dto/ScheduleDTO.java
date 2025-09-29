@@ -19,6 +19,6 @@ public class ScheduleDTO {
     private String status; 
     private String blockedReason; 
     private Long appointmentId; 
-    private String patientName; // Name of the patient who booked the slot
-    private Long patientId; // ID of the patient who booked the slot
+    private String patientName; 
+    private Long patientId; 
 }
