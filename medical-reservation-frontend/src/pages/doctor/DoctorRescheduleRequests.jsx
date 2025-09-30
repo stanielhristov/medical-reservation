@@ -11,6 +11,7 @@ const DoctorRescheduleRequests = () => {
         loading,
         requests,
         pendingCount,
+        doctorId,
         getFilteredRequests,
         refreshRequests
     } = useRescheduleRequests('doctor');
@@ -186,6 +187,7 @@ const DoctorRescheduleRequests = () => {
                                 <RescheduleRequestCard
                                     key={request.id}
                                     request={request}
+                                    doctorId={doctorId}
                                     onUpdate={refreshRequests}
                                 />
                             ))}

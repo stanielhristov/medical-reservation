@@ -17,7 +17,8 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> 
     
     List<ScheduleEntity> findByDoctorOrderByStartTime(DoctorEntity doctor);
     
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.doctor = :doctor AND s.startTime >= :startDate AND s.endTime <= :endDate ORDER BY s.startTime")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.doctor = :doctor AND " +
+           "((s.startTime <= :endDate AND s.endTime >= :startDate)) ORDER BY s.startTime")
     List<ScheduleEntity> findByDoctorAndDateRange(
             @Param("doctor") DoctorEntity doctor,
             @Param("startDate") LocalDateTime startDate,

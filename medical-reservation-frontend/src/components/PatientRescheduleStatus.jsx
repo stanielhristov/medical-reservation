@@ -43,6 +43,20 @@ const PatientRescheduleStatus = () => {
         });
     };
 
+    const formatRequestedDateTime = (dateString) => {
+        const date = new Date(dateString);
+        // Add 3 hours to correct timezone display issue for requested times only
+        const correctedDate = new Date(date.getTime() + (3 * 60 * 60 * 1000));
+        return correctedDate.toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     if (loading) {
         return <LoadingSpinner message="Loading reschedule status..." />;
     }
@@ -130,7 +144,7 @@ const PatientRescheduleStatus = () => {
                                 <strong>From:</strong> {formatDateTime(request.originalDateTime)}
                             </div>
                             <div>
-                                <strong>To:</strong> {formatDateTime(request.requestedDateTime)}
+                                <strong>To:</strong> {formatRequestedDateTime(request.requestedDateTime)}
                             </div>
                         </div>
 

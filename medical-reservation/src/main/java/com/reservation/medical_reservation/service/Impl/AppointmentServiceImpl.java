@@ -250,6 +250,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public boolean isSlotAvailableForReschedule(Long doctorId, LocalDateTime startTime, LocalDateTime endTime, Long excludeAppointmentId) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+        
+        List<AppointmentEntity> conflictingAppointments = appointmentRepository
+                .findConflictingAppointments(doctor, startTime, endTime);
+        
+        return conflictingAppointments.stream()
+                .noneMatch(appointment -> !appointment.getId().equals(excludeAppointmentId));
+    }
+
+    @Override
     public List<AppointmentDTO> getDoctorAppointmentsForToday(Long doctorId) {
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));

@@ -32,17 +32,14 @@ export const useDoctorAppointments = () => {
             
             const response = await getDoctorAppointments(doctorProfile.id);
             const transformedAppointments = response.map(appointment => {
-                // Calculate actual duration from appointmentTime and endTime
                 const startTime = new Date(appointment.appointmentTime);
                 const endTime = new Date(appointment.endTime);
                 const durationMinutes = Math.round((endTime - startTime) / (1000 * 60));
                 
-                // Parse the notes to separate reason from additional notes
                 const parseNotes = (notesText) => {
                     console.log('Parsing notes:', notesText);
                     if (!notesText) return { reason: 'No reason provided', additionalNotes: null };
                     
-                    // Split by " | Additional notes: " or similar patterns
                     const parts = notesText.split(/\s*\|\s*Additional notes?:\s*/i);
                     console.log('Split parts:', parts);
                     
@@ -55,7 +52,6 @@ export const useDoctorAppointments = () => {
                         return result;
                     }
                     
-                    // If no additional notes pattern found, treat everything as reason
                     const result = {
                         reason: notesText.trim() || 'No reason provided',
                         additionalNotes: null
@@ -80,7 +76,7 @@ export const useDoctorAppointments = () => {
                     reason: reason,
                     additionalNotes: additionalNotes,
                     notes: appointment.notes || '',
-                    doctorNotes: null, // Doctor's notes are separate from the initial reason
+                    doctorNotes: null, 
                     medicalHistory: [],
                     lastVisit: null,
                     isEmergency: false,

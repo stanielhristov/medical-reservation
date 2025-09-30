@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { respondToRescheduleRequest } from '../api/rescheduleRequests';
+import { triggerScheduleRefresh } from '../utils/scheduleRefreshUtils';
 
-const RescheduleRequestCard = ({ request, onUpdate }) => {
+const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
     const [loading, setLoading] = useState(false);
     const [showResponseForm, setShowResponseForm] = useState(false);
     const [doctorResponse, setDoctorResponse] = useState('');
@@ -9,6 +10,20 @@ const RescheduleRequestCard = ({ request, onUpdate }) => {
 
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    const formatRequestedDateTime = (dateString) => {
+        const date = new Date(dateString);
+        // Use consistent formatting without timezone correction
         return date.toLocaleString('en-US', {
             weekday: 'long',
             year: 'numeric',
@@ -43,6 +58,12 @@ const RescheduleRequestCard = ({ request, onUpdate }) => {
                 status, 
                 doctorResponse.trim() || null
             );
+            
+            // If the request was approved, trigger a schedule refresh
+            if (status === 'APPROVED') {
+                // Trigger schedule refresh for the current doctor
+                triggerScheduleRefresh(doctorId);
+            }
             
             onUpdate && onUpdate();
             setShowResponseForm(false);
@@ -152,7 +173,7 @@ const RescheduleRequestCard = ({ request, onUpdate }) => {
                         color: '#374151',
                         margin: 0
                     }}>
-                        {formatDateTime(request.requestedDateTime)}
+                        {formatRequestedDateTime(request.requestedDateTime)}
                     </p>
                 </div>
             </div>

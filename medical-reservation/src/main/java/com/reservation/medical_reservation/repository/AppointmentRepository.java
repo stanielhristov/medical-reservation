@@ -37,7 +37,8 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND DATE(a.appointmentTime) = DATE(:date) ORDER BY a.appointmentTime")
     List<AppointmentEntity> findByDoctorAndDate(@Param("doctor") DoctorEntity doctor, @Param("date") LocalDateTime date);
     
-    @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND a.appointmentTime >= :startTime AND a.appointmentTime < :endTime AND a.status != 'CANCELLED'")
+    @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND a.status != 'CANCELLED' AND " +
+           "((a.appointmentTime < :endTime AND a.endTime > :startTime))")
     List<AppointmentEntity> findConflictingAppointments(@Param("doctor") DoctorEntity doctor, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
     
     @Query("SELECT a FROM AppointmentEntity a WHERE a.doctor = :doctor AND DATE(a.appointmentTime) = DATE(:today) ORDER BY a.appointmentTime ASC")

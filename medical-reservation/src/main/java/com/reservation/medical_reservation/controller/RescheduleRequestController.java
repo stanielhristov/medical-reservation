@@ -29,6 +29,11 @@ public class RescheduleRequestController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime requestedEndTime,
             @RequestParam(required = false) String patientReason) {
         
+        System.out.println("Controller received - appointmentId: " + appointmentId);
+        System.out.println("Controller received - requestedDateTime: " + requestedDateTime);
+        System.out.println("Controller received - requestedEndTime: " + requestedEndTime);
+        System.out.println("Controller received - patientReason: " + patientReason);
+        
         RescheduleRequestDTO created = rescheduleRequestService.createRescheduleRequest(
                 appointmentId, requestedDateTime, requestedEndTime, patientReason);
         return ResponseEntity.ok(created);

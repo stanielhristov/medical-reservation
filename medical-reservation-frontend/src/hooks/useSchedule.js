@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
     getDoctorSchedule, 
     createSchedule, 
@@ -9,6 +9,7 @@ import {
     deleteMultipleSchedules,
     getDoctorScheduleWithStatusForDoctor
 } from '../api/schedule';
+import { onScheduleRefresh } from '../utils/scheduleRefreshUtils';
 
 export const useSchedule = (doctorId) => {
     const [schedules, setSchedules] = useState([]);
@@ -184,6 +185,21 @@ export const useSchedule = (doctorId) => {
             throw err;
         }
     }, []);
+
+    // Listen for schedule refresh events (e.g., when reschedule requests are approved)
+    useEffect(() => {
+        if (!doctorId) return;
+
+        const cleanup = onScheduleRefresh((eventData) => {
+            // Refresh schedule if the event is for this doctor or a general refresh
+            if (!eventData.doctorId || eventData.doctorId === doctorId) {
+                console.log('Schedule refresh triggered, refetching schedules...');
+                fetchSchedules();
+            }
+        });
+
+        return cleanup;
+    }, [doctorId, fetchSchedules]);
 
     return {
         schedules,

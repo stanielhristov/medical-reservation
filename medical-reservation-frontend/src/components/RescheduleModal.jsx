@@ -10,12 +10,25 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     const [reason, setReason] = useState('');
     const [loading, setLoading] = useState(false);
     const [slotsLoading, setSlotsLoading] = useState(false);
+    const [datesLoading, setDatesLoading] = useState(false);
+    const [availableDates, setAvailableDates] = useState([]);
     const [error, setError] = useState('');
 
-    const getAvailableDates = () => {
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
+    const getMaxDate = () => {
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + 30);
+        return maxDate.toISOString().split('T')[0];
+    };
+
+    const getDateRange = () => {
         const dates = [];
         const today = new Date();
-        for (let i = 1; i <= 30; i++) {
+        for (let i = 0; i <= 30; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() + i);
             dates.push(date);
@@ -23,13 +36,78 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
         return dates;
     };
 
-    const availableDates = getAvailableDates();
-
     useEffect(() => {
         if (selectedDate && appointment) {
             fetchAvailableSlots();
         }
     }, [selectedDate, appointment]);
+
+    useEffect(() => {
+        if (isOpen && appointment) {
+            fetchAvailableDates();
+        }
+    }, [isOpen, appointment]);
+
+    const fetchAvailableDates = async () => {
+        if (!appointment?.doctorId) return;
+        
+        try {
+            setDatesLoading(true);
+            setError('');
+            
+            const dateRange = getDateRange();
+            const datePromises = dateRange.map(async (date) => {
+                try {
+                    const startDate = new Date(date);
+                    startDate.setHours(0, 0, 0, 0);
+                    
+                    const endDate = new Date(date);
+                    endDate.setHours(23, 59, 59, 999);
+                    
+                    const slots = await getAvailableSlots(appointment.doctorId, startDate, endDate);
+                    const availableSlots = slots.filter(slot => 
+                        slot.available && 
+                        // Exclude the current appointment slot
+                        !(new Date(slot.startTime).getTime() === new Date(appointment.date).getTime())
+                    );
+                    
+                    return {
+                        date: date.toISOString().split('T')[0],
+                        dateObj: date,
+                        hasSlots: availableSlots.length > 0,
+                        slotsCount: availableSlots.length
+                    };
+                } catch (error) {
+                    return {
+                        date: date.toISOString().split('T')[0],
+                        dateObj: date,
+                        hasSlots: false,
+                        slotsCount: 0
+                    };
+                }
+            });
+            
+            const results = await Promise.all(datePromises);
+            setAvailableDates(results);
+            
+            if (!selectedDate) {
+                const todayString = new Date().toISOString().split('T')[0];
+                const todayAvailable = results.find(d => d.date === todayString && d.hasSlots);
+                const firstAvailableDate = results.find(d => d.hasSlots);
+                
+                if (todayAvailable) {
+                    setSelectedDate(todayAvailable.date);
+                } else if (firstAvailableDate) {
+                    setSelectedDate(firstAvailableDate.date);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching available dates:', error);
+            setError('Failed to load available dates. Please try again.');
+        } finally {
+            setDatesLoading(false);
+        }
+    };
 
     const fetchAvailableSlots = async () => {
         try {
@@ -44,7 +122,11 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             endDate.setHours(23, 59, 59, 999);
             
             const slots = await getAvailableSlots(appointment.doctorId, startDate, endDate);
-            setAvailableSlots(slots.filter(slot => slot.available));
+            setAvailableSlots(slots.filter(slot => 
+                slot.available && 
+                // Exclude the current appointment slot
+                !(new Date(slot.startTime).getTime() === new Date(appointment.date).getTime())
+            ));
         } catch (error) {
             console.error('Error fetching available slots:', error);
             setError('Failed to load available slots. Please try again.');
@@ -65,6 +147,17 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             setLoading(true);
             setError('');
             
+            console.log('Creating reschedule request with:', {
+                appointmentId: appointment.id,
+                selectedSlot: selectedSlot,
+                startTime: new Date(selectedSlot.startTime),
+                endTime: new Date(selectedSlot.endTime),
+                startTimeISO: new Date(selectedSlot.startTime).toISOString(),
+                endTimeISO: new Date(selectedSlot.endTime).toISOString(),
+                currentTime: new Date().toISOString(),
+                reason: reason.trim() || null
+            });
+            
             await createRescheduleRequest(
                 appointment.id,
                 new Date(selectedSlot.startTime),
@@ -73,17 +166,16 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             );
             
             onSuccess && onSuccess();
-            
-            // Show success message
+        
             alert('Reschedule request submitted successfully! The doctor will review your request and respond soon.');
             
             onClose();
-            
-            // Reset form
+        
             setSelectedDate('');
             setSelectedSlot(null);
             setReason('');
             setAvailableSlots([]);
+            setAvailableDates([]);
         } catch (error) {
             console.error('Error creating reschedule request:', error);
             setError(error.message || 'Failed to submit reschedule request. Please try again.');
@@ -100,6 +192,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             setSelectedSlot(null);
             setReason('');
             setAvailableSlots([]);
+            setAvailableDates([]);
             setError('');
         }
     };
@@ -113,12 +206,41 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
         });
     };
 
+    const formatShortDate = (date) => {
+        const today = new Date();
+        const isToday = date.toDateString() === today.toDateString();
+        
+        if (isToday) {
+            return 'Today';
+        }
+        
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
     const formatTime = (dateString) => {
         return new Date(dateString).toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true
         });
+    };
+
+    const formatSlotTime = (startTime, endTime) => {
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        return `${start.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+        })} - ${end.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+        })}`;
     };
 
     if (!isOpen) return null;
@@ -214,32 +336,92 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                             fontSize: '1rem',
                             fontWeight: '600',
                             color: '#374151',
-                            marginBottom: '0.5rem'
+                            marginBottom: '1rem'
                         }}>
-                            Select New Date
+                            Select New Date <span style={{ color: '#dc2626' }}>*</span>
                         </label>
-                        <select
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            required
-                            disabled={loading}
-                            style={{
-                                width: '100%',
-                                padding: '1rem',
-                                border: '2px solid #e5e7eb',
+                        
+                        {datesLoading ? (
+                            <div style={{
+                                textAlign: 'center',
+                                padding: '2rem',
+                                color: '#6b7280'
+                            }}>
+                                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
+                                <p>Loading available dates...</p>
+                            </div>
+                        ) : availableDates.length === 0 ? (
+                            <div style={{
+                                textAlign: 'center',
+                                padding: '2rem',
+                                background: 'rgba(239, 68, 68, 0.05)',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
                                 borderRadius: '12px',
-                                fontSize: '1rem',
-                                backgroundColor: 'white',
-                                cursor: loading ? 'not-allowed' : 'pointer'
-                            }}
-                        >
-                            <option value="">Choose a date...</option>
-                            {availableDates.map((date, index) => (
-                                <option key={index} value={date.toISOString().split('T')[0]}>
-                                    {formatDate(date)}
-                                </option>
-                            ))}
-                        </select>
+                                color: '#6b7280'
+                            }}>
+                                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
+                                <p><strong>No available dates found.</strong></p>
+                                <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                                    The doctor may not have set up their schedule yet. Please try again later.
+                                </p>
+                            </div>
+                        ) : (
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                                gap: '0.75rem',
+                                maxHeight: '240px',
+                                overflowY: 'auto',
+                                padding: '1rem',
+                                background: '#f8fafc',
+                                borderRadius: '12px',
+                                border: '1px solid #e2e8f0'
+                            }}>
+                                {availableDates.map((dateInfo) => (
+                                    <div
+                                        key={dateInfo.date}
+                                        onClick={dateInfo.hasSlots ? () => setSelectedDate(dateInfo.date) : undefined}
+                                        style={{
+                                            padding: '0.75rem',
+                                            border: dateInfo.hasSlots 
+                                                ? (selectedDate === dateInfo.date ? '2px solid #3b82f6' : '2px solid rgba(34, 197, 94, 0.2)')
+                                                : '2px solid rgba(239, 68, 68, 0.2)',
+                                            borderRadius: '8px',
+                                            background: !dateInfo.hasSlots 
+                                                ? 'rgba(239, 68, 68, 0.05)'
+                                                : selectedDate === dateInfo.date 
+                                                    ? 'rgba(59, 130, 246, 0.1)' 
+                                                    : 'white',
+                                            cursor: dateInfo.hasSlots ? 'pointer' : 'not-allowed',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '500',
+                                            textAlign: 'center',
+                                            transition: 'all 0.2s ease',
+                                            opacity: dateInfo.hasSlots ? 1 : 0.6,
+                                            position: 'relative'
+                                        }}
+                                    >
+                                        <div style={{
+                                            color: !dateInfo.hasSlots ? '#9ca3af' : selectedDate === dateInfo.date ? '#1d4ed8' : '#374151',
+                                            fontWeight: selectedDate === dateInfo.date ? '600' : '500'
+                                        }}>
+                                            {formatShortDate(dateInfo.dateObj)}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.7rem',
+                                            marginTop: '0.25rem',
+                                            color: dateInfo.hasSlots ? '#22c55e' : '#ef4444',
+                                            fontWeight: '600'
+                                        }}>
+                                            {dateInfo.hasSlots 
+                                                ? `${dateInfo.slotsCount} slot${dateInfo.slotsCount > 1 ? 's' : ''}`
+                                                : 'No slots'
+                                            }
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {selectedDate && (
@@ -251,56 +433,67 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 color: '#374151',
                                 marginBottom: '0.5rem'
                             }}>
-                                Available Time Slots
+                                Available Time Slots <span style={{ color: '#dc2626' }}>*</span>
                             </label>
                             
                             {slotsLoading ? (
-                                <div style={{ textAlign: 'center', padding: '2rem' }}>
-                                    <LoadingSpinner message="Loading available slots..." />
+                                <div style={{
+                                    textAlign: 'center',
+                                    padding: '2rem',
+                                    color: '#6b7280'
+                                }}>
+                                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+                                    <p>Loading available slots...</p>
                                 </div>
                             ) : availableSlots.length === 0 ? (
                                 <div style={{
                                     textAlign: 'center',
                                     padding: '2rem',
-                                    color: '#9ca3af',
-                                    backgroundColor: '#f9fafb',
+                                    background: 'rgba(239, 68, 68, 0.05)',
+                                    border: '1px solid rgba(239, 68, 68, 0.2)',
                                     borderRadius: '12px',
-                                    border: '1px solid #e5e7eb'
+                                    color: '#6b7280'
                                 }}>
-                                    No available slots for this date. Please select another date.
+                                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
+                                    <p><strong>No available slots for this date.</strong></p>
+                                    <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                                        The doctor may not have set up their schedule for this date yet, 
+                                        or all slots may be booked. Please try another date.
+                                    </p>
                                 </div>
                             ) : (
                                 <div style={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-                                    gap: '0.75rem',
-                                    maxHeight: '200px',
-                                    overflowY: 'auto',
-                                    padding: '0.5rem',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '12px',
-                                    backgroundColor: '#f9fafb'
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                    gap: '1rem'
                                 }}>
                                     {availableSlots.map((slot, index) => (
-                                        <button
+                                        <div
                                             key={index}
-                                            type="button"
                                             onClick={() => setSelectedSlot(slot)}
-                                            disabled={loading}
                                             style={{
-                                                padding: '0.75rem',
-                                                border: selectedSlot?.id === slot.id ? '2px solid #3b82f6' : '1px solid #d1d5db',
-                                                borderRadius: '8px',
-                                                backgroundColor: selectedSlot?.id === slot.id ? '#eff6ff' : 'white',
-                                                color: selectedSlot?.id === slot.id ? '#1d4ed8' : '#374151',
+                                                padding: '1rem',
+                                                border: selectedSlot?.id === slot.id 
+                                                    ? '2px solid #3b82f6' 
+                                                    : '2px solid rgba(59, 130, 246, 0.2)',
+                                                borderRadius: '12px',
+                                                background: selectedSlot?.id === slot.id 
+                                                    ? 'rgba(59, 130, 246, 0.1)' 
+                                                    : 'white',
                                                 cursor: loading ? 'not-allowed' : 'pointer',
-                                                fontSize: '0.9rem',
-                                                fontWeight: selectedSlot?.id === slot.id ? '600' : '400',
-                                                transition: 'all 0.2s ease'
+                                                fontSize: '1rem',
+                                                fontWeight: '600',
+                                                color: selectedSlot?.id === slot.id ? '#1d4ed8' : '#374151',
+                                                transition: 'all 0.2s ease',
+                                                textAlign: 'center',
+                                                boxShadow: selectedSlot?.id === slot.id 
+                                                    ? '0 4px 12px rgba(59, 130, 246, 0.15)' 
+                                                    : '0 2px 4px rgba(0, 0, 0, 0.05)',
+                                                transform: selectedSlot?.id === slot.id ? 'translateY(-2px)' : 'translateY(0)'
                                             }}
                                         >
-                                            {formatTime(slot.startTime)}
-                                        </button>
+                                            {formatSlotTime(slot.startTime, slot.endTime)}
+                                        </div>
                                     ))}
                                 </div>
                             )}
@@ -326,11 +519,21 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                             style={{
                                 width: '100%',
                                 padding: '1rem',
-                                border: '2px solid #e5e7eb',
+                                border: '2px solid rgba(59, 130, 246, 0.2)',
                                 borderRadius: '12px',
                                 fontSize: '1rem',
                                 resize: 'vertical',
-                                minHeight: '80px'
+                                minHeight: '80px',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                                transition: 'border-color 0.2s ease',
+                                fontFamily: 'inherit'
+                            }}
+                            onFocus={e => {
+                                e.target.style.borderColor = '#3b82f6';
+                            }}
+                            onBlur={e => {
+                                e.target.style.borderColor = 'rgba(59, 130, 246, 0.2)';
                             }}
                         />
                     </div>
@@ -377,14 +580,20 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 padding: '1rem 2rem',
                                 border: 'none',
                                 borderRadius: '12px',
-                                backgroundColor: loading || !selectedSlot ? '#9ca3af' : '#3b82f6',
+                                background: loading || !selectedSlot 
+                                    ? 'rgba(107, 114, 128, 0.3)' 
+                                    : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
                                 color: 'white',
                                 fontSize: '1rem',
                                 fontWeight: '600',
                                 cursor: loading || !selectedSlot ? 'not-allowed' : 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.5rem'
+                                gap: '0.5rem',
+                                transition: 'all 0.3s ease',
+                                boxShadow: loading || !selectedSlot 
+                                    ? 'none' 
+                                    : '0 4px 12px rgba(59, 130, 246, 0.3)'
                             }}
                         >
                             {loading ? (
@@ -392,7 +601,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                     <div style={{
                                         width: '16px',
                                         height: '16px',
-                                        border: '2px solid transparent',
+                                        border: '2px solid rgba(255, 255, 255, 0.3)',
                                         borderTop: '2px solid white',
                                         borderRadius: '50%',
                                         animation: 'spin 1s linear infinite'
@@ -400,7 +609,9 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                     Submitting...
                                 </>
                             ) : (
-                                'Submit Request'
+                                <>
+                                    📅 Submit Request
+                                </>
                             )}
                         </button>
                     </div>
