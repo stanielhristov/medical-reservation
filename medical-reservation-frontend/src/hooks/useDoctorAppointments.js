@@ -31,23 +31,62 @@ export const useDoctorAppointments = () => {
             }
             
             const response = await getDoctorAppointments(doctorProfile.id);
-            const transformedAppointments = response.map(appointment => ({
-                id: appointment.id,
-                patientName: appointment.patientName || 'Unknown Patient',
-                patientAge: null, 
-                patientPhone: 'N/A', 
-                patientEmail: 'N/A', 
-                appointmentDate: new Date(appointment.appointmentTime),
-                duration: "60 minutes", 
-                status: appointment.status?.toLowerCase() || 'pending',
-                type: appointment.serviceName || 'Consultation', 
-                reason: appointment.notes || 'No reason provided', 
-                notes: appointment.notes || '',
-                medicalHistory: [],
-                lastVisit: null,
-                isEmergency: false,
-                consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
-            }));
+            const transformedAppointments = response.map(appointment => {
+                // Calculate actual duration from appointmentTime and endTime
+                const startTime = new Date(appointment.appointmentTime);
+                const endTime = new Date(appointment.endTime);
+                const durationMinutes = Math.round((endTime - startTime) / (1000 * 60));
+                
+                // Parse the notes to separate reason from additional notes
+                const parseNotes = (notesText) => {
+                    console.log('Parsing notes:', notesText);
+                    if (!notesText) return { reason: 'No reason provided', additionalNotes: null };
+                    
+                    // Split by " | Additional notes: " or similar patterns
+                    const parts = notesText.split(/\s*\|\s*Additional notes?:\s*/i);
+                    console.log('Split parts:', parts);
+                    
+                    if (parts.length === 2) {
+                        const result = {
+                            reason: parts[0].trim() || 'No reason provided',
+                            additionalNotes: parts[1].trim() || null
+                        };
+                        console.log('Parsed result:', result);
+                        return result;
+                    }
+                    
+                    // If no additional notes pattern found, treat everything as reason
+                    const result = {
+                        reason: notesText.trim() || 'No reason provided',
+                        additionalNotes: null
+                    };
+                    console.log('Single reason result:', result);
+                    return result;
+                };
+                
+                const { reason, additionalNotes } = parseNotes(appointment.notes);
+                
+                return {
+                    id: appointment.id,
+                    patientName: appointment.patientName || 'Unknown Patient',
+                    patientAge: appointment.patientAge || null, 
+                    patientPhone: appointment.patientPhone || appointment.phone || 'Not provided', 
+                    patientEmail: appointment.patientEmail || appointment.email || 'Not provided', 
+                    appointmentDate: new Date(appointment.appointmentTime),
+                    endTime: new Date(appointment.endTime),
+                    duration: `${durationMinutes} minutes`, 
+                    status: appointment.status?.toLowerCase() || 'pending',
+                    type: appointment.serviceName || 'Consultation', 
+                    reason: reason,
+                    additionalNotes: additionalNotes,
+                    notes: appointment.notes || '',
+                    doctorNotes: null, // Doctor's notes are separate from the initial reason
+                    medicalHistory: [],
+                    lastVisit: null,
+                    isEmergency: false,
+                    consultationFee: appointment.consultationFee ? `$${appointment.consultationFee}` : '$150'
+                };
+            });
             setAppointments(transformedAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);

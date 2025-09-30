@@ -19,7 +19,6 @@ export const getStatusColor = (status) => {
     }
 };
 
-// Doctor Schedule Format: dd MMM yyyy – HH:mm (24-hour format)
 export const formatDoctorScheduleDateTime = (dateTime) => {
     if (!dateTime) return 'Invalid Date';
     
@@ -37,7 +36,6 @@ export const formatDoctorScheduleDateTime = (dateTime) => {
     return `${day} ${month} ${year} – ${hours}:${minutes}`;
 };
 
-// Patient UI Format: EEEE, MMM dd 'at' h:mm a (12-hour format with weekday)
 export const formatPatientDateTime = (dateTime) => {
     if (!dateTime) return 'Invalid Date';
     
@@ -46,7 +44,6 @@ export const formatPatientDateTime = (dateTime) => {
         return 'Invalid Date';
     }
     
-    // Check if it's today or tomorrow
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = new Date(today);
@@ -71,7 +68,6 @@ export const formatPatientDateTime = (dateTime) => {
     }
 };
 
-// Legacy functions for backward compatibility
 export const formatAppointmentDate = (date) => {
     if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
         return 'Invalid Date';

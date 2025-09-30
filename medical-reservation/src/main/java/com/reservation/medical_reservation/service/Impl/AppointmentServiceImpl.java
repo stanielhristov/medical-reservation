@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
         
-        return appointmentRepository.findByDoctorOrderByAppointmentTimeDesc(doctor)
+        return appointmentRepository.findByDoctorWithPatientProfileOrderByAppointmentTimeDesc(doctor)
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
@@ -290,6 +291,22 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentDTO dto = modelMapper.map(appointment, AppointmentDTO.class);
         dto.setPatientId(appointment.getPatient().getId());
         dto.setPatientName(appointment.getPatient().getFullName());
+        dto.setPatientEmail(appointment.getPatient().getEmail());
+        dto.setPatientPhone(appointment.getPatient().getPhoneNumber() != null ? 
+                           appointment.getPatient().getPhoneNumber() : "");
+        
+        try {
+            LocalDate dateOfBirth = appointment.getPatient().getDateOfBirth();
+            if (dateOfBirth != null) {
+                int age = java.time.Period.between(dateOfBirth, java.time.LocalDate.now()).getYears();
+                dto.setPatientAge(age);
+            }
+        } catch (Exception e) {
+           
+            System.out.println("Could not calculate patient age for appointment " + appointment.getId() + ": " + e.getMessage());
+            dto.setPatientAge(null);
+        }
+        
         dto.setDoctorId(appointment.getDoctor().getId());
         dto.setDoctorName(appointment.getDoctor().getUser().getFullName());
         dto.setDoctorSpecialization(appointment.getDoctor().getSpecialization());

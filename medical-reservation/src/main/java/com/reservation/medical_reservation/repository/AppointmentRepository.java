@@ -18,6 +18,9 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     List<AppointmentEntity> findAllByOrderByAppointmentTimeDesc();
     List<AppointmentEntity> findByPatientOrderByAppointmentTimeDesc(UserEntity patient);
     List<AppointmentEntity> findByDoctorOrderByAppointmentTimeDesc(DoctorEntity doctor);
+    
+    @Query("SELECT a FROM AppointmentEntity a LEFT JOIN FETCH a.patient p LEFT JOIN FETCH p.patientProfile WHERE a.doctor = :doctor ORDER BY a.appointmentTime DESC")
+    List<AppointmentEntity> findByDoctorWithPatientProfileOrderByAppointmentTimeDesc(@Param("doctor") DoctorEntity doctor);
     List<AppointmentEntity> findByPatientAndStatusOrderByAppointmentTimeDesc(UserEntity patient, AppointmentStatus status);
     List<AppointmentEntity> findByDoctorAndStatusOrderByAppointmentTimeDesc(DoctorEntity doctor, AppointmentStatus status);
     boolean existsByPatientId(Long patientId);

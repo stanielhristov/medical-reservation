@@ -104,7 +104,7 @@ const DoctorAppointmentCard = ({
                             margin: 0,
                             fontWeight: '500'
                         }}>
-                            Age: {appointment.patientAge} • {appointment.type}
+                            {appointment.patientAge ? `Age: ${appointment.patientAge}` : 'Age: Not provided'} • {appointment.type}
                         </p>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ const DoctorAppointmentCard = ({
             }}>
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                     gap: '1rem',
                     marginBottom: '1rem'
                 }}>
@@ -174,6 +174,26 @@ const DoctorAppointmentCard = ({
                             fontWeight: '600'
                         }}>
                             {appointment.duration}
+                        </p>
+                    </div>
+                    <div>
+                        <p style={{
+                            fontSize: '0.8rem',
+                            color: '#9ca3af',
+                            margin: '0 0 0.25rem',
+                            fontWeight: '600',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
+                        }}>
+                            Service
+                        </p>
+                        <p style={{
+                            fontSize: '1rem',
+                            color: '#374151',
+                            margin: 0,
+                            fontWeight: '600'
+                        }}>
+                            {appointment.type}
                         </p>
                     </div>
                     <div>
@@ -230,12 +250,27 @@ const DoctorAppointmentCard = ({
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem',
+                    gap: '1.5rem',
                     fontSize: '0.9rem',
-                    color: '#6b7280'
+                    color: '#6b7280',
+                    flexWrap: 'wrap'
                 }}>
-                    <span>📧</span>
-                    <span>{appointment.patientEmail}</span>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <span>📧</span>
+                        <span>{appointment.patientEmail}</span>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <span>📞</span>
+                        <span>{appointment.patientPhone}</span>
+                    </div>
                 </div>
                 
                 <div style={{ display: 'flex', gap: '0.75rem' }}>

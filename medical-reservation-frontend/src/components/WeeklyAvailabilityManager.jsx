@@ -27,11 +27,9 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         type: 'success'
     });
     
-    // Track manual changes to prevent useEffect from overriding them
     const manualChangesRef = useRef(new Set());
     const initialLoadRef = useRef(true);
     
-    // Persistent slot duration across all days - load from localStorage
     const [globalSlotDuration, setGlobalSlotDuration] = useState(() => {
         const saved = localStorage.getItem('weeklyAvailabilitySlotDuration');
         return saved ? parseInt(saved, 10) : 30;
@@ -62,18 +60,15 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         }
     }, [doctorId, fetchAvailabilities]);
 
-    // Save slot duration to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('weeklyAvailabilitySlotDuration', globalSlotDuration.toString());
     }, [globalSlotDuration]);
 
 
-    // Helper function to get default start time for today (rounded to next 30-min increment)
     const getTodayDefaultStartTime = () => {
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         
-        // Round up to next 30-minute increment
         const roundedMinutes = Math.ceil(currentMinutes / 30) * 30;
         
         return minutesToTime(roundedMinutes);
@@ -91,30 +86,28 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 const hasManualChanges = manualChangesRef.current.has(day.key);
                 const isToday = selectedWeekOffset === 0 && day.key === currentDayOfWeek;
                 
-                // If this day has manual changes and it's not the initial load, preserve the current state
                 if (hasManualChanges && !initialLoadRef.current && prevSchedule[day.key]) {
                     schedule[day.key] = {
                         ...prevSchedule[day.key],
-                        slotDuration: globalSlotDuration // Always use global slot duration
+                        slotDuration: globalSlotDuration
                     };
                     return;
                 }
                 
                 if (availability && !isPast) {
                     schedule[day.key] = {
-                        enabled: isToday, // Only enable today by default
+                        enabled: isToday, 
                         startTime: isToday ? getTodayDefaultStartTime() : '08:00',
                         endTime: isToday ? minutesToTime(timeToMinutes(getTodayDefaultStartTime()) + globalSlotDuration) : '08:30',
                         slotDuration: globalSlotDuration,
                         id: availability.id
                     };
                 } else {
-                    // For days without availability, set up defaults
                     const defaultStartTime = isToday ? getTodayDefaultStartTime() : '08:00';
                     const defaultEndTime = minutesToTime(timeToMinutes(defaultStartTime) + globalSlotDuration);
                     
                     schedule[day.key] = {
-                        enabled: isToday, // Only enable today by default
+                        enabled: isToday, 
                         startTime: defaultStartTime,
                         endTime: defaultEndTime,
                         slotDuration: globalSlotDuration,
@@ -130,7 +123,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
 
 
     const performDayToggle = (dayKey, willBeEnabled) => {
-        // Mark this day as manually changed
         manualChangesRef.current.add(dayKey);
         
         setWeekSchedule(prev => {
@@ -165,7 +157,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 };
             }
             
-            // When disabling, preserve the schedule data but mark as disabled
             return {
                 ...prev,
                 [dayKey]: {
@@ -179,10 +170,9 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
 
     const handleTimeChange = (dayKey, field, value) => {
         if (field === 'slotDuration') {
-            // Update global slot duration for all days
+
             setGlobalSlotDuration(value);
             
-            // Update all enabled days with the new slot duration
             setWeekSchedule(prev => {
                 const newSchedule = { ...prev };
                 
@@ -419,7 +409,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 'success'
             );
             
-            // Clear manual changes after successful save
             manualChangesRef.current.clear();
             
             setTimeout(() => {
@@ -685,7 +674,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                     <button
                         onClick={() => {
                             setSelectedWeekOffset(selectedWeekOffset + 1);
-                            manualChangesRef.current.clear(); // Clear manual changes when changing weeks
+                            manualChangesRef.current.clear(); 
                         }}
                         disabled={selectedWeekOffset >= 4}
                         style={{

@@ -217,7 +217,7 @@ const DoctorAppointments = () => {
                                         margin: 0,
                                         fontWeight: '500'
                                     }}>
-                                        {selectedAppointment.type} • Age: {selectedAppointment.patientAge}
+                                        {selectedAppointment.type} • Age: {selectedAppointment.patientAge || 'Not provided'}
                                     </p>
                                 </div>
                             </div>
@@ -247,11 +247,21 @@ const DoctorAppointments = () => {
                                     </h4>
                                     <div style={{ marginBottom: '0.75rem' }}>
                                         <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Phone: </span>
-                                        <span style={{ color: '#374151' }}>{selectedAppointment.patientPhone}</span>
+                                        <span style={{ 
+                                            color: selectedAppointment.patientPhone === 'Not provided' ? '#9ca3af' : '#374151',
+                                            fontStyle: selectedAppointment.patientPhone === 'Not provided' ? 'italic' : 'normal'
+                                        }}>
+                                            {selectedAppointment.patientPhone}
+                                        </span>
                                     </div>
                                     <div>
                                         <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Email: </span>
-                                        <span style={{ color: '#374151' }}>{selectedAppointment.patientEmail}</span>
+                                        <span style={{ 
+                                            color: selectedAppointment.patientEmail === 'Not provided' ? '#9ca3af' : '#374151',
+                                            fontStyle: selectedAppointment.patientEmail === 'Not provided' ? 'italic' : 'normal'
+                                        }}>
+                                            {selectedAppointment.patientEmail}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -346,20 +356,14 @@ const DoctorAppointments = () => {
                                     📝 Notes & Reason
                                 </h4>
                                 <div style={{ marginBottom: '1rem' }}>
-                                    <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600', display: 'block', marginBottom: '0.5rem' }}>
-                                        Reason for Visit:
-                                    </span>
                                     <p style={{ color: '#374151', margin: 0, lineHeight: '1.5' }}>
-                                        {selectedAppointment.reason}
+                                        <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>Reason for Visit:</span> {selectedAppointment.reason || 'No reason provided'}
                                     </p>
                                 </div>
-                                {selectedAppointment.notes && (
+                                {selectedAppointment.additionalNotes && (
                                     <div>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600', display: 'block', marginBottom: '0.5rem' }}>
-                                            Current Notes:
-                                        </span>
                                         <p style={{ color: '#374151', margin: 0, lineHeight: '1.5' }}>
-                                            {selectedAppointment.notes}
+                                            <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>Additional Notes:</span> {selectedAppointment.additionalNotes}
                                         </p>
                                     </div>
                                 )}

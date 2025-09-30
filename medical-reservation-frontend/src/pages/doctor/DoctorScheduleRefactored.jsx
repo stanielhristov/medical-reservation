@@ -20,7 +20,7 @@ const DoctorScheduleRefactored = () => {
     const [deleteConfirmation, setDeleteConfirmation] = useState({
         isOpen: false,
         schedule: null,
-        type: 'single' // 'single' or 'bulk'
+        type: 'single' 
     });
     
 
