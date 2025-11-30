@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getRoleRoutes } from '../utils/roleBasedNavigation';
 import { getUnreadNotificationCount } from '../api/notifications';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Layout = ({ children }) => {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -34,7 +37,7 @@ const Layout = ({ children }) => {
         }
     };
 
-    const navigationRoutes = user ? getRoleRoutes(user.role) : [];
+    const navigationRoutes = user ? getRoleRoutes(user.role, t) : [];
 
     // Fetch unread notification count
     useEffect(() => {
@@ -191,7 +194,7 @@ const Layout = ({ children }) => {
                                         margin: 0,
                                         letterSpacing: '-0.015em'
                                     }}>
-                                        Medical Reservation
+                                        {t('common.medicalReservation')}
                                     </h1>
                                 </div>
                             </button>
@@ -355,7 +358,7 @@ const Layout = ({ children }) => {
                                             }}
                                         >
                                             {getIcon(route.name)}
-                                            {route.name}
+                                            {route.translationKey ? t(route.translationKey) : route.name}
                                         </Link>
                                     );
                                 })}
@@ -364,6 +367,7 @@ const Layout = ({ children }) => {
                         
                         {/* User Info and Actions */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <LanguageSwitcher />
                             {user && (
                                 <>
                                     {/* User Profile Card */}
@@ -469,7 +473,7 @@ const Layout = ({ children }) => {
                                                 margin: 0,
                                                 lineHeight: '1.2'
                                             }}>
-                                                {user.fullName || user.email || 'User'}
+                                                {user.fullName || user.email || t('layout.user')}
                                             </div>
                                         </div>
                                     </div>
@@ -492,7 +496,7 @@ const Layout = ({ children }) => {
                                             width: '32px',
                                             height: '32px'
                                         }}
-                                        title="Edit Profile"
+                                        title={t('nav.editProfile')}
                                         onMouseEnter={e => {
                                             e.target.style.background = 'rgba(34, 197, 94, 0.15)';
                                         }}
@@ -567,7 +571,7 @@ const Layout = ({ children }) => {
                                             width: '32px',
                                             height: '32px'
                                         }}
-                                        title="Logout"
+                                        title={t('nav.logout')}
                                         onMouseEnter={e => {
                                             e.target.style.background = 'rgba(239, 68, 68, 0.15)';
                                         }}
@@ -719,7 +723,7 @@ const Layout = ({ children }) => {
                             color: '#374151',
                             margin: '0 0 1rem'
                         }}>
-                            Confirm Logout
+                            {t('layout.confirmLogout')}
                         </h3>
                         
                         <p style={{
@@ -727,7 +731,7 @@ const Layout = ({ children }) => {
                             margin: '0 0 2rem',
                             lineHeight: '1.6'
                         }}>
-                            Are you sure you want to logout from your profile?
+                            {t('layout.logoutConfirmation')}
                         </p>
                         
                         <div style={{
@@ -754,7 +758,7 @@ const Layout = ({ children }) => {
                                     e.target.style.background = 'rgba(107, 114, 128, 0.1)';
                                 }}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             
                             <button
@@ -779,7 +783,7 @@ const Layout = ({ children }) => {
                                     e.target.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.25)';
                                 }}
                             >
-                                Yes, Logout
+                                {t('layout.yesLogout')}
                             </button>
                         </div>
                     </div>

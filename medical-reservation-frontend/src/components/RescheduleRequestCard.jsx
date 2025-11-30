@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { respondToRescheduleRequest } from '../api/rescheduleRequests';
 import { triggerScheduleRefresh } from '../utils/scheduleRefreshUtils';
+import { translateAppointmentType } from '../utils/appointmentUtils';
 
 const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
+    const { t, i18n } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [showResponseForm, setShowResponseForm] = useState(false);
     const [doctorResponse, setDoctorResponse] = useState('');
@@ -10,28 +13,29 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
 
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return date.toLocaleString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: i18n.language !== 'bg'
         });
     };
 
     const formatRequestedDateTime = (dateString) => {
         const date = new Date(dateString);
-        // Use consistent formatting without timezone correction
-        return date.toLocaleString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return date.toLocaleString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: i18n.language !== 'bg'
         });
     };
 
@@ -70,7 +74,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
             setDoctorResponse('');
         } catch (error) {
             console.error('Error responding to reschedule request:', error);
-            setError(error.message || 'Failed to respond to request');
+            setError(error.message || t('reschedule.failedToRespond'));
         } finally {
             setLoading(false);
         }
@@ -102,14 +106,14 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                         color: '#374151',
                         margin: '0 0 0.5rem 0'
                     }}>
-                        Reschedule Request from {request.patientName}
+                        {t('reschedule.rescheduleRequestFrom', { patientName: request.patientName })}
                     </h3>
                     <p style={{
                         fontSize: '1rem',
                         color: '#6b7280',
                         margin: '0 0 0.5rem 0'
                     }}>
-                        Service: {request.serviceName}
+                        {t('appointments.service')}: {translateAppointmentType(request.serviceName)}
                     </p>
                 </div>
                 <span style={{
@@ -121,7 +125,9 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                     color: statusStyle.color,
                     border: `1px solid ${statusStyle.border}`
                 }}>
-                    {request.status}
+                    {request.status === 'PENDING' ? t('reschedule.pending') :
+                     request.status === 'APPROVED' ? t('reschedule.approved') :
+                     request.status === 'REJECTED' ? t('reschedule.rejected') : request.status}
                 </span>
             </div>
 
@@ -143,7 +149,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                         color: '#dc2626',
                         margin: '0 0 1rem 0'
                     }}>
-                        Original Appointment
+                        {t('reschedule.originalAppointment')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -166,7 +172,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                         color: '#16a34a',
                         margin: '0 0 1rem 0'
                     }}>
-                        Requested New Time
+                        {t('reschedule.requestedNewTime')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -192,7 +198,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                         color: '#374151',
                         margin: '0 0 1rem 0'
                     }}>
-                        Patient's Reason
+                        {t('reschedule.patientReason')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -219,7 +225,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                         color: '#0369a1',
                         margin: '0 0 1rem 0'
                     }}>
-                        Your Response
+                        {t('reschedule.yourResponse')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -243,14 +249,14 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                     fontSize: '0.9rem',
                     color: '#9ca3af'
                 }}>
-                    Requested on {new Date(request.createdAt).toLocaleDateString('en-US', {
+                    {t('reschedule.requestedOn')} {new Date(request.createdAt).toLocaleDateString(i18n.language === 'bg' ? 'bg-BG' : 'en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                     })}
                     {request.respondedAt && (
                         <span>
-                            {' • Responded on '}{new Date(request.respondedAt).toLocaleDateString('en-US', {
+                            {' • '}{t('reschedule.respondedOn')} {new Date(request.respondedAt).toLocaleDateString(i18n.language === 'bg' ? 'bg-BG' : 'en-US', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
@@ -278,7 +284,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                                         opacity: loading ? 0.6 : 1
                                     }}
                                 >
-                                    {loading ? 'Processing...' : 'Approve'}
+                                    {loading ? t('common.processing') : t('reschedule.approve')}
                                 </button>
                                 <button
                                     onClick={() => setShowResponseForm(true)}
@@ -295,7 +301,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                                         opacity: loading ? 0.6 : 1
                                     }}
                                 >
-                                    Reject
+                                    {t('reschedule.reject')}
                                 </button>
                             </>
                         ) : (
@@ -303,7 +309,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                                 <textarea
                                     value={doctorResponse}
                                     onChange={(e) => setDoctorResponse(e.target.value)}
-                                    placeholder="Optional: Provide a reason for rejection or additional comments..."
+                                    placeholder={t('reschedule.rejectionReasonPlaceholder')}
                                     disabled={loading}
                                     rows={3}
                                     style={{
@@ -335,7 +341,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                                             cursor: loading ? 'not-allowed' : 'pointer'
                                         }}
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </button>
                                     <button
                                         onClick={() => handleResponse('REJECTED')}
@@ -352,7 +358,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                                             opacity: loading ? 0.6 : 1
                                         }}
                                     >
-                                        {loading ? 'Processing...' : 'Confirm Rejection'}
+                                        {loading ? t('common.processing') : t('reschedule.confirmRejection')}
                                     </button>
                                 </div>
                             </div>

@@ -1,7 +1,11 @@
 import React from 'react';
-import { formatPatientDateTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
+import { formatPatientDateTime, getRelativeTimeUntil, translateAppointmentType } from '../utils/appointmentUtils';
 
 const NextAppointmentCard = ({ appointment, onViewDetails }) => {
+    const { t } = useTranslation();
+    
     if (!appointment) {
         return (
             <section style={{
@@ -33,13 +37,13 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                     color: '#6b7280',
                     margin: '0 0 0.5rem 0'
                 }}>
-                    No Upcoming Appointments
+                    {t('appointments.noUpcomingAppointments')}
                 </h3>
                 <p style={{
                     color: '#9ca3af',
                     margin: 0
                 }}>
-                    You don't have any scheduled appointments. Book one today!
+                    {t('appointments.noUpcomingDesc')}
                 </p>
             </section>
         );
@@ -86,7 +90,7 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                     color: '#374151',
                     margin: 0
                 }}>
-                    Next Appointment
+                    {t('appointments.nextAppointment')}
                 </h2>
             </div>
 
@@ -127,14 +131,14 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                         margin: '0 0 0.25rem 0',
                         fontWeight: '600'
                     }}>
-                        {appointment.specialization}
+                        {translateSpecialization(appointment.specialization)}
                     </p>
                     <p style={{
                         fontSize: '1rem',
                         color: '#6b7280',
                         margin: '0 0 1rem 0'
                     }}>
-                        {appointment.type}
+                        {translateAppointmentType(appointment.type)}
                     </p>
                     
                     <div style={{
@@ -183,7 +187,7 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                         zIndex: 1
                     }}
                 >
-                    View Details →
+                    {t('appointments.viewDetails')} →
                 </button>
             </div>
         </section>

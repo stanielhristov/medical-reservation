@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useAppointments } from '../../hooks/useAppointments';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -10,6 +11,7 @@ import RescheduleModal from '../../components/RescheduleModal';
 import PatientRescheduleStatus from '../../components/PatientRescheduleStatus';
 
 const PatientAppointments = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [selectedTab, setSelectedTab] = useState('upcoming');
     const [showBookingModal, setShowBookingModal] = useState(false);
@@ -70,7 +72,7 @@ const PatientAppointments = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading appointments..." />;
+        return <LoadingSpinner message={t('loading.loadingAppointments')} />;
     }
 
     return (
@@ -125,7 +127,7 @@ const PatientAppointments = () => {
                         color: '#374151',
                         margin: 0
                     }}>
-                        {selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)} Appointments
+                        {t(`appointments.${selectedTab}Appointments`)}
                     </h2>
                     
                     {selectedTab === 'upcoming' && (
@@ -147,7 +149,7 @@ const PatientAppointments = () => {
                                 gap: '0.5rem'
                             }}
                         >
-                            ➕ Book New Appointment
+                            ➕ {t('appointments.bookNewAppointment')}
                         </button>
                     )}
                 </div>
@@ -169,14 +171,14 @@ const PatientAppointments = () => {
                                  selectedTab === 'past' ? '📋' : '❌'}
                             </div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
-                                No {selectedTab} appointments
+                                {t(`appointments.no${selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)}Appointments`)}
                             </h3>
                             <p style={{ margin: 0, fontSize: '1.1rem' }}>
                                 {selectedTab === 'upcoming' ? 
-                                    "You don't have any upcoming appointments. Book one now!" :
+                                    t('appointments.noUpcomingAppointmentsDescription') :
                                  selectedTab === 'past' ? 
-                                    "You haven't had any appointments yet." :
-                                    "You don't have any cancelled appointments."}
+                                    t('appointments.noPastAppointmentsDescription') :
+                                    t('appointments.noCancelledAppointmentsDescription')}
                             </p>
                         </div>
                     ) : (

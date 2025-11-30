@@ -1,4 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { MEDICAL_SPECIALIZATIONS } from '../utils/countryData';
+import { translateSpecialization } from '../utils/specializationUtils';
 
 const DoctorFields = ({
     licenseNumber,
@@ -13,6 +15,7 @@ const DoctorFields = ({
     onBioChange,
     disabled
 }) => {
+    const { t } = useTranslation();
     return (
         <>
             <div style={{ marginBottom: '1.25rem' }}>
@@ -81,10 +84,10 @@ const DoctorFields = ({
                         paddingRight: '2.5rem'
                     }}
                 >
-                    <option value="">Select a specialization</option>
+                    <option value="">{t('profile.selectSpecialization')}</option>
                     {MEDICAL_SPECIALIZATIONS.map(spec => (
                         <option key={spec} value={spec}>
-                            {spec}
+                            {translateSpecialization(spec)}
                         </option>
                     ))}
                 </select>

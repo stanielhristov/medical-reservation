@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const StarRating = ({ 
     rating = 0, 
@@ -9,6 +10,7 @@ const StarRating = ({
     totalRatings = 0,
     disabled = false
 }) => {
+    const { t } = useTranslation();
     const [hoverRating, setHoverRating] = useState(0);
     const [currentRating, setCurrentRating] = useState(rating);
 
@@ -122,7 +124,7 @@ const StarRating = ({
                             color: '#6b7280', 
                             fontSize: size === 'small' ? '0.7rem' : size === 'large' ? '0.9rem' : '0.8rem'
                         }}>
-                            ({totalRatings} {totalRatings === 1 ? 'review' : 'reviews'})
+                            ({totalRatings} {totalRatings === 1 ? t('doctors.review') : t('doctors.reviews')})
                         </span>
                     )}
                 </div>

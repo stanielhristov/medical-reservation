@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 const ScheduleHeader = () => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -45,7 +48,7 @@ const ScheduleHeader = () => {
                     margin: '0 0 1rem',
                     letterSpacing: '-0.025em'
                 }}>
-                    Schedule Management
+                    {t('schedule.scheduleManagement')}
                 </h1>
                 
                 <p style={{
@@ -57,7 +60,7 @@ const ScheduleHeader = () => {
                     marginRight: 'auto',
                     lineHeight: '1.6'
                 }}>
-                    Manage your working hours, availability, and time slots for patient appointments
+                    {t('schedule.scheduleManagementDescription')}
                 </p>
             </div>
         </section>

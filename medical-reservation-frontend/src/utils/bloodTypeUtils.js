@@ -1,6 +1,7 @@
 /**
  * Utility functions for blood type formatting
  */
+import i18n from '../i18n/config';
 
 /**
  * Converts blood type enum format to display format
@@ -9,7 +10,7 @@
  */
 export const formatBloodType = (bloodType) => {
     if (!bloodType) {
-        return 'Not specified';
+        return i18n.t('common.notProvided');
     }
     
     // Convert enum format to display format
@@ -39,7 +40,7 @@ export const BLOOD_TYPE_DISPLAY_MAP = {
  */
 export const getBloodTypeDisplay = (bloodType) => {
     if (!bloodType) {
-        return 'Not specified';
+        return i18n.t('common.notProvided');
     }
     
     return BLOOD_TYPE_DISPLAY_MAP[bloodType] || bloodType;

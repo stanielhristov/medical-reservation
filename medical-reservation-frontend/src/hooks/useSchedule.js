@@ -186,12 +186,10 @@ export const useSchedule = (doctorId) => {
         }
     }, []);
 
-    // Listen for schedule refresh events (e.g., when reschedule requests are approved)
     useEffect(() => {
         if (!doctorId) return;
 
         const cleanup = onScheduleRefresh((eventData) => {
-            // Refresh schedule if the event is for this doctor or a general refresh
             if (!eventData.doctorId || eventData.doctorId === doctorId) {
                 console.log('Schedule refresh triggered, refetching schedules...');
                 fetchSchedules();

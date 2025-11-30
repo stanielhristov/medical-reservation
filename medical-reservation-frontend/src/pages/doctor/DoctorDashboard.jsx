@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useDoctorDashboard } from '../../hooks/useDoctorDashboard';
@@ -9,6 +10,7 @@ import TodayAppointmentsSection from '../../components/TodayAppointmentsSection'
 import UpcomingAppointmentsSection from '../../components/UpcomingAppointmentsSection';
 
 const DoctorDashboard = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const {
@@ -26,7 +28,7 @@ const DoctorDashboard = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading your dashboard..." />;
+        return <LoadingSpinner message={t('loading.loadingDashboard')} />;
     }
 
     return (

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { adminAPI } from '../../api/admin';
 import GenericConfirmModal from '../../components/GenericConfirmModal';
 
 const AdminComments = () => {
+    const { t } = useTranslation();
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -31,7 +33,7 @@ const AdminComments = () => {
             setTotalElements(data.totalElements || 0);
         } catch (err) {
             console.error('Error fetching comments:', err);
-            setError('Failed to load comments. Please try again.');
+            setError(t('errors.failedToLoadComments'));
         } finally {
             setLoading(false);
         }
@@ -44,7 +46,7 @@ const AdminComments = () => {
             setActionLoading(true);
             await adminAPI.deleteRating(commentToDelete.id);
             
-            setSuccess('Comment deleted successfully');
+            setSuccess(t('admin.commentDeletedSuccessfully'));
             setShowDeleteModal(false);
             setCommentToDelete(null);
             
@@ -58,13 +60,13 @@ const AdminComments = () => {
         } catch (err) {
             console.error('Error deleting comment:', err);
             
-            let errorMessage = 'Failed to delete comment. Please try again.';
+            let errorMessage = t('errors.failedToDeleteComment');
             if (err.response?.status === 403) {
-                errorMessage = 'You do not have permission to delete this comment.';
+                errorMessage = t('errors.noPermissionToDeleteComment');
             } else if (err.response?.status === 404) {
-                errorMessage = 'Comment not found. It may have already been deleted.';
+                errorMessage = t('errors.commentNotFound');
             } else if (err.response?.status === 401) {
-                errorMessage = 'Authentication required. Please log in again.';
+                errorMessage = t('errors.authenticationRequired');
             } else if (err.response?.data?.message) {
                 errorMessage = err.response.data.message;
             }
@@ -153,7 +155,7 @@ const AdminComments = () => {
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 1.5rem'
                     }} />
-                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>Loading comments...</p>
+                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>{t('loading.loadingComments')}</p>
                 </div>
             </div>
         );
@@ -329,7 +331,7 @@ const AdminComments = () => {
                             letterSpacing: '-0.03em',
                             lineHeight: '1.1'
                         }}>
-                            Comments Management
+                            {t('admin.commentsManagement')}
                         </h1>
                         
                         <p style={{
@@ -342,8 +344,7 @@ const AdminComments = () => {
                             lineHeight: '1.6',
                             fontWeight: '400'
                         }}>
-                            Manage user comments and ratings across the platform. Monitor feedback quality 
-                            and maintain community standards ({totalElements} total comments).
+                            {t('admin.commentsManagementDescription', { total: totalElements })}
                         </p>
 
                         {/* Quick Stats */}
@@ -460,7 +461,7 @@ const AdminComments = () => {
                             color: 'white',
                             fontSize: '1.5rem'
                         }}>💬</span>
-                        User Comments & Ratings
+                        {t('admin.userCommentsRatings')}
                     </h3>
                     
                     <div style={{
@@ -510,7 +511,7 @@ const AdminComments = () => {
                                                 fontSize: '1.1rem',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                {comment.userFullName || 'Anonymous User'}
+                                                {comment.userFullName || t('common.anonymousUser')}
                                             </div>
                                             <div style={{ 
                                                 color: '#6b7280', 
@@ -534,7 +535,7 @@ const AdminComments = () => {
                                                 fontSize: '0.85rem',
                                                 maxWidth: '400px'
                                             }}>
-                                                {comment.comment ? truncateText(comment.comment, 80) : 'No comment provided'}
+                                                {comment.comment ? truncateText(comment.comment, 80) : t('admin.noCommentProvided')}
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'center', minWidth: '120px' }}>
@@ -589,7 +590,7 @@ const AdminComments = () => {
                                                 }
                                             }}
                                         >
-                                            🗑️ Delete
+                                            🗑️ {t('common.delete')}
                                         </button>
                                     </div>
                                 </div>
@@ -613,7 +614,7 @@ const AdminComments = () => {
                                 }}>
                                     <span style={{ fontSize: '1.5rem' }}>💬</span>
                                 </div>
-                                No comments found.
+                                {t('admin.noCommentsFound')}
                             </div>
                         )}
                     </div>
@@ -661,7 +662,7 @@ const AdminComments = () => {
                                     }
                                 }}
                             >
-                                ← Previous
+                                ← {t('common.previous')}
                             </button>
 
                             <span style={{
@@ -673,7 +674,7 @@ const AdminComments = () => {
                                 borderRadius: '8px',
                                 border: '1px solid rgba(245, 158, 11, 0.2)'
                             }}>
-                                Page {currentPage + 1} of {totalPages}
+                                {t('common.page')} {currentPage + 1} {t('common.of')} {totalPages}
                             </span>
 
                             <button
@@ -706,7 +707,7 @@ const AdminComments = () => {
                                     }
                                 }}
                             >
-                                Next →
+                                {t('common.next')} →
                             </button>
                         </div>
                     )}
@@ -718,9 +719,9 @@ const AdminComments = () => {
                 isOpen={showDeleteModal}
                 onClose={closeDeleteModal}
                 onConfirm={handleDeleteComment}
-                title="Delete Comment"
-                message={`Are you sure you want to delete this comment from ${commentToDelete?.userFullName}? This action cannot be undone.`}
-                confirmText="Delete"
+                title={t('admin.deleteComment')}
+                message={t('admin.deleteCommentMessage', { userName: commentToDelete?.userFullName || t('common.anonymousUser') })}
+                confirmText={t('common.delete')}
                 loading={actionLoading}
                 confirmButtonStyle={{
                     backgroundColor: '#dc3545',

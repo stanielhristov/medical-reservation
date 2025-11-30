@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 const WelcomeSection = ({ user }) => {
+    const { t } = useTranslation();
+    
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -54,7 +58,7 @@ const WelcomeSection = ({ user }) => {
                     letterSpacing: '-0.03em',
                     lineHeight: '1.1'
                 }}>
-                    Welcome Back,
+                    {t('dashboard.welcomeBack')},
                     <br />
                     <span style={{
                         background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
@@ -62,7 +66,7 @@ const WelcomeSection = ({ user }) => {
                         WebkitTextFillColor: 'transparent',
                         backgroundClip: 'text'
                     }}>
-                        {user.fullName?.split(' ')[0] || 'User'}!
+                        {user.fullName?.split(' ')[0] || t('common.name')}!
                     </span>
                 </h1>
                 
@@ -76,8 +80,7 @@ const WelcomeSection = ({ user }) => {
                     lineHeight: '1.6',
                     fontWeight: '400'
                 }}>
-                    Your comprehensive healthcare dashboard is ready. Manage appointments, access health records, 
-                    and stay connected with your healthcare providers all in one place.
+                    {t('dashboard.comprehensiveDashboard')}
                 </p>
 
                 <div style={{
@@ -95,7 +98,7 @@ const WelcomeSection = ({ user }) => {
                     }}>
                         <div style={{ color: '#22c55e', fontSize: '2rem', marginBottom: '0.5rem' }}>📅</div>
                         <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>2</div>
-                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Upcoming Appointments</div>
+                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('dashboard.upcomingAppointmentsCount')}</div>
                     </div>
                     <div style={{
                         background: 'rgba(59, 130, 246, 0.1)',
@@ -105,7 +108,7 @@ const WelcomeSection = ({ user }) => {
                     }}>
                         <div style={{ color: '#3b82f6', fontSize: '2rem', marginBottom: '0.5rem' }}>📋</div>
                         <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>8</div>
-                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Health Records</div>
+                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('dashboard.healthRecords')}</div>
                     </div>
                     <div style={{
                         background: 'rgba(168, 85, 247, 0.1)',
@@ -115,7 +118,7 @@ const WelcomeSection = ({ user }) => {
                     }}>
                         <div style={{ color: '#a855f7', fontSize: '2rem', marginBottom: '0.5rem' }}>🩺</div>
                         <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>3</div>
-                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Preferred Doctors</div>
+                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('dashboard.preferredDoctors')}</div>
                     </div>
                     <div style={{
                         background: 'rgba(239, 68, 68, 0.1)',
@@ -125,7 +128,7 @@ const WelcomeSection = ({ user }) => {
                     }}>
                         <div style={{ color: '#ef4444', fontSize: '2rem', marginBottom: '0.5rem' }}>🔔</div>
                         <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>1</div>
-                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>New Notifications</div>
+                        <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('dashboard.newNotifications')}</div>
                     </div>
                 </div>
             </div>

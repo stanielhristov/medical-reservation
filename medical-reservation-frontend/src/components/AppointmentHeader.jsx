@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AppointmentHeader = () => {
+    const { t } = useTranslation();
+    
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -33,7 +36,7 @@ const AppointmentHeader = () => {
                 margin: '0 0 1rem',
                 letterSpacing: '-0.025em'
             }}>
-                My Appointments
+                {t('appointments.myAppointments')}
             </h1>
             
             <p style={{
@@ -45,7 +48,7 @@ const AppointmentHeader = () => {
                 marginRight: 'auto',
                 lineHeight: '1.6'
             }}>
-                Manage your medical appointments, view upcoming visits, and access your consultation history
+                {t('appointments.manageDescription')}
             </p>
         </section>
     );

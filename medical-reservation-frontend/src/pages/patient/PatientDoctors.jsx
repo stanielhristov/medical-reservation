@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { usePatientDoctors } from '../../hooks/usePatientDoctors';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -11,6 +12,7 @@ import AppointmentBookingModal from '../../components/AppointmentBookingModal';
 import MessageDisplay from '../../components/MessageDisplay';
 
 const PatientDoctors = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const {
         loading,
@@ -20,6 +22,7 @@ const PatientDoctors = () => {
         selectedSpecialization,
         setSelectedSpecialization,
         specializations,
+        englishSpecializations,
         showBookingModal,
         setShowBookingModal,
         selectedDoctor,
@@ -50,7 +53,7 @@ const PatientDoctors = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading doctors..." />;
+        return <LoadingSpinner message={t('loading.loadingDoctors')} />;
     }
 
     if (error) {
@@ -72,7 +75,7 @@ const PatientDoctors = () => {
                     maxWidth: '500px'
                 }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>Unable to Load Doctors</h3>
+                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>{t('errors.unableToLoadDoctors')}</h3>
                     <p style={{ color: '#6b7280', margin: '0 0 1.5rem' }}>{error}</p>
                     <button
                         onClick={refreshDoctors}
@@ -87,7 +90,7 @@ const PatientDoctors = () => {
                             fontWeight: '600'
                         }}
                     >
-                        Try Again
+                        {t('common.tryAgain')}
                     </button>
                 </div>
             </div>
@@ -139,6 +142,7 @@ const PatientDoctors = () => {
                     selectedSpecialization={selectedSpecialization}
                     setSelectedSpecialization={setSelectedSpecialization}
                     specializations={specializations}
+                    englishSpecializations={englishSpecializations}
                     doctorCount={filteredDoctors.length}
                 />
 
@@ -169,7 +173,7 @@ const PatientDoctors = () => {
                                 margin: '0 0 0.5rem',
                                 color: '#374151'
                             }}>
-                                No doctors found
+                                {t('doctors.noDoctorsFound')}
                             </h3>
                             <p style={{
                                 fontSize: '1rem',
@@ -180,8 +184,8 @@ const PatientDoctors = () => {
                                 lineHeight: '1.5'
                             }}>
                                 {searchTerm || selectedSpecialization !== 'All Specializations' && selectedSpecialization !== '' 
-                                    ? 'Try adjusting your search criteria or browse all available doctors by clearing the filters.'
-                                    : 'No doctors are currently available. Please check back later or contact support.'}
+                                    ? t('doctors.adjustSearchCriteria')
+                                    : t('doctors.noDoctorsAvailable')}
                             </p>
                             <button
                                 onClick={refreshDoctors}

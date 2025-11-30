@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ProfileHeader = () => {
+    const { t } = useTranslation();
     return (
         <div style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -99,7 +101,7 @@ const ProfileHeader = () => {
                 margin: '0 0 0.5rem 0',
                 letterSpacing: '-0.025em'
             }}>
-                Edit Profile
+                {t('profile.editProfile')}
             </h1>
             <p style={{
                 fontSize: '1.1rem',
@@ -107,7 +109,7 @@ const ProfileHeader = () => {
                 margin: '0',
                 fontWeight: '500'
             }}>
-                Update your account information and preferences
+                {t('profile.updateAccountInfo')}
             </p>
         </div>
     );

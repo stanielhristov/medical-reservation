@@ -1,7 +1,22 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 import { formatAppointmentDate, getStatusColor } from '../utils/appointmentUtils';
 
 const RecentAppointmentsList = ({ appointments, onViewAll }) => {
+    const { t } = useTranslation();
+    
+    const getStatusTranslation = (status) => {
+        const statusMap = {
+            'completed': t('appointments.completed'),
+            'confirmed': t('appointments.confirmed'),
+            'pending': t('appointments.pending'),
+            'cancelled': t('appointments.cancelled'),
+            'rescheduled': t('appointments.rescheduled')
+        };
+        return statusMap[status?.toLowerCase()] || status;
+    };
+    
     if (!appointments || appointments.length === 0) {
         return (
             <section style={{
@@ -19,7 +34,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                     color: '#374151',
                     margin: '0 0 1rem 0'
                 }}>
-                    Recent Appointments
+                    {t('appointments.recentAppointments')}
                 </h2>
                 <div style={{
                     fontSize: '3rem',
@@ -31,7 +46,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                     color: '#6b7280',
                     margin: 0
                 }}>
-                    No recent appointments to display
+                    {t('appointments.noRecentAppointments')}
                 </p>
             </section>
         );
@@ -58,7 +73,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                     color: '#374151',
                     margin: 0
                 }}>
-                    Recent Appointments
+                    {t('appointments.recentAppointments')}
                 </h2>
                 
                 <button
@@ -75,7 +90,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                         transition: 'all 0.2s ease'
                     }}
                 >
-                    View All →
+                    {t('appointments.viewAll')} →
                 </button>
             </div>
 
@@ -129,7 +144,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                                             margin: '0 0 0.25rem 0',
                                             fontWeight: '500'
                                         }}>
-                                            {appointment.specialization}
+                                            {translateSpecialization(appointment.specialization)}
                                         </p>
                                         <p style={{
                                             fontSize: '0.8rem',
@@ -151,7 +166,7 @@ const RecentAppointmentsList = ({ appointments, onViewAll }) => {
                                     textTransform: 'uppercase',
                                     border: `1px solid ${statusStyle.border}`
                                 }}>
-                                    {appointment.status}
+                                    {getStatusTranslation(appointment.status)}
                                 </div>
                             </div>
                             

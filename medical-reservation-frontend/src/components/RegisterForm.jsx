@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { register } from '../api/auth.js';
 import { COUNTRY_MAP } from '../utils/countryData';
 import { formatAddress } from '../utils/addressUtils';
@@ -12,6 +13,7 @@ import PasswordInput from './PasswordInput';
 import DoctorFields from './DoctorFields';
 
 export default function RegisterForm() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { validateDateOfBirth, validatePassword } = useValidation();
 
@@ -109,12 +111,12 @@ export default function RegisterForm() {
 
         if (formData.role === 'DOCTOR') {
             if (!doctorData.specialization.trim()) {
-                setError('Specialization is required for doctor registration');
+                setError(t('auth.specializationRequired'));
                 setLoading(false);
                 return;
             }
             if (!doctorData.licenseNumber.trim()) {
-                setError('Medical license number is required for doctor registration');
+                setError(t('auth.licenseRequired'));
                 setLoading(false);
                 return;
             }
@@ -155,16 +157,16 @@ export default function RegisterForm() {
             await register(requestData);
 
             if (formData.role === 'DOCTOR') {
-                setSuccess('Doctor registration successful! You now have doctor privileges. Redirecting to login...');
+                setSuccess(t('auth.doctorRegistrationSuccess'));
             } else {
-                setSuccess('Registration successful! Redirecting to login...');
+                setSuccess(t('auth.registrationSuccess'));
             }
             
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
         } catch (err) {
-            setError(err.message || 'Registration failed. Please try again.');
+            setError(err.message || t('auth.registrationFailed'));
         } finally {
             setLoading(false);
         }
@@ -242,7 +244,7 @@ export default function RegisterForm() {
                         margin: '0 0 0.5rem',
                         letterSpacing: '-0.025em'
                     }}>
-                        Create Account
+                        {t('auth.registerTitle')}
                     </h1>
                     <p style={{
                         color: '#6b7280',
@@ -250,7 +252,7 @@ export default function RegisterForm() {
                         margin: 0,
                         lineHeight: 1.5
                     }}>
-                        Join our medical portal today
+                        {t('auth.joinPortal')}
                     </p>
                 </div>
 
@@ -305,7 +307,7 @@ export default function RegisterForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Full Name
+                            {t('auth.fullName')}
                         </label>
                         <input
                             type="text"
@@ -325,7 +327,7 @@ export default function RegisterForm() {
                                 color: '#374151',
                                 transition: 'all 0.2s ease'
                             }}
-                            placeholder="Enter your full name"
+                            placeholder={t('auth.enterFullName')}
                         />
                     </div>
 
@@ -337,7 +339,7 @@ export default function RegisterForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Email Address
+                            {t('auth.emailAddress')}
                         </label>
                         <input
                             type="email"
@@ -357,19 +359,19 @@ export default function RegisterForm() {
                                 color: '#374151',
                                 transition: 'all 0.2s ease'
                             }}
-                            placeholder="Enter your email address"
+                            placeholder={t('auth.enterEmailAddress')}
                         />
                     </div>
 
                     <PhoneInput
-                        label="Phone Number"
+                        label={t('auth.phoneNumber')}
                         value={formData.phoneNumber}
                         onChange={(e) => handleFormChange('phoneNumber', e.target.value)}
                         countryCode={phoneCountry}
                         onCountryChange={setPhoneCountry}
                         disabled={loading}
                         required={true}
-                        placeholder="Enter your phone number"
+                        placeholder={t('common.phone')}
                     />
 
                     <DateOfBirthInput
@@ -387,7 +389,7 @@ export default function RegisterForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Gender
+                            {t('auth.gender')}
                         </label>
                         <select
                             value={formData.gender}
@@ -408,9 +410,9 @@ export default function RegisterForm() {
                                 cursor: 'pointer'
                             }}
                         >
-                            <option value="">Select your gender</option>
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
+                            <option value="">{t('auth.gender')}</option>
+                            <option value="MALE">{t('auth.male')}</option>
+                            <option value="FEMALE">{t('auth.female')}</option>
                         </select>
                     </div>
 
@@ -520,10 +522,10 @@ export default function RegisterForm() {
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Creating Account...
+                                {t('auth.creatingAccount')}
                             </div>
                         ) : (
-                            'Create Account'
+                            t('auth.createAccountButton')
                         )}
                     </button>
                 </form>
@@ -576,7 +578,7 @@ export default function RegisterForm() {
                             margin: '0 0 0.75rem',
                             letterSpacing: '-0.025em'
                         }}>
-                            Already a Member?
+                            {t('auth.alreadyMember')}
                         </h3>
                         
                         <p style={{ 
@@ -587,7 +589,7 @@ export default function RegisterForm() {
                             maxWidth: '280px',
                             margin: '0 auto 2rem'
                         }}>
-                            Welcome back! Sign in to access your healthcare dashboard and manage your appointments.
+                            {t('auth.welcomeBackSignIn')}
                         </p>
 
                         <a 
@@ -633,7 +635,7 @@ export default function RegisterForm() {
                                 fontSize: '0.75rem',
                                 color: 'white'
                             }}>🚀</span>
-                            Sign In
+                            {t('auth.signInHere')}
                         </a>
                     </div>
                 </div>

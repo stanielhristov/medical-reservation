@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import FormField from './FormField';
 import AddressInput from './AddressInput';
@@ -13,6 +14,7 @@ const ProfileForm = ({
     hasProfileDataChanged,
     user 
 }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -32,7 +34,7 @@ const ProfileForm = ({
                 marginBottom: '2rem'
             }}>
                 <FormField
-                    label="Full Name"
+                    label={t('profile.fullName')}
                     name="fullName"
                     value={profileData.fullName}
                     onChange={handleInputChange}
@@ -46,7 +48,7 @@ const ProfileForm = ({
                             alignItems: 'center',
                             gap: '0.5rem'
                         }}>
-                            Email
+                            {t('profile.email')}
                             <div style={{
                                 width: '14px',
                                 height: '14px',
@@ -107,13 +109,13 @@ const ProfileForm = ({
                                     borderRadius: '1px'
                                 }} />
                             </div>
-                            Email cannot be changed
+                            {t('profile.emailCannotBeChanged')}
                         </div>
                     }
                 />
                 
                 <FormField
-                    label="Phone Number"
+                    label={t('profile.phoneNumber')}
                     name="phone"
                     type="tel"
                     value={profileData.phone}
@@ -121,7 +123,7 @@ const ProfileForm = ({
                 />
                 
                 <FormField
-                    label="Date of Birth"
+                    label={t('profile.dateOfBirth')}
                     name="dateOfBirth"
                     type="date"
                     value={profileData.dateOfBirth}
@@ -137,7 +139,7 @@ const ProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Gender
+                        {t('profile.gender')}
                     </label>
                     <select
                         name="gender"
@@ -170,35 +172,35 @@ const ProfileForm = ({
                             e.target.style.boxShadow = 'none';
                         }}
                     >
-                        <option value="">Select Gender</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
+                        <option value="">{t('profile.selectGender')}</option>
+                        <option value="MALE">{t('profile.male')}</option>
+                        <option value="FEMALE">{t('profile.female')}</option>
                     </select>
                 </div>
 
                 <FormField
-                    label="Emergency Contact Phone"
+                    label={t('profile.emergencyContactPhone')}
                     name="emergencyContact"
                     type="tel"
                     value={profileData.emergencyContact}
                     onChange={handleInputChange}
-                    placeholder="Emergency contact phone number"
+                    placeholder={t('profile.emergencyContactPhonePlaceholder')}
                 />
 
                 <FormField
-                    label="Emergency Contact Name"
+                    label={t('profile.emergencyContactName')}
                     name="emergencyContactName"
                     value={profileData.emergencyContactName}
                     onChange={handleInputChange}
-                    placeholder="Full name of emergency contact"
+                    placeholder={t('profile.emergencyContactNamePlaceholder')}
                 />
 
                 <FormField
-                    label="Emergency Contact Relationship"
+                    label={t('profile.emergencyContactRelationship')}
                     name="emergencyContactRelationship"
                     value={profileData.emergencyContactRelationship}
                     onChange={handleInputChange}
-                    placeholder="e.g., Spouse, Parent, Sibling"
+                    placeholder={t('profile.emergencyContactRelationshipPlaceholder')}
                 />
             </div>
             
@@ -236,7 +238,7 @@ const ProfileForm = ({
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    Cancel
+                    {t('common.cancel')}
                 </button>
                 <button
                     type="submit"
@@ -269,7 +271,7 @@ const ProfileForm = ({
                                 borderRadius: '50%',
                                 animation: 'spin 1s linear infinite'
                             }} />
-                            Saving...
+                            {t('profile.saving')}
                         </>
                     ) : (
                         <>
@@ -307,7 +309,7 @@ const ProfileForm = ({
                                     borderRadius: '1px'
                                 }} />
                             </div>
-                            Save Changes
+                            {t('profile.saveChanges')}
                         </>
                     )}
                 </button>

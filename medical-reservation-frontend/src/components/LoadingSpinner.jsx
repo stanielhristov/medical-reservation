@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-const LoadingSpinner = ({ message = "Loading..." }) => {
+const LoadingSpinner = ({ message }) => {
+    const { t } = useTranslation();
+    const displayMessage = message || t('loading.loading');
     return (
         <div style={{
             minHeight: '100vh',
@@ -30,7 +33,7 @@ const LoadingSpinner = ({ message = "Loading..." }) => {
                     margin: '0 auto 1.5rem'
                 }} />
                 <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>
-                    {message}
+                    {displayMessage}
                 </p>
             </div>
         </div>

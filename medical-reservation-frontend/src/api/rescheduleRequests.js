@@ -1,10 +1,8 @@
 import api from './axios.js';
 
-// Helper function to extract meaningful error messages
 const handleApiError = (error) => {
     console.error('API Error:', error.response?.data || error.message);
     
-    // Handle different error response formats
     if (error.response?.data) {
         if (typeof error.response.data === 'string') {
             return error.response.data;

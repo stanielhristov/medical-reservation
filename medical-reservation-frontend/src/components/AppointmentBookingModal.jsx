@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 import { getAvailableSlots, getDoctorScheduleWithStatus } from '../api/schedule';
 import { createAppointment } from '../api/appointments';
 
@@ -17,6 +19,7 @@ const AppointmentBookingModal = ({
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [reason, setReason] = useState('');
     const [notes, setNotes] = useState('');
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (selectedDate && doctor) {
@@ -71,12 +74,12 @@ const AppointmentBookingModal = ({
 
     const handleBooking = async () => {
         if (!selectedSlot || !reason.trim()) {
-            onBookingError('Please select a time slot and provide a reason for the appointment.');
+            onBookingError(t('appointments.selectSlotAndReason'));
             return;
         }
 
         if (selectedSlot.status !== 'FREE') {
-            onBookingError('This time slot is not available for booking. Please select another slot.');
+            onBookingError(t('appointments.slotNotAvailable'));
             return;
         }
 
@@ -91,11 +94,11 @@ const AppointmentBookingModal = ({
             };
 
             await createAppointment(appointmentData);
-            onBookingSuccess('Appointment booked successfully!');
+            onBookingSuccess(t('appointments.bookingSuccess'));
             handleClose();
         } catch (error) {
             console.error('Error booking appointment:', error);
-            onBookingError(error.message || 'Failed to book appointment. Please try again.');
+            onBookingError(error.message || t('appointments.bookingFailed'));
         } finally {
             setLoading(false);
         }
@@ -204,14 +207,14 @@ const AppointmentBookingModal = ({
                         color: '#374151',
                         margin: '0 0 0.5rem'
                     }}>
-                        Book Appointment
+                        {t('appointments.bookAppointment')}
                     </h3>
                     <p style={{
                         color: '#6b7280',
                         margin: '0 0 1rem',
                         lineHeight: '1.5'
                     }}>
-                        Schedule your appointment with Dr. {doctor.name}
+                        {t('appointments.scheduleWithDoctor', { doctorName: doctor.name })}
                     </p>
                     <div style={{
                         background: 'rgba(34, 197, 94, 0.05)',
@@ -221,7 +224,7 @@ const AppointmentBookingModal = ({
                         display: 'inline-block'
                     }}>
                         <span style={{ fontWeight: '600', color: '#374151' }}>
-                            {doctor.specialization}
+                            {translateSpecialization(doctor.specialization)}
                         </span>
                         {doctor.consultationFee && (
                             <span style={{ marginLeft: '1rem', color: '#22c55e', fontWeight: '600' }}>
@@ -239,7 +242,7 @@ const AppointmentBookingModal = ({
                         color: '#374151',
                         fontSize: '1rem'
                     }}>
-                        Select Date <span style={{ color: '#dc2626' }}>*</span>
+                        {t('appointments.selectDate')} <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <input
                         type="date"
@@ -275,7 +278,7 @@ const AppointmentBookingModal = ({
                             color: '#374151',
                             fontSize: '1rem'
                         }}>
-                            Available Time Slots <span style={{ color: '#dc2626' }}>*</span>
+                            {t('appointments.availableTimeSlots')} <span style={{ color: '#dc2626' }}>*</span>
                         </label>
                         
                         {loadingSlots ? (
@@ -285,7 +288,7 @@ const AppointmentBookingModal = ({
                                 color: '#6b7280'
                             }}>
                                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
-                                <p>Loading available slots...</p>
+                                <p>{t('appointments.loadingSlots')}</p>
                             </div>
                         ) : availableSlots.length === 0 ? (
                             <div style={{
@@ -297,10 +300,9 @@ const AppointmentBookingModal = ({
                                 color: '#6b7280'
                             }}>
                                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
-                                <p><strong>No available slots for this date.</strong></p>
+                                <p><strong>{t('appointments.noSlotsForDate')}</strong></p>
                                 <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                                    Dr. {doctor.name} may not have set up their schedule for this date yet, 
-                                    or all slots may be booked. Please try another date or contact the doctor directly.
+                                    {t('appointments.noSlotsDescription', { doctorName: doctor.name })}
                                 </p>
                             </div>
                         ) : (
@@ -344,7 +346,7 @@ const AppointmentBookingModal = ({
                                                 marginTop: '0.25rem',
                                                 fontWeight: '500'
                                             }}>
-                                                Unavailable
+                                                {t('appointments.unavailable')}
                                             </div>
                                         )}
                                     </div>
@@ -362,12 +364,12 @@ const AppointmentBookingModal = ({
                         color: '#374151',
                         fontSize: '1rem'
                     }}>
-                        Reason for Appointment <span style={{ color: '#dc2626' }}>*</span>
+                        {t('appointments.reasonForAppointment')} <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <textarea
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
-                        placeholder="Please describe the reason for your appointment..."
+                        placeholder={t('appointments.reasonPlaceholder')}
                         rows="3"
                         style={{
                             width: '100%',
@@ -398,12 +400,12 @@ const AppointmentBookingModal = ({
                         color: '#374151',
                         fontSize: '1rem'
                     }}>
-                        Additional Notes (Optional)
+                        {t('appointments.additionalNotes')}
                     </label>
                     <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Any additional information you'd like to share..."
+                        placeholder={t('appointments.additionalNotesPlaceholder')}
                         rows="2"
                         style={{
                             width: '100%',
@@ -447,7 +449,7 @@ const AppointmentBookingModal = ({
                             opacity: loading ? 0.6 : 1
                         }}
                     >
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                     <button
                         onClick={handleBooking}
@@ -482,11 +484,11 @@ const AppointmentBookingModal = ({
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Booking...
+                                {t('appointments.booking')}
                             </>
                         ) : (
                             <>
-                                📅 Confirm Booking
+                                📅 {t('appointments.confirmBooking')}
                             </>
                         )}
                     </button>

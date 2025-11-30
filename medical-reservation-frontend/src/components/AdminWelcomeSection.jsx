@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AdminWelcomeSection = () => {
+    const { t } = useTranslation();
+    
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -106,7 +109,7 @@ const AdminWelcomeSection = () => {
                     letterSpacing: '-0.04em',
                     lineHeight: '1.1'
                 }}>
-                    Admin Command Center
+                    {t('admin.adminCommandCenter')}
                 </h1>
                 
                 <div style={{
@@ -123,7 +126,7 @@ const AdminWelcomeSection = () => {
                     gap: '0.75rem'
                 }}>
                     <span style={{ fontSize: '1.2rem' }}>🔐</span>
-                    Administrative Access
+                    {t('admin.administrativeAccess')}
                 </div>
                 
                 <p style={{
@@ -136,8 +139,7 @@ const AdminWelcomeSection = () => {
                     lineHeight: '1.6',
                     fontWeight: '500'
                 }}>
-                    Welcome to your administrative dashboard. Monitor platform activity, manage users, 
-                    and maintain platform integrity from your centralized dashboard.
+                    {t('admin.welcomeMessage')}
                 </p>
 
                 <div style={{
@@ -156,7 +158,7 @@ const AdminWelcomeSection = () => {
                         fontWeight: '600',
                         fontSize: '0.9rem'
                     }}>
-                        ⚡ Real-time Monitoring
+                        ⚡ {t('admin.realTimeMonitoring')}
                     </div>
                     <div style={{
                         background: 'rgba(16, 185, 129, 0.1)',
@@ -167,7 +169,7 @@ const AdminWelcomeSection = () => {
                         fontWeight: '600',
                         fontSize: '0.9rem'
                     }}>
-                        👥 User Management
+                        👥 {t('admin.userManagement')}
                     </div>
                     <div style={{
                         background: 'rgba(16, 185, 129, 0.1)',
@@ -178,7 +180,7 @@ const AdminWelcomeSection = () => {
                         fontWeight: '600',
                         fontSize: '0.9rem'
                     }}>
-                        📊 Analytics
+                        📊 {t('admin.analytics')}
                     </div>
                     <div style={{
                         background: 'rgba(16, 185, 129, 0.1)',
@@ -189,7 +191,7 @@ const AdminWelcomeSection = () => {
                         fontWeight: '600',
                         fontSize: '0.9rem'
                     }}>
-                        🔒 Security
+                        🔒 {t('admin.security')}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FormField from './FormField';
 
 const PasswordForm = ({ 
@@ -8,6 +9,7 @@ const PasswordForm = ({
     saving, 
     hasPasswordDataInput 
 }) => {
+    const { t } = useTranslation();
     const handleInputChange = (e) => {
         onInputChange(e, 'password');
     };
@@ -20,7 +22,7 @@ const PasswordForm = ({
             }}>
                 <div style={{ marginBottom: '1.5rem' }}>
                     <FormField
-                        label="Current Password"
+                        label={t('profile.currentPassword')}
                         name="currentPassword"
                         type="password"
                         value={passwordData.currentPassword}
@@ -31,7 +33,7 @@ const PasswordForm = ({
                 
                 <div style={{ marginBottom: '1.5rem' }}>
                     <FormField
-                        label="New Password"
+                        label={t('profile.newPassword')}
                         name="newPassword"
                         type="password"
                         value={passwordData.newPassword}
@@ -43,7 +45,7 @@ const PasswordForm = ({
                 
                 <div style={{ marginBottom: '2rem' }}>
                     <FormField
-                        label="Confirm New Password"
+                        label={t('profile.confirmNewPassword')}
                         name="confirmPassword"
                         type="password"
                         value={passwordData.confirmPassword}
@@ -89,7 +91,7 @@ const PasswordForm = ({
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Changing...
+                                {t('profile.changing')}
                             </>
                         ) : (
                             <>
@@ -118,7 +120,7 @@ const PasswordForm = ({
                                         borderRadius: '2px'
                                     }} />
                                 </div>
-                                Change Password
+                                {t('profile.changePassword')}
                             </>
                         )}
                     </button>

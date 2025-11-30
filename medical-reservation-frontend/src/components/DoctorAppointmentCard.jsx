@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { getAppointmentTypeIcon, getPriorityLevel, getPriorityColor } from '../utils/doctorAppointmentUtils';
-import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
+import { formatDoctorScheduleDateTime, translateAppointmentType, translateDuration } from '../utils/appointmentUtils';
 
 const DoctorAppointmentCard = ({ 
     appointment, 
@@ -10,9 +11,21 @@ const DoctorAppointmentCard = ({
     updateAppointmentStatus, 
     setSelectedAppointment 
 }) => {
+    const { t } = useTranslation();
     const statusColors = getStatusColor(appointment.status);
     const priorityLevel = getPriorityLevel(appointment);
     const priorityColor = getPriorityColor(priorityLevel);
+
+    const getStatusTranslation = (status) => {
+        const statusMap = {
+            'completed': t('appointments.completed'),
+            'confirmed': t('appointments.confirmed'),
+            'pending': t('appointments.pending'),
+            'cancelled': t('appointments.cancelled'),
+            'rescheduled': t('appointments.rescheduled')
+        };
+        return statusMap[status?.toLowerCase()] || status;
+    };
 
     return (
         <div style={{
@@ -104,7 +117,7 @@ const DoctorAppointmentCard = ({
                             margin: 0,
                             fontWeight: '500'
                         }}>
-                            {appointment.patientAge ? `Age: ${appointment.patientAge}` : 'Age: Not provided'} • {appointment.type}
+                            {appointment.patientAge ? `Age: ${appointment.patientAge}` : 'Age: Not provided'} • {translateAppointmentType(appointment.type)}
                         </p>
                     </div>
                 </div>
@@ -119,7 +132,7 @@ const DoctorAppointmentCard = ({
                     border: `1px solid ${statusColors.border}`,
                     textTransform: 'capitalize'
                 }}>
-                    {appointment.status}
+                    {getStatusTranslation(appointment.status)}
                 </div>
             </div>
 
@@ -145,7 +158,7 @@ const DoctorAppointmentCard = ({
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Date & Time
+                            {t('appointments.dateAndTime')}
                         </p>
                         <p style={{
                             fontSize: '1.1rem',
@@ -165,7 +178,7 @@ const DoctorAppointmentCard = ({
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Duration
+                            {t('appointments.duration')}
                         </p>
                         <p style={{
                             fontSize: '1rem',
@@ -173,7 +186,7 @@ const DoctorAppointmentCard = ({
                             margin: 0,
                             fontWeight: '600'
                         }}>
-                            {appointment.duration}
+                            {translateDuration(appointment.duration)}
                         </p>
                     </div>
                     <div>
@@ -193,7 +206,7 @@ const DoctorAppointmentCard = ({
                             margin: 0,
                             fontWeight: '600'
                         }}>
-                            {appointment.type}
+                            {translateAppointmentType(appointment.type)}
                         </p>
                     </div>
                     <div>

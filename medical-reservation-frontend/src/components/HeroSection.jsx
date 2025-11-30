@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const HeroSection = ({ onLogin, onRegister }) => {
+    const { t } = useTranslation();
+    
     return (
         <section style={{
             maxWidth: '1200px',
@@ -41,16 +44,7 @@ const HeroSection = ({ onLogin, onRegister }) => {
                     letterSpacing: '-0.03em',
                     lineHeight: '1.1'
                 }}>
-                    Modern Healthcare
-                    <br />
-                    <span style={{ 
-                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                    }}>
-                        Made Simple
-                    </span>
+                    {t('landing.heroTitle')}
                 </h1>
                 
                 <p style={{
@@ -63,8 +57,7 @@ const HeroSection = ({ onLogin, onRegister }) => {
                     lineHeight: '1.6',
                     fontWeight: '400'
                 }}>
-                    Experience seamless healthcare management with our comprehensive medical reservation system. 
-                    Book appointments, manage records, and stay connected with healthcare providers all in one place.
+                    {t('landing.heroSubtitle')}
                 </p>
                 
                 <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -95,7 +88,7 @@ const HeroSection = ({ onLogin, onRegister }) => {
                         }}
                     >
                         <span>🚀</span>
-                        Start Your Journey
+                        {t('landing.heroCTA')}
                     </button>
                     <button 
                         onClick={onLogin}
@@ -126,7 +119,7 @@ const HeroSection = ({ onLogin, onRegister }) => {
                         }}
                     >
                         <span>👤</span>
-                        I Have an Account
+                        {t('landing.haveAccount')}
                     </button>
                 </div>
             </div>

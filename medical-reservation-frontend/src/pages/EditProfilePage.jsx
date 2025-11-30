@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useProfile } from '../hooks/useProfile';
@@ -14,6 +15,7 @@ import MedicalProfileForm from '../components/MedicalProfileForm';
 import AccountSettings from '../components/AccountSettings';
 
 const EditProfilePage = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('profile');
@@ -71,9 +73,9 @@ const EditProfilePage = () => {
         e.preventDefault();
         try {
             await updateProfile();
-            setMessageWithAutoFade('success', 'Profile updated successfully!');
+            setMessageWithAutoFade('success', t('profile.profileUpdatedSuccessfully'));
         } catch (error) {
-            setMessageWithAutoFade('error', error.message || 'Failed to update profile');
+            setMessageWithAutoFade('error', error.message || t('profile.errorUpdatingProfile'));
         }
     };
 
@@ -82,9 +84,9 @@ const EditProfilePage = () => {
         e.preventDefault();
         try {
             await updateMedicalInfo();
-            setMessageWithAutoFade('success', 'Medical info updated successfully!');
+            setMessageWithAutoFade('success', t('profile.medicalInfoUpdatedSuccessfully'));
         } catch (error) {
-            setMessageWithAutoFade('error', error.message || 'Failed to update medical info');
+            setMessageWithAutoFade('error', error.message || t('profile.errorUpdatingMedicalInfo'));
         }
     };
 
@@ -92,9 +94,9 @@ const EditProfilePage = () => {
         e.preventDefault();
         try {
             await updateDoctorProfile();
-            setMessageWithAutoFade('success', 'Doctor profile updated successfully!');
+            setMessageWithAutoFade('success', t('profile.doctorProfileUpdatedSuccessfully'));
         } catch (error) {
-            setMessageWithAutoFade('error', error.message || 'Failed to update doctor profile');
+            setMessageWithAutoFade('error', error.message || t('profile.errorUpdatingDoctorProfile'));
         }
     };
 
@@ -102,9 +104,9 @@ const EditProfilePage = () => {
         e.preventDefault();
         try {
             await changeUserPassword();
-            setMessageWithAutoFade('success', 'Password changed successfully!');
+            setMessageWithAutoFade('success', t('profile.passwordChangedSuccessfully'));
         } catch (error) {
-            setMessageWithAutoFade('error', error.message || 'Failed to change password');
+            setMessageWithAutoFade('error', error.message || t('profile.errorChangingPassword'));
         }
     };
 
@@ -144,14 +146,14 @@ const EditProfilePage = () => {
                         fontSize: '1.5rem',
                         fontWeight: '700'
                     }}>
-                        Loading Profile
+                        {t('profile.loadingProfile')}
                     </h2>
                     <p style={{
                         color: '#6b7280',
                         margin: '0',
                         fontSize: '1rem'
                     }}>
-                        Please wait while we fetch your information...
+                        {t('profile.loadingProfileDescription')}
                     </p>
                 </div>
             </div>

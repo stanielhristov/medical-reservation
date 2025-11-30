@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DoctorWelcomeSection = ({ user, dashboardStats }) => {
+    const { t } = useTranslation();
+    
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -80,7 +83,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                     letterSpacing: '-0.04em',
                     lineHeight: '1.1'
                 }}>
-                    Welcome, Dr. {user?.fullName?.split(' ').pop() || 'Doctor'}
+                    {t('doctor.welcome')}, Dr. {user?.fullName?.split(' ').pop() || t('dashboard.doctor')}
                 </h1>
                 
                 <div style={{
@@ -97,7 +100,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                     gap: '0.75rem'
                 }}>
                     <span style={{ fontSize: '1.2rem' }}>🩺</span>
-                    Medical Professional
+                    {t('doctor.medicalProfessional')}
                 </div>
                 
                 <p style={{
@@ -110,8 +113,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                     lineHeight: '1.6',
                     fontWeight: '500'
                 }}>
-                    Your comprehensive medical dashboard. Manage appointments, view patient information, 
-                    and track your daily medical practice with advanced healthcare tools.
+                    {t('dashboard.doctorWelcomeMessage')}
                 </p>
 
                 <div style={{
@@ -132,7 +134,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                         <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>
                             {dashboardStats.todayAppointments || 0}
                         </div>
-                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Today's Appointments</div>
+                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('dashboard.todayAppointments')}</div>
                     </div>
                     
                     <div style={{
@@ -146,7 +148,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                         <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>
                             {dashboardStats.totalPatients || 0}
                         </div>
-                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Total Patients</div>
+                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('patients.title')}</div>
                     </div>
                     
                     <div style={{
@@ -160,7 +162,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                         <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>
                             {dashboardStats.upcomingAppointments || 0}
                         </div>
-                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Upcoming</div>
+                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('appointments.upcoming')}</div>
                     </div>
                     
                     <div style={{
@@ -174,7 +176,7 @@ const DoctorWelcomeSection = ({ user, dashboardStats }) => {
                         <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>
                             {dashboardStats.completedToday || 0}
                         </div>
-                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Completed Today</div>
+                        <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('appointments.completed')} {t('common.today')}</div>
                     </div>
                 </div>
             </div>

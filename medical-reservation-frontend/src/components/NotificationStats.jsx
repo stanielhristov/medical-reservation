@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { NOTIFICATION_CATEGORIES } from '../utils/notificationUtils';
 
 const NotificationStats = ({ notifications, selectedCategory, onCategorySelect }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             display: 'grid',
@@ -62,14 +64,14 @@ const NotificationStats = ({ notifications, selectedCategory, onCategorySelect }
                                     color: selectedCategory === category.id ? category.color : '#374151',
                                     margin: 0
                                 }}>
-                                    {category.name}
+                                    {t(`notifications.category.${category.id}`)}
                                 </h3>
                                 <p style={{
                                     fontSize: '0.9rem',
                                     color: '#6b7280',
                                     margin: 0
                                 }}>
-                                    {count} total
+                                    {count} {t('notifications.total')}
                                 </p>
                             </div>
                         </div>
@@ -84,7 +86,7 @@ const NotificationStats = ({ notifications, selectedCategory, onCategorySelect }
                                 fontWeight: '600',
                                 textAlign: 'center'
                             }}>
-                                {unreadCount} unread
+                                {unreadCount} {t('notifications.unread')}
                             </div>
                         )}
                     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const MedicalProfileForm = ({ 
@@ -8,6 +9,7 @@ const MedicalProfileForm = ({
     saving, 
     hasMedicalDataChanged
 }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -32,7 +34,7 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Blood Type
+                        {t('profile.bloodType')}
                     </label>
                     <select
                         name="bloodType"
@@ -65,7 +67,7 @@ const MedicalProfileForm = ({
                             e.target.style.boxShadow = 'none';
                         }}
                     >
-                        <option value="">Select Blood Type</option>
+                        <option value="">{t('profile.selectBloodType')}</option>
                         <option value="A_POSITIVE">A+</option>
                         <option value="A_NEGATIVE">A-</option>
                         <option value="B_POSITIVE">B+</option>
@@ -86,7 +88,7 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Height (cm)
+                        {t('profile.height')}
                     </label>
                     <input
                         type="number"
@@ -95,7 +97,7 @@ const MedicalProfileForm = ({
                         value={medicalData.height || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="e.g., 175.5"
+                        placeholder={t('profile.heightPlaceholder')}
                         style={{
                             width: '100%',
                             padding: '0.875rem 1rem',
@@ -128,7 +130,7 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Weight (kg)
+                        {t('profile.weight')}
                     </label>
                     <input
                         type="number"
@@ -137,7 +139,7 @@ const MedicalProfileForm = ({
                         value={medicalData.weight || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="e.g., 70.5"
+                        placeholder={t('profile.weightPlaceholder')}
                         style={{
                             width: '100%',
                             padding: '0.875rem 1rem',
@@ -170,7 +172,7 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        BMI (calculated)
+                        {t('profile.bmi')}
                     </label>
                     <input
                         type="text"
@@ -207,14 +209,14 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Chronic Conditions
+                        {t('profile.chronicConditions')}
                     </label>
                     <textarea
                         name="chronicConditions"
                         value={medicalData.chronicConditions || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="List any chronic conditions, long-term illnesses, or ongoing health issues..."
+                        placeholder={t('profile.chronicConditionsPlaceholder')}
                         rows={4}
                         style={{
                             width: '100%',
@@ -249,14 +251,14 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Allergies
+                        {t('profile.allergies')}
                     </label>
                     <textarea
                         name="allergies"
                         value={medicalData.allergies || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="List any known allergies to medications, foods, environmental factors, etc..."
+                        placeholder={t('profile.allergiesPlaceholder')}
                         rows={3}
                         style={{
                             width: '100%',
@@ -291,14 +293,14 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Current Medications
+                        {t('profile.currentMedications')}
                     </label>
                     <textarea
                         name="currentMedications"
                         value={medicalData.currentMedications || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="List all current medications, dosages, and frequency..."
+                        placeholder={t('profile.currentMedicationsPlaceholder')}
                         rows={4}
                         style={{
                             width: '100%',
@@ -333,14 +335,14 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Past Surgeries
+                        {t('profile.pastSurgeries')}
                     </label>
                     <textarea
                         name="pastSurgeries"
                         value={medicalData.pastSurgeries || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="List any previous surgeries, procedures, or operations with dates..."
+                        placeholder={t('profile.pastSurgeriesPlaceholder')}
                         rows={3}
                         style={{
                             width: '100%',
@@ -375,14 +377,14 @@ const MedicalProfileForm = ({
                         color: '#374151',
                         marginBottom: '0.5rem'
                     }}>
-                        Family Medical History
+                        {t('profile.familyMedicalHistory')}
                     </label>
                     <textarea
                         name="familyMedicalHistory"
                         value={medicalData.familyMedicalHistory || ''}
                         onChange={handleInputChange}
                         disabled={saving}
-                        placeholder="Notable family medical history including hereditary conditions, major illnesses in family members..."
+                        placeholder={t('profile.familyMedicalHistoryPlaceholder')}
                         rows={4}
                         style={{
                             width: '100%',
@@ -429,7 +431,7 @@ const MedicalProfileForm = ({
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    Cancel
+                    {t('common.cancel')}
                 </button>
                 <button
                     type="submit"
@@ -462,7 +464,7 @@ const MedicalProfileForm = ({
                                 borderRadius: '50%',
                                 animation: 'spin 1s linear infinite'
                             }} />
-                            Saving...
+                            {t('profile.saving')}
                         </>
                     ) : (
                         <>
@@ -510,7 +512,7 @@ const MedicalProfileForm = ({
                                     background: 'transparent'
                                 }} />
                             </div>
-                            Save Medical Info
+                            {t('profile.saveMedicalInfo')}
                         </>
                     )}
                 </button>

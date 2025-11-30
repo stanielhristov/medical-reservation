@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { getDoctorByUserId } from '../../api/doctors';
 import { useSchedule } from '../../hooks/useSchedule';
@@ -10,6 +11,7 @@ import WeeklyAvailabilityManager from '../../components/WeeklyAvailabilityManage
 import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
 
 const DoctorScheduleRefactored = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [selectedView, setSelectedView] = useState('week');
@@ -39,10 +41,10 @@ const DoctorScheduleRefactored = () => {
     } = useSchedule(doctorId);
 
     const views = [
-        { id: 'week', name: 'Week View', icon: '📅', color: '#15803d' },
-        { id: 'month', name: 'Month View', icon: '🗓️', color: '#059669' },
-        { id: 'upcoming', name: 'Upcoming Slots', icon: '⏰', color: '#0d9488' },
-        { id: 'available', name: 'Available Only', icon: '✅', color: '#047857' }
+        { id: 'week', name: t('schedule.weekView'), icon: '📅', color: '#15803d' },
+        { id: 'month', name: t('schedule.monthView'), icon: '🗓️', color: '#059669' },
+        { id: 'upcoming', name: t('schedule.upcomingSlots'), icon: '⏰', color: '#0d9488' },
+        { id: 'available', name: t('schedule.availableOnly'), icon: '✅', color: '#047857' }
     ];
 
     useEffect(() => {
@@ -258,16 +260,16 @@ const DoctorScheduleRefactored = () => {
                 isOpen={deleteConfirmation.isOpen}
                 onConfirm={handleDeleteConfirm}
                 onCancel={handleDeleteCancel}
-                title={deleteConfirmation.type === 'bulk' ? 'Delete Multiple Schedules' : 'Delete Schedule'}
+                title={deleteConfirmation.type === 'bulk' ? t('schedule.deleteMultipleSchedules') : t('schedule.deleteSchedule')}
                 message={
                     deleteConfirmation.type === 'bulk' 
-                        ? `Are you sure you want to delete ${deleteConfirmation.schedule?.count || 0} selected schedule${deleteConfirmation.schedule?.count > 1 ? 's' : ''}? Any existing appointments will be automatically cancelled and patients will be notified. This action cannot be undone.`
+                        ? t('schedule.deleteMultipleSchedulesConfirm', { count: deleteConfirmation.schedule?.count || 0 })
                         : deleteConfirmation.schedule?.status === 'BOOKED'
-                            ? `This schedule slot is currently reserved by ${deleteConfirmation.schedule?.patientName || 'a patient'}. Deleting it will automatically cancel the appointment and notify the patient. Are you sure you want to proceed?`
-                            : 'Are you sure you want to delete this schedule? This action cannot be undone.'
+                            ? t('schedule.deleteBookedScheduleConfirm', { patientName: deleteConfirmation.schedule?.patientName || t('common.notProvided') })
+                            : t('schedule.deleteScheduleConfirm')
                 }
-                confirmText={deleteConfirmation.schedule?.status === 'BOOKED' ? "Cancel & Delete" : "Yes"}
-                cancelText="No"
+                confirmText={deleteConfirmation.schedule?.status === 'BOOKED' ? t('appointments.cancelAppointment') : t('schedule.yes')}
+                cancelText={t('schedule.no')}
             />
 
             <style jsx>{`

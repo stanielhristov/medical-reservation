@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
 import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const PatientDetails = ({ patient, onAddRecord, onClose }) => {
+    const { t, i18n } = useTranslation();
     if (!patient) return null;
 
     const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(date).toLocaleDateString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -14,9 +17,11 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
     };
 
     const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(date).toLocaleTimeString(locale, {
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            hour12: i18n.language !== 'bg'
         });
     };
 
@@ -89,13 +94,16 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         fontSize: '0.9rem',
                         color: '#6b7280'
                     }}>
-                        <span>{patient.age} years old</span>
+                        <span>{patient.age} {t('patients.yearsOld')}</span>
                         <span>•</span>
-                        <span>{patient.gender}</span>
+                        <span>{patient.gender === 'MALE' ? t('common.male') : 
+                                patient.gender === 'FEMALE' ? t('common.female') : 
+                                patient.gender === 'Not specified' ? t('common.notProvided') : 
+                                patient.gender}</span>
                         <span>•</span>
-                        <span>Blood Type: {getBloodTypeDisplay(patient.bloodType)}</span>
+                        <span>{t('patients.bloodType')}: {getBloodTypeDisplay(patient.bloodType)}</span>
                         <span>•</span>
-                        <span>{patient.visitCount} visits</span>
+                        <span>{patient.visitCount} {t('patients.visits')}</span>
                     </div>
                 </div>
 
@@ -125,7 +133,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
                     }}
                 >
-                    ➕ Add Record
+                    ➕ {t('patients.addRecord')}
                 </button>
             </div>
 
@@ -150,7 +158,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         textTransform: 'uppercase',
                         marginBottom: '0.5rem'
                     }}>
-                        Contact Information
+                        {t('patients.contactInformation')}
                     </div>
                     <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
                         📞 {patient.phone}
@@ -178,7 +186,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                             textTransform: 'uppercase',
                             marginBottom: '0.5rem'
                         }}>
-                            Emergency Contact
+                            {t('patients.emergencyContact')}
                         </div>
                         {patient.emergencyContactName && (
                             <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
@@ -213,21 +221,21 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                             textTransform: 'uppercase',
                             marginBottom: '0.5rem'
                         }}>
-                            Physical Measurements
+                            {t('patients.physicalMeasurements')}
                         </div>
                         {patient.height && (
                             <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
-                                📏 Height: {patient.height} cm
+                                📏 {t('patients.height')}: {patient.height} cm
                             </div>
                         )}
                         {patient.weight && (
                             <div style={{ fontSize: '0.9rem', color: '#374151', marginBottom: '0.25rem' }}>
-                                ⚖️ Weight: {patient.weight} kg
+                                ⚖️ {t('patients.weight')}: {patient.weight} kg
                             </div>
                         )}
                         {patient.bmi && (
                             <div style={{ fontSize: '0.9rem', color: '#374151' }}>
-                                📊 BMI: {patient.bmi}
+                                📊 {t('patients.bmi')}: {patient.bmi}
                             </div>
                         )}
                     </div>
@@ -248,7 +256,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                             textTransform: 'uppercase',
                             marginBottom: '0.5rem'
                         }}>
-                            Next Appointment
+                            {t('patients.nextAppointment')}
                         </div>
                         <div style={{ fontSize: '0.9rem', color: '#374151' }}>
                             📅 {formatDoctorScheduleDateTime(patient.nextAppointment)}
@@ -271,7 +279,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                             textTransform: 'uppercase',
                             marginBottom: '0.5rem'
                         }}>
-                            Medical Conditions
+                            {t('patients.conditions')}
                         </div>
                         {patient.conditions.map((condition, index) => (
                             <div key={index} style={{
@@ -279,7 +287,9 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                 color: '#374151',
                                 marginBottom: '0.25rem'
                             }}>
-                                🏥 {condition}
+                                🏥 {condition === 'Nothing' ? t('patients.nothing') : 
+                                    condition === 'None' ? t('patients.nothing') : 
+                                    condition}
                             </div>
                         ))}
                     </div>
@@ -300,7 +310,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                             textTransform: 'uppercase',
                             marginBottom: '0.5rem'
                         }}>
-                            Allergies
+                            {t('patients.allergies')}
                         </div>
                         {patient.allergies.map((allergy, index) => (
                             <div key={index} style={{
@@ -308,7 +318,9 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                 color: '#374151',
                                 marginBottom: '0.25rem'
                             }}>
-                                ⚠️ {allergy}
+                                ⚠️ {allergy === 'No allergies' ? t('patients.noAllergies') : 
+                                    allergy === 'None known' ? t('patients.noneKnown') : 
+                                    allergy}
                             </div>
                         ))}
                     </div>
@@ -334,7 +346,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        🏥 Comprehensive Medical Information
+                        🏥 {t('patients.comprehensiveMedicalInformation')}
                     </h3>
 
                     <div style={{
@@ -359,7 +371,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    🩺 Chronic Conditions
+                                    🩺 {t('patients.chronicConditions')}
                                 </div>
                                 <div style={{
                                     fontSize: '0.9rem',
@@ -389,7 +401,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    💊 Current Medications
+                                    💊 {t('patients.currentMedications')}
                                 </div>
                                 <div style={{
                                     fontSize: '0.9rem',
@@ -419,7 +431,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    🔪 Past Surgeries
+                                    🔪 {t('patients.pastSurgeries')}
                                 </div>
                                 <div style={{
                                     fontSize: '0.9rem',
@@ -449,7 +461,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    👨‍👩‍👧‍👦 Family Medical History
+                                    👨‍👩‍👧‍👦 {t('patients.familyMedicalHistory')}
                                 </div>
                                 <div style={{
                                     fontSize: '0.9rem',
@@ -475,7 +487,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                     alignItems: 'center',
                     gap: '0.5rem'
                 }}>
-                    📋 Medical Records ({patient.medicalRecords?.length || 0})
+                    📋 {t('patients.medicalRecords')} ({patient.medicalRecords?.length || 0})
                 </h3>
 
                 {patient.medicalRecords && patient.medicalRecords.length > 0 ? (
@@ -545,7 +557,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                                 color: '#6b7280',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                Description
+                                                {t('patients.description')}
                                             </div>
                                             <div style={{
                                                 fontSize: '0.9rem',
@@ -564,7 +576,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                                 color: '#6b7280',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                Diagnosis
+                                                {t('patients.diagnosis')}
                                             </div>
                                             <div style={{
                                                 fontSize: '0.9rem',
@@ -583,7 +595,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                                 color: '#6b7280',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                Treatment
+                                                {t('patients.treatment')}
                                             </div>
                                             <div style={{
                                                 fontSize: '0.9rem',
@@ -602,7 +614,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                                                 color: '#6b7280',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                Prescription
+                                                {t('patients.prescription')}
                                             </div>
                                             <div style={{
                                                 fontSize: '0.9rem',
@@ -627,7 +639,7 @@ const PatientDetails = ({ patient, onAddRecord, onClose }) => {
                         color: '#6b7280'
                     }}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
-                        <div>No medical records found for this patient.</div>
+                        <div>{t('patients.noMedicalRecordsFound')}</div>
                     </div>
                 )}
             </div>

@@ -1,7 +1,20 @@
 import React from 'react';
-import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
+import { useTranslation } from 'react-i18next';
+import { formatDoctorScheduleDateTime, translateAppointmentType } from '../utils/appointmentUtils';
 
 const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColor, onNavigation }) => {
+    const { t } = useTranslation();
+
+    const getStatusTranslation = (status) => {
+        const statusMap = {
+            'completed': t('appointments.completed'),
+            'confirmed': t('appointments.confirmed'),
+            'pending': t('appointments.pending'),
+            'cancelled': t('appointments.cancelled'),
+            'rescheduled': t('appointments.rescheduled')
+        };
+        return statusMap[status?.toLowerCase()] || status;
+    };
     return (
         <section style={{ marginBottom: '3rem' }}>
             <div style={{
@@ -32,7 +45,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                     }}>
                         📅
                     </span>
-                    Today's Schedule
+                    {t('dashboard.todaysSchedule')}
                 </h2>
                 
                 <button
@@ -61,7 +74,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                         e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
                     }}
                 >
-                    View All Appointments
+                    {t('dashboard.viewAllAppointments')}
                     <span>→</span>
                 </button>
             </div>
@@ -90,7 +103,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                         margin: '0 0 0.75rem',
                         color: '#374151'
                     }}>
-                        No appointments today
+                        {t('dashboard.noAppointmentsToday')}
                     </h3>
                     <p style={{
                         fontSize: '1rem',
@@ -100,7 +113,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                         marginRight: 'auto',
                         lineHeight: '1.5'
                     }}>
-                        You have a clear schedule today. Take some time to review patient records or catch up on administrative tasks.
+                        {t('dashboard.clearScheduleMessage')}
                     </p>
                     <button
                         onClick={() => onNavigation('/doctor/schedule')}
@@ -117,7 +130,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                             boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
                         }}
                     >
-                        Manage Your Schedule
+                        {t('dashboard.manageYourSchedule')}
                     </button>
                 </div>
             ) : (
@@ -195,7 +208,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                                                     color: '#6b7280',
                                                     margin: '0 0 0.5rem'
                                                 }}>
-                                                    {appointment.type} • {appointment.duration}
+                                                    {translateAppointmentType(appointment.type)} • {appointment.duration}
                                                 </p>
                                                 <p style={{
                                                     fontSize: '1rem',
@@ -224,7 +237,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                                                 border: `1px solid ${statusColors.border}`,
                                                 textTransform: 'capitalize'
                                             }}>
-                                                {appointment.status}
+                                                {getStatusTranslation(appointment.status)}
                                             </div>
                                             
                                             {appointment.reason && (

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { categories } from '../utils/medicalHistoryUtils';
 
 const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecords }) => {
+    const { t } = useTranslation();
     const getCategoryCount = (categoryId) => {
         if (categoryId === 'all') return medicalRecords.length;
         return medicalRecords.filter(record => record.type === categoryId).length;
@@ -27,7 +29,7 @@ const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecor
                 gap: '0.5rem'
             }}>
                 <span>🏷️</span>
-                Filter by Category
+                {t('medicalHistory.filterByCategory')}
             </h3>
             
             <div style={{
@@ -82,7 +84,7 @@ const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecor
                         >
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <span style={{ fontSize: '1.2rem' }}>{category.icon}</span>
-                                <span>{category.name}</span>
+                                <span>{t(`medicalHistory.category.${category.id}`)}</span>
                             </div>
                             <span style={{
                                 background: isSelected 

@@ -1,10 +1,24 @@
 import React from 'react';
-import { getStatusColor, formatPatientDateTime, getRelativeTimeUntil } from '../utils/appointmentUtils';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
+import { getStatusColor, formatPatientDateTime, getRelativeTimeUntil, translateAppointmentType, translateDuration } from '../utils/appointmentUtils';
 
 const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) => {
+    const { t } = useTranslation();
     const statusStyle = getStatusColor(appointment.status);
     const isUpcoming = selectedTab === 'upcoming';
     const isPast = selectedTab === 'past';
+
+    const getStatusTranslation = (status) => {
+        const statusMap = {
+            'completed': t('appointments.completed'),
+            'confirmed': t('appointments.confirmed'),
+            'pending': t('appointments.pending'),
+            'cancelled': t('appointments.cancelled'),
+            'rescheduled': t('appointments.rescheduled')
+        };
+        return statusMap[status?.toLowerCase()] || status;
+    };
 
     return (
         <div style={{
@@ -52,14 +66,14 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                             margin: '0 0 0.25rem 0',
                             fontWeight: '600'
                         }}>
-                            {appointment.specialization}
+                            {translateSpecialization(appointment.specialization)}
                         </p>
                         <p style={{
                             fontSize: '0.9rem',
                             color: '#6b7280',
                             margin: 0
                         }}>
-                            {appointment.type}
+                            {translateAppointmentType(appointment.type)}
                         </p>
                     </div>
                 </div>
@@ -79,7 +93,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         textTransform: 'uppercase',
                         border: `1px solid ${statusStyle.border}`
                     }}>
-                        {appointment.status}
+                        {getStatusTranslation(appointment.status)}
                     </div>
                     
                     {isUpcoming && (
@@ -117,7 +131,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                     }}>
-                        📅 Date & Time
+                        📅 {t('appointments.dateAndTime')}
                     </h4>
                     <p style={{
                         fontSize: '1.1rem',
@@ -132,7 +146,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         color: '#6b7280',
                         margin: 0
                     }}>
-                        Duration: {appointment.duration}
+                        {t('appointments.duration')}: {translateDuration(appointment.duration)}
                     </p>
                 </div>
 
@@ -150,7 +164,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                     }}>
-                        📍 Location
+                        📍 {t('appointments.location')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -165,7 +179,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         color: '#6b7280',
                         margin: 0
                     }}>
-                        Fee: {appointment.consultationFee}
+                        {t('appointments.fee')}: {appointment.consultationFee}
                     </p>
                 </div>
             </div>
@@ -186,7 +200,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                     }}>
-                        📝 Notes
+                        📝 {t('appointments.notes')}
                     </h4>
                     <p style={{
                         fontSize: '1rem',
@@ -222,7 +236,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                             gap: '0.5rem'
                         }}
                     >
-                        📅 Reschedule
+                        📅 {t('appointments.reschedule')}
                     </button>
                     
                     <button
@@ -242,7 +256,7 @@ const AppointmentCard = ({ appointment, onCancel, onReschedule, selectedTab }) =
                             gap: '0.5rem'
                         }}
                     >
-                        ❌ Cancel
+                        ❌ {t('appointments.cancel')}
                     </button>
                 </div>
             )}

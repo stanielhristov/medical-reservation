@@ -1,4 +1,5 @@
 import React from 'react';
+import { translateSpecialization } from '../utils/specializationUtils';
 
 const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNavigation }) => {
     return (
@@ -162,7 +163,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                                             color: '#6b7280',
                                             margin: '0 0 0.5rem'
                                         }}>
-                                            {request.specialization}
+                                            {translateSpecialization(request.specialization)}
                                         </p>
                                         <div style={{
                                             display: 'flex',

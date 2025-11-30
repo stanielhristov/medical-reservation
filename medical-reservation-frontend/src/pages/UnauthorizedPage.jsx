@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getRoleBasedRedirect } from '../utils/roleBasedNavigation';
 
 const UnauthorizedPage = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
 
     return (
@@ -11,9 +13,9 @@ const UnauthorizedPage = () => {
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <div className="text-center">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Access Denied</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('unauthorized.title')}</h2>
                         <p className="text-gray-600 mb-6">
-                            You don't have permission to access this page.
+                            {t('unauthorized.message')}
                         </p>
                         
                         {user ? (
@@ -22,13 +24,13 @@ const UnauthorizedPage = () => {
                                     to={getRoleBasedRedirect(user.role)}
                                     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                 >
-                                    Go to Dashboard
+                                    {t('unauthorized.goToDashboard')}
                                 </Link>
                                 <Link
                                     to="/"
                                     className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                 >
-                                    Go to Home
+                                    {t('unauthorized.goToHome')}
                                 </Link>
                             </div>
                         ) : (
@@ -36,7 +38,7 @@ const UnauthorizedPage = () => {
                                 to="/login"
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
-                                Login
+                                {t('unauthorized.login')}
                             </Link>
                         )}
                     </div>

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { getAppointmentStats } from '../utils/doctorAppointmentUtils';
 
 const DoctorAppointmentHeader = ({ user, appointments }) => {
+    const { t } = useTranslation();
     const stats = getAppointmentStats(appointments);
 
     return (
@@ -36,7 +38,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 margin: '0 0 0.5rem',
                 letterSpacing: '-0.02em'
             }}>
-                Welcome, Dr. {user?.fullName?.split(' ')[0] || 'Doctor'}
+                {t('doctor.welcome')}, Dr. {user?.fullName?.split(' ')[0] || t('dashboard.doctor')}
             </h1>
             
             <p style={{
@@ -45,7 +47,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 margin: '0 0 2.5rem',
                 fontWeight: '500'
             }}>
-                Manage your appointments and patient consultations
+                {t('doctor.manageAppointments')}
             </p>
 
             <div style={{
@@ -64,7 +66,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📅</div>
                     <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>{stats.today}</div>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Today's Appointments</div>
+                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('dashboard.todayAppointments')}</div>
                 </div>
                 
                 <div style={{
@@ -76,7 +78,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⏰</div>
                     <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>{stats.upcoming}</div>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Upcoming</div>
+                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('appointments.upcoming')}</div>
                 </div>
                 
                 <div style={{
@@ -88,7 +90,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⏳</div>
                     <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>{stats.pending}</div>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Pending Approval</div>
+                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('appointments.pendingApproval')}</div>
                 </div>
                 
                 <div style={{
@@ -100,7 +102,7 @@ const DoctorAppointmentHeader = ({ user, appointments }) => {
                 }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>✅</div>
                     <div style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.25rem' }}>{stats.completed}</div>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Completed</div>
+                    <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>{t('appointments.completed')}</div>
                 </div>
             </div>
         </section>

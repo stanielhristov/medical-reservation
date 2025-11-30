@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAdminDashboard } from '../../hooks/useAdminDashboard';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import RecentUsersSection from '../../components/RecentUsersSection';
 import PendingDoctorRequestsSection from '../../components/PendingDoctorRequestsSection';
 
 const AdminDashboard = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const {
         statistics,
@@ -25,7 +27,7 @@ const AdminDashboard = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading admin dashboard..." />;
+        return <LoadingSpinner message={t('loading.loadingAdminDashboard')} />;
     }
 
     if (error) {
@@ -62,7 +64,7 @@ const AdminDashboard = () => {
                     color: '#dc2626',
                     margin: '0 0 1rem'
                 }}>
-                    Error Loading Dashboard
+                    {t('admin.errorLoadingDashboard')}
                 </h2>
                 <p style={{
                     color: '#6b7280',
@@ -86,7 +88,7 @@ const AdminDashboard = () => {
                         boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
                     }}
                 >
-                    Try Again
+                    {t('admin.tryAgain')}
                 </button>
             </div>
         );
@@ -145,11 +147,11 @@ const AdminDashboard = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem'
-                    }}>
+                        }}>
                         <span style={{
                             fontSize: '1.2rem'
                         }}>⚡</span>
-                        Quick Actions
+                        {t('admin.quickActions')}
                     </h2>
                     <div style={{
                         display: 'grid',
@@ -189,13 +191,13 @@ const AdminDashboard = () => {
                                 fontWeight: '600',
                                 marginBottom: '0.25rem'
                             }}>
-                                Manage Comments
+                                {t('admin.manageComments')}
                             </div>
                             <div style={{
                                 fontSize: '0.85rem',
                                 opacity: 0.9
                             }}>
-                                View and moderate user comments
+                                {t('admin.manageCommentsDesc')}
                             </div>
                         </button>
                         
@@ -232,13 +234,13 @@ const AdminDashboard = () => {
                                 fontWeight: '600',
                                 marginBottom: '0.25rem'
                             }}>
-                                Manage Users
+                                {t('admin.manageUsers')}
                             </div>
                             <div style={{
                                 fontSize: '0.85rem',
                                 opacity: 0.9
                             }}>
-                                User roles and permissions
+                                {t('admin.manageUsersDesc')}
                             </div>
                         </button>
                         
@@ -275,13 +277,13 @@ const AdminDashboard = () => {
                                 fontWeight: '600',
                                 marginBottom: '0.25rem'
                             }}>
-                                Doctor Requests
+                                {t('admin.doctorRequests')}
                             </div>
                             <div style={{
                                 fontSize: '0.85rem',
                                 opacity: 0.9
                             }}>
-                                Review and approve doctors
+                                {t('admin.doctorRequestsDesc')}
                             </div>
                         </button>
                     </div>

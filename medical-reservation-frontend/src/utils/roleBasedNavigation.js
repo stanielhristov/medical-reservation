@@ -11,38 +11,38 @@ export const getRoleBasedRedirect = (role) => {
     }
 };
 
-export const getRoleRoutes = (role) => {
+export const getRoleRoutes = (role, t) => {
     const baseRoutes = [
-        { path: '/', name: 'Home' },
-        { path: '/about', name: 'About' },
-        { path: '/contact', name: 'Contact' }
+        { path: '/', name: 'Home', translationKey: 'nav.home' },
+        { path: '/about', name: 'About', translationKey: 'nav.about' },
+        { path: '/contact', name: 'Contact', translationKey: 'nav.contact' }
     ];
 
     switch (role) {
         case 'ADMIN':
             return [
-                { path: '/admin/dashboard', name: 'Dashboard' },
-                { path: '/admin/users', name: 'Users' },
-                { path: '/admin/doctors', name: 'Doctors' },
-                { path: '/admin/appointments', name: 'Appointments' },
-                { path: '/admin/comments', name: 'Comments' }
+                { path: '/admin/dashboard', name: 'Dashboard', translationKey: 'nav.dashboard' },
+                { path: '/admin/users', name: 'Users', translationKey: 'nav.users' },
+                { path: '/admin/doctors', name: 'Doctors', translationKey: 'nav.doctors' },
+                { path: '/admin/appointments', name: 'Appointments', translationKey: 'nav.appointments' },
+                { path: '/admin/comments', name: 'Comments', translationKey: 'nav.comments' }
             ];
         case 'DOCTOR':
             return [
-                { path: '/doctor/dashboard', name: 'Dashboard' },
-                { path: '/doctor/schedule', name: 'Schedule Management' },
-                { path: '/doctor/appointments', name: 'Appointments' },
-                { path: '/doctor/patients', name: 'Patients' },
-                { path: '/doctor/reschedule-requests', name: 'Reschedule Requests' },
-                { path: '/doctor/notifications', name: 'Notifications' }
+                { path: '/doctor/dashboard', name: 'Dashboard', translationKey: 'nav.dashboard' },
+                { path: '/doctor/schedule', name: 'Schedule Management', translationKey: 'nav.scheduleManagement' },
+                { path: '/doctor/appointments', name: 'Appointments', translationKey: 'nav.appointments' },
+                { path: '/doctor/patients', name: 'Patients', translationKey: 'nav.patients' },
+                { path: '/doctor/reschedule-requests', name: 'Reschedule Requests', translationKey: 'nav.rescheduleRequests' },
+                { path: '/doctor/notifications', name: 'Notifications', translationKey: 'nav.notifications' }
             ];
         case 'USER':
             return [
-                { path: '/patient/dashboard', name: 'Dashboard' },
-                { path: '/patient/appointments', name: 'Appointments' },
-                { path: '/patient/doctors', name: 'Doctors' },
-                { path: '/patient/medical-history', name: 'Medical History' },
-                { path: '/patient/notifications', name: 'Notifications' }
+                { path: '/patient/dashboard', name: 'Dashboard', translationKey: 'nav.dashboard' },
+                { path: '/patient/appointments', name: 'Appointments', translationKey: 'nav.appointments' },
+                { path: '/patient/doctors', name: 'Doctors', translationKey: 'nav.doctors' },
+                { path: '/patient/medical-history', name: 'Medical History', translationKey: 'nav.medicalHistory' },
+                { path: '/patient/notifications', name: 'Notifications', translationKey: 'nav.notifications' }
             ];
         default:
             return baseRoutes;

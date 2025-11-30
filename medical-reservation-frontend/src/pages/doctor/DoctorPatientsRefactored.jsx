@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useDoctorPatients } from '../../hooks/useDoctorPatients';
 import PatientFilters from '../../components/PatientFilters';
@@ -8,6 +9,7 @@ import MedicalRecordModal from '../../components/MedicalRecordModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 const DoctorPatientsRefactored = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const {
         loading,
@@ -38,7 +40,7 @@ const DoctorPatientsRefactored = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner message="Loading patients..." />;
+        return <LoadingSpinner message={t('loading.loadingPatients')} />;
     }
 
     if (error) {
@@ -60,7 +62,7 @@ const DoctorPatientsRefactored = () => {
                     maxWidth: '500px'
                 }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>Unable to Load Patients</h3>
+                    <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>{t('errors.unableToLoadPatients')}</h3>
                     <p style={{ color: '#6b7280', margin: '0 0 1.5rem' }}>{error}</p>
                     <button
                         onClick={refetchPatients}
@@ -74,7 +76,7 @@ const DoctorPatientsRefactored = () => {
                             fontWeight: '500'
                         }}
                     >
-                        Try Again
+                        {t('common.tryAgain')}
                     </button>
                 </div>
             </div>
@@ -94,23 +96,49 @@ const DoctorPatientsRefactored = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                <div style={{
+                <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
-                    borderRadius: '24px',
+                    borderRadius: '32px',
                     padding: '3rem',
-                    marginBottom: '2rem',
+                    marginBottom: '3rem',
+                    boxShadow: '0 32px 64px rgba(5, 150, 105, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
+                    border: '1px solid rgba(5, 150, 105, 0.15)',
                     textAlign: 'center'
                 }}>
+                    <div style={{
+                        width: '100px',
+                        height: '100px',
+                        background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                        borderRadius: '25px',
+                        margin: '0 auto 2rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 20px 40px rgba(5, 150, 105, 0.3)'
+                    }}>
+                        <span style={{ fontSize: '3rem', color: 'white' }}>👥</span>
+                    </div>
+                    
                     <h1 style={{
                         fontSize: '2.5rem',
                         fontWeight: '800',
                         color: '#374151',
-                        margin: '0 0 1rem'
+                        margin: '0 0 0.5rem',
+                        letterSpacing: '-0.02em'
                     }}>
-                        Patient Management
+                        {t('patients.patientManagement')}
                     </h1>
-                </div>
+                    
+                    <p style={{
+                        fontSize: '1.2rem',
+                        color: '#6b7280',
+                        margin: '0 0 2.5rem',
+                        fontWeight: '500'
+                    }}>
+                        {t('patients.patientManagementDescription')}
+                    </p>
+                </section>
 
                 <PatientFilters
                     filters={filters}

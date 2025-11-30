@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 import StarRating from './StarRating';
 
 const DoctorCard = ({ 
@@ -7,6 +9,7 @@ const DoctorCard = ({
     onRateDoctor, 
     onViewComments 
 }) => {
+    const { t } = useTranslation();
     return (
         <div style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -75,7 +78,7 @@ const DoctorCard = ({
                             margin: '0 0 0.5rem',
                             fontWeight: '600'
                         }}>
-                            {doctor.specialization}
+                            {translateSpecialization(doctor.specialization)}
                         </p>
                         <div style={{
                             display: 'flex',
@@ -130,7 +133,7 @@ const DoctorCard = ({
                                 padding: '0'
                             }}
                         >
-                            {doctor.reviews} reviews
+                            {doctor.reviews} {t('doctors.reviews')}
                         </button>
                     </div>
                     
@@ -141,13 +144,13 @@ const DoctorCard = ({
                         fontSize: '0.9rem'
                     }}>
                         <div>
-                            <span style={{ color: '#6b7280', fontWeight: '600' }}>Next Available:</span>
+                            <span style={{ color: '#6b7280', fontWeight: '600' }}>{t('doctors.nextAvailable')}:</span>
                             <p style={{ color: '#374151', margin: '0.25rem 0 0', fontWeight: '500' }}>
                                 {doctor.nextAvailable}
                             </p>
                         </div>
                         <div>
-                            <span style={{ color: '#6b7280', fontWeight: '600' }}>Consultation:</span>
+                            <span style={{ color: '#6b7280', fontWeight: '600' }}>{t('doctors.consultation')}:</span>
                             <p style={{ color: '#22c55e', margin: '0.25rem 0 0', fontWeight: '700' }}>
                                 {doctor.consultationFee}
                             </p>
@@ -213,7 +216,7 @@ const DoctorCard = ({
                                 strokeWidth="1"
                             />
                         </svg>
-                        Rate Doctor
+                        {t('doctors.rateDoctor')}
                     </button>
                     
                     <button
@@ -243,7 +246,7 @@ const DoctorCard = ({
                         }}
                     >
                         <span>📅</span>
-                        Book Appointment
+                        {t('doctors.bookAppointment')}
                     </button>
                 </div>
             </div>

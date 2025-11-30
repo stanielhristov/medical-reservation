@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createAppointment } from '../api/appointments';
 import PatientCalendarView from './PatientCalendarView';
 
@@ -10,6 +11,7 @@ const EnhancedAppointmentBookingModal = ({
     onBookingSuccess,
     onBookingError
 }) => {
+    const { t, i18n } = useTranslation();
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -41,7 +43,7 @@ const EnhancedAppointmentBookingModal = ({
 
     const handleProceedToConfirm = () => {
         if (!reason.trim()) {
-            onBookingError('Please provide a reason for the appointment.');
+            onBookingError(t('appointments.provideReason'));
             return;
         }
         setStep(3);
@@ -49,7 +51,7 @@ const EnhancedAppointmentBookingModal = ({
 
     const handleBooking = async () => {
         if (!selectedSlot || !reason.trim()) {
-            onBookingError('Please select a time slot and provide a reason for the appointment.');
+            onBookingError(t('appointments.selectSlotAndReason'));
             return;
         }
 
@@ -60,15 +62,15 @@ const EnhancedAppointmentBookingModal = ({
                 patientId: patientId,
                 appointmentTime: selectedSlot.startTime,
                 endTime: selectedSlot.endTime,
-                notes: reason.trim() + (notes.trim() ? ' | Additional notes: ' + notes.trim() : '')
+                notes: reason.trim() + (notes.trim() ? ` | ${t('appointments.additionalNotes')}: ` + notes.trim() : '')
             };
 
             await createAppointment(appointmentData);
-            onBookingSuccess('Appointment booked successfully!');
+            onBookingSuccess(t('appointments.bookingSuccess'));
             handleClose();
         } catch (error) {
             console.error('Error booking appointment:', error);
-            onBookingError(error.message || 'Failed to book appointment. Please try again.');
+            onBookingError(error.message || t('appointments.bookingFailed'));
         } finally {
             setLoading(false);
         }
@@ -84,21 +86,23 @@ const EnhancedAppointmentBookingModal = ({
     };
 
     const formatSlotTime = (startTime, endTime) => {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         const start = new Date(startTime);
         const end = new Date(endTime);
-        return `${start.toLocaleTimeString('en-US', { 
+        return `${start.toLocaleTimeString(locale, { 
             hour: 'numeric', 
             minute: '2-digit',
-            hour12: true 
-        })} - ${end.toLocaleTimeString('en-US', { 
+            hour12: i18n.language !== 'bg'
+        })} - ${end.toLocaleTimeString(locale, { 
             hour: 'numeric', 
             minute: '2-digit',
-            hour12: true 
+            hour12: i18n.language !== 'bg'
         })}`;
     };
 
     const formatDate = (dateStr) => {
-        return new Date(dateStr).toLocaleDateString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(dateStr).toLocaleDateString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -164,10 +168,10 @@ const EnhancedAppointmentBookingModal = ({
                     
                     <div style={{ marginRight: '3rem' }}>
                         <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '1.5rem' }}>
-                            Book Appointment
+                            {t('appointments.bookAppointment')}
                         </h2>
                         <p style={{ margin: 0, opacity: 0.9 }}>
-                            with Dr. {doctor.fullName || doctor.name}
+                            {t('appointments.withDoctor')} {doctor.fullName || doctor.name}
                         </p>
                     </div>
                     
@@ -200,7 +204,7 @@ const EnhancedAppointmentBookingModal = ({
                                 color: '#374151',
                                 textAlign: 'center'
                             }}>
-                                Step 1: Select Date & Time
+                                {t('appointments.step1')}
                             </h3>
                             <PatientCalendarView
                                 doctorId={doctor.id}
@@ -219,7 +223,7 @@ const EnhancedAppointmentBookingModal = ({
                                 color: '#374151',
                                 textAlign: 'center'
                             }}>
-                                Step 2: Appointment Details
+                                {t('appointments.step2')}
                             </h3>
 
                             {/* Selected slot summary */}
@@ -231,13 +235,13 @@ const EnhancedAppointmentBookingModal = ({
                                 marginBottom: '2rem'
                             }}>
                                 <h4 style={{ margin: '0 0 0.5rem 0', color: '#15803d' }}>
-                                    Selected Appointment
+                                    {t('appointments.selectedAppointment')}
                                 </h4>
                                 <p style={{ margin: '0 0 0.25rem 0', color: '#374151' }}>
-                                    <strong>Date:</strong> {formatDate(selectedDate)}
+                                    <strong>{t('common.date')}:</strong> {formatDate(selectedDate)}
                                 </p>
                                 <p style={{ margin: 0, color: '#374151' }}>
-                                    <strong>Time:</strong> {formatSlotTime(selectedSlot.startTime, selectedSlot.endTime)}
+                                    <strong>{t('common.time')}:</strong> {formatSlotTime(selectedSlot.startTime, selectedSlot.endTime)}
                                 </p>
                             </div>
 
@@ -248,12 +252,12 @@ const EnhancedAppointmentBookingModal = ({
                                     color: '#374151',
                                     fontWeight: '600'
                                 }}>
-                                    Reason for appointment *
+                                    {t('appointments.reasonForAppointmentRequired')}
                                 </label>
                                 <textarea
                                     value={reason}
                                     onChange={(e) => setReason(e.target.value)}
-                                    placeholder="Please describe the reason for your visit..."
+                                    placeholder={t('appointments.reasonPlaceholder')}
                                     required
                                     rows={4}
                                     style={{
@@ -275,12 +279,12 @@ const EnhancedAppointmentBookingModal = ({
                                     color: '#374151',
                                     fontWeight: '600'
                                 }}>
-                                    Additional notes (optional)
+                                    {t('appointments.additionalNotesOptional')}
                                 </label>
                                 <textarea
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
-                                    placeholder="Any additional information you'd like to share..."
+                                    placeholder={t('appointments.additionalNotesPlaceholder')}
                                     rows={3}
                                     style={{
                                         width: '100%',
@@ -309,7 +313,7 @@ const EnhancedAppointmentBookingModal = ({
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    ← Back
+                                    ← {t('appointments.back')}
                                 </button>
                                 <button
                                     onClick={handleProceedToConfirm}
@@ -325,7 +329,7 @@ const EnhancedAppointmentBookingModal = ({
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    Continue →
+                                    {t('appointments.continue')} →
                                 </button>
                             </div>
                         </div>
@@ -338,7 +342,7 @@ const EnhancedAppointmentBookingModal = ({
                                 color: '#374151',
                                 textAlign: 'center'
                             }}>
-                                Step 3: Confirm Booking
+                                {t('appointments.step3')}
                             </h3>
 
                             <div style={{
@@ -349,32 +353,32 @@ const EnhancedAppointmentBookingModal = ({
                                 marginBottom: '2rem'
                             }}>
                                 <h4 style={{ margin: '0 0 1rem 0', color: '#15803d' }}>
-                                    Appointment Summary
+                                    {t('appointments.appointmentSummary')}
                                 </h4>
                                 
                                 <div style={{ marginBottom: '1rem' }}>
-                                    <strong style={{ color: '#374151' }}>Doctor:</strong>
+                                    <strong style={{ color: '#374151' }}>{t('appointments.doctor')}:</strong>
                                     <span style={{ marginLeft: '0.5rem', color: '#6b7280' }}>
-                                        Dr. {doctor.fullName || doctor.name}
+                                        {t('appointments.withDoctor')} {doctor.fullName || doctor.name}
                                     </span>
                                 </div>
                                 
                                 <div style={{ marginBottom: '1rem' }}>
-                                    <strong style={{ color: '#374151' }}>Date:</strong>
+                                    <strong style={{ color: '#374151' }}>{t('common.date')}:</strong>
                                     <span style={{ marginLeft: '0.5rem', color: '#6b7280' }}>
                                         {formatDate(selectedDate)}
                                     </span>
                                 </div>
                                 
                                 <div style={{ marginBottom: '1rem' }}>
-                                    <strong style={{ color: '#374151' }}>Time:</strong>
+                                    <strong style={{ color: '#374151' }}>{t('common.time')}:</strong>
                                     <span style={{ marginLeft: '0.5rem', color: '#6b7280' }}>
                                         {formatSlotTime(selectedSlot.startTime, selectedSlot.endTime)}
                                     </span>
                                 </div>
                                 
                                 <div style={{ marginBottom: notes.trim() ? '1rem' : 0 }}>
-                                    <strong style={{ color: '#374151' }}>Reason:</strong>
+                                    <strong style={{ color: '#374151' }}>{t('appointments.reasonForVisit')}:</strong>
                                     <div style={{ 
                                         marginTop: '0.5rem', 
                                         color: '#6b7280',
@@ -389,7 +393,7 @@ const EnhancedAppointmentBookingModal = ({
                                 
                                 {notes.trim() && (
                                     <div>
-                                        <strong style={{ color: '#374151' }}>Additional Notes:</strong>
+                                        <strong style={{ color: '#374151' }}>{t('appointments.additionalNotes')}:</strong>
                                         <div style={{ 
                                             marginTop: '0.5rem', 
                                             color: '#6b7280',
@@ -420,7 +424,7 @@ const EnhancedAppointmentBookingModal = ({
                                         cursor: loading ? 'not-allowed' : 'pointer'
                                     }}
                                 >
-                                    ← Back
+                                    ← {t('appointments.back')}
                                 </button>
                                 <button
                                     onClick={handleBooking}
@@ -451,7 +455,7 @@ const EnhancedAppointmentBookingModal = ({
                                             animation: 'spin 1s linear infinite'
                                         }} />
                                     )}
-                                    {loading ? 'Booking...' : 'Confirm Booking'}
+                                    {loading ? t('appointments.booking') : t('appointments.confirmBooking')}
                                 </button>
                             </div>
                         </div>

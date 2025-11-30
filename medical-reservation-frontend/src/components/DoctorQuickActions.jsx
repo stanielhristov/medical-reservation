@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DoctorQuickActions = ({ onNavigation }) => {
+    const { t } = useTranslation();
     const quickActions = [
         {
-            title: 'View Appointments',
-            description: 'See today\'s schedule and upcoming appointments',
+            title: t('doctor.viewAppointments'),
+            description: t('doctor.viewAppointmentsDescription'),
             icon: '📅',
             color: '#3b82f6',
             bgColor: 'rgba(59, 130, 246, 0.1)',
@@ -12,8 +14,8 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/appointments'
         },
         {
-            title: 'Manage Patients',
-            description: 'Access patient records and medical history',
+            title: t('doctor.managePatients'),
+            description: t('doctor.managePatientsDescription'),
             icon: '👥',
             color: '#10b981',
             bgColor: 'rgba(16, 185, 129, 0.1)',
@@ -21,8 +23,8 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/patients'
         },
         {
-            title: 'Schedule Management',
-            description: 'Update availability and time slots',
+            title: t('doctor.scheduleManagement'),
+            description: t('doctor.scheduleManagementDescription'),
             icon: '🗓️',
             color: '#f59e0b',
             bgColor: 'rgba(245, 158, 11, 0.1)',
@@ -30,8 +32,8 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/schedule'
         },
         {
-            title: 'Reschedule Requests',
-            description: 'Review and approve patient reschedule requests',
+            title: t('doctor.rescheduleRequests'),
+            description: t('doctor.rescheduleRequestsDescription'),
             icon: '🔄',
             color: '#8b5cf6',
             bgColor: 'rgba(139, 92, 246, 0.1)',
@@ -39,8 +41,8 @@ const DoctorQuickActions = ({ onNavigation }) => {
             path: '/doctor/reschedule-requests'
         },
         {
-            title: 'Notifications',
-            description: 'View appointment alerts and system messages',
+            title: t('doctor.notifications'),
+            description: t('doctor.notificationsDescription'),
             icon: '🔔',
             color: '#ef4444',
             bgColor: 'rgba(239, 68, 68, 0.1)',
@@ -142,7 +144,7 @@ const DoctorQuickActions = ({ onNavigation }) => {
                             fontSize: '0.9rem',
                             fontWeight: '600'
                         }}>
-                            <span>Access Now</span>
+                            <span>{t('doctor.accessNow')}</span>
                             <span style={{ fontSize: '0.8rem' }}>→</span>
                         </div>
                     </div>

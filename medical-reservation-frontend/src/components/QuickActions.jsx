@@ -1,34 +1,37 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const QuickActions = ({ onNavigate }) => {
+    const { t } = useTranslation();
+    
     const quickActions = [
         {
-            title: 'Book Appointment',
-            description: 'Schedule a new appointment with your doctor',
+            title: t('quickActions.bookAppointment'),
+            description: t('quickActions.bookAppointmentDesc'),
             icon: '📅',
             color: '#3b82f6',
             path: '/patient/doctors',
             gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
         },
         {
-            title: 'View Appointments',
-            description: 'Manage your upcoming and past appointments',
+            title: t('quickActions.viewAppointments'),
+            description: t('quickActions.viewAppointmentsDesc'),
             icon: '📋',
             color: '#10b981',
             path: '/patient/appointments',
             gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
         },
         {
-            title: 'Medical History',
-            description: 'Access your complete medical records',
+            title: t('quickActions.medicalHistory'),
+            description: t('quickActions.medicalHistoryDesc'),
             icon: '🏥',
             color: '#8b5cf6',
             path: '/patient/medical-history',
             gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
         },
         {
-            title: 'Notifications',
-            description: 'Stay updated with important alerts',
+            title: t('quickActions.notifications'),
+            description: t('quickActions.notificationsDesc'),
             icon: '🔔',
             color: '#f59e0b',
             path: '/patient/notifications',
@@ -129,7 +132,7 @@ const QuickActions = ({ onNavigate }) => {
                         position: 'relative',
                         zIndex: 1
                     }}>
-                        Get Started →
+                        {t('quickActions.getStarted')} →
                     </div>
                 </div>
             ))}

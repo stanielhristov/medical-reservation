@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import AppHeader from '../components/AppHeader';
@@ -8,6 +9,7 @@ import RecentActivity from '../components/RecentActivity';
 import LogoutModal from '../components/LogoutModal';
 
 export default function HomePageRefactored() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, loading, logout } = useAuth();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -32,60 +34,60 @@ export default function HomePageRefactored() {
 
     const actionCards = [
         {
-            title: 'Book Appointment',
-            description: 'Schedule a new medical appointment with available doctors and specialists. Choose your preferred time and doctor.',
+            title: t('dashboard.bookAppointmentTitle'),
+            description: t('dashboard.bookAppointmentDesc'),
             icon: '📅',
-            buttonText: 'Book Now',
+            buttonText: t('dashboard.bookNow'),
             buttonIcon: '🚀',
             color: '#22c55e',
             colorSecondary: '#16a34a',
             onClick: () => handleNavigation('/patient/appointments')
         },
         {
-            title: 'My Appointments',
-            description: 'View and manage your upcoming and past medical appointments. Track your healthcare journey.',
+            title: t('dashboard.myAppointments'),
+            description: t('dashboard.myAppointmentsDesc'),
             icon: '📋',
-            buttonText: 'View All',
+            buttonText: t('dashboard.viewAll'),
             buttonIcon: '📊',
             color: '#059669',
             colorSecondary: '#047857',
             onClick: () => handleNavigation('/patient/appointments')
         },
         {
-            title: 'Health Records',
-            description: 'Access your comprehensive medical history, test results, prescriptions, and health information.',
+            title: t('dashboard.healthRecordsTitle'),
+            description: t('dashboard.healthRecordsDesc'),
             icon: '📊',
-            buttonText: 'View Records',
+            buttonText: t('dashboard.viewRecords'),
             buttonIcon: '📋',
             color: '#15803d',
             colorSecondary: '#14532d',
             onClick: () => handleNavigation('/patient/medical-history')
         },
         {
-            title: 'Find Doctors',
-            description: 'Browse through our network of qualified healthcare professionals and specialists.',
+            title: t('dashboard.findDoctorsTitle'),
+            description: t('dashboard.findDoctorsDesc'),
             icon: '👨‍⚕️',
-            buttonText: 'Browse Doctors',
+            buttonText: t('dashboard.browseDoctors'),
             buttonIcon: '🔍',
             color: '#4ade80',
             colorSecondary: '#22c55e',
             onClick: () => handleNavigation('/patient/doctors')
         },
         {
-            title: 'Notifications',
-            description: 'Stay updated with appointment reminders, health alerts, and important medical updates.',
+            title: t('dashboard.notificationsTitle'),
+            description: t('dashboard.notificationsDesc'),
             icon: '🔔',
-            buttonText: 'View All',
+            buttonText: t('dashboard.viewAll'),
             buttonIcon: '📬',
             color: '#ef4444',
             colorSecondary: '#dc2626',
             onClick: () => handleNavigation('/patient/notifications')
         },
         {
-            title: 'Support Center',
-            description: 'Get help from our dedicated support team for any questions or technical assistance.',
+            title: t('dashboard.supportCenter'),
+            description: t('dashboard.supportCenterDesc'),
             icon: '💬',
-            buttonText: 'Get Help',
+            buttonText: t('dashboard.getHelp'),
             buttonIcon: '🆘',
             color: '#3b82f6',
             colorSecondary: '#2563eb',
@@ -272,7 +274,7 @@ export default function HomePageRefactored() {
                             margin: '0 0 1rem',
                             letterSpacing: '-0.025em'
                         }}>
-                            Quick Actions
+                            {t('dashboard.quickActions')}
                         </h2>
                         <p style={{
                             fontSize: '1.1rem',
@@ -282,7 +284,7 @@ export default function HomePageRefactored() {
                             marginLeft: 'auto',
                             marginRight: 'auto'
                         }}>
-                            Access your most important healthcare features with one click
+                            {t('dashboard.quickActionsDescription')}
                         </p>
                     </div>
 

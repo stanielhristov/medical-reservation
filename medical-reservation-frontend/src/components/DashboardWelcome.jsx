@@ -1,11 +1,14 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DashboardWelcome = ({ user }) => {
+    const { t } = useTranslation();
+    
     const getTimeOfDay = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good morning';
-        if (hour < 17) return 'Good afternoon';
-        return 'Good evening';
+        if (hour < 12) return t('dashboard.goodMorning');
+        if (hour < 17) return t('dashboard.goodAfternoon');
+        return t('dashboard.goodEvening');
     };
 
     return (
@@ -40,7 +43,7 @@ const DashboardWelcome = ({ user }) => {
                 margin: '0 0 1rem',
                 letterSpacing: '-0.025em'
             }}>
-                {getTimeOfDay()}, {user?.fullName || 'Patient'}!
+                {getTimeOfDay()}, {user?.fullName || t('dashboard.patient')}!
             </h1>
             
             <p style={{
@@ -52,7 +55,7 @@ const DashboardWelcome = ({ user }) => {
                 marginRight: 'auto',
                 lineHeight: '1.6'
             }}>
-                Welcome to your personal health dashboard. Stay on top of your appointments and health journey.
+                {t('dashboard.welcomeMessage')}
             </p>
         </section>
     );

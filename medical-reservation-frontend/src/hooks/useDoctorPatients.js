@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getDoctorPatients, getDoctorByUserId } from '../api/doctors';
 import { getPatientMedicalHistory } from '../api/medicalHistory';
 
 export const useDoctorPatients = () => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [patients, setPatients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,14 +30,14 @@ export const useDoctorPatients = () => {
                     
                     return {
                         id: patient.id,
-                        name: patient.fullName || 'Unknown Patient',
+                        name: patient.fullName || t('patients.unknownPatient'),
                         age: patient.age || null,
-                        gender: patient.gender || 'Not specified',
+                        gender: patient.gender || t('common.notProvided'),
                         phone: patient.phoneNumber || 'N/A',
                         email: patient.email || 'N/A',
-                        address: patient.address || 'Address not provided',
+                        address: patient.address || t('patients.addressNotProvided'),
                         bloodType: patient.bloodType || null,
-                        allergies: patient.allergies || ['None known'],
+                        allergies: patient.allergies || [t('patients.noneKnown')],
                         conditions: patient.conditions || [],
                         lastVisit: patient.lastVisit ? new Date(patient.lastVisit) : null,
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
@@ -66,14 +68,14 @@ export const useDoctorPatients = () => {
                     console.warn(`Failed to load medical history for patient ${patient.id}:`, recordError);
                     return {
                         id: patient.id,
-                        name: patient.fullName || 'Unknown Patient',
+                        name: patient.fullName || t('patients.unknownPatient'),
                         age: patient.age || null,
-                        gender: patient.gender || 'Not specified',
+                        gender: patient.gender || t('common.notProvided'),
                         phone: patient.phoneNumber || 'N/A',
                         email: patient.email || 'N/A',
-                        address: patient.address || 'Address not provided',
+                        address: patient.address || t('patients.addressNotProvided'),
                         bloodType: patient.bloodType || null,
-                        allergies: patient.allergies || ['None known'],
+                        allergies: patient.allergies || [t('patients.noneKnown')],
                         conditions: patient.conditions || [],
                         lastVisit: patient.lastVisit ? new Date(patient.lastVisit) : null,
                         nextAppointment: patient.nextAppointment ? new Date(patient.nextAppointment) : null,
@@ -97,7 +99,7 @@ export const useDoctorPatients = () => {
             setPatients(transformedPatients);
         } catch (error) {
             console.error('Error fetching patients:', error);
-            setError('Failed to load patients. Please try again.');
+            setError(t('errors.unableToLoadPatients'));
             setPatients([]);
         } finally {
             setLoading(false);
@@ -158,10 +160,10 @@ export const useDoctorPatients = () => {
     }, [fetchPatients]);
 
     const filters = [
-        { id: 'all', name: 'All Patients', icon: '👥', color: '#059669' },
-        { id: 'recent', name: 'Recent Visits', icon: '⏰', color: '#3b82f6' },
-        { id: 'chronic', name: 'Chronic Conditions', icon: '🏥', color: '#dc2626' },
-        { id: 'followup', name: 'Follow-up Required', icon: '📋', color: '#f59e0b' }
+        { id: 'all', name: t('patients.allPatients'), icon: '👥', color: '#059669' },
+        { id: 'recent', name: t('patients.recentVisits'), icon: '⏰', color: '#3b82f6' },
+        { id: 'chronic', name: t('patients.chronicConditions'), icon: '🏥', color: '#dc2626' },
+        { id: 'followup', name: t('patients.followupRequired'), icon: '📋', color: '#f59e0b' }
     ];
 
     return {

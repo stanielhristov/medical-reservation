@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { translateSpecialization } from '../utils/specializationUtils';
 
 const CancelAppointmentModal = ({ 
     isOpen, 
@@ -127,7 +128,7 @@ const CancelAppointmentModal = ({
                         </div>
                         <div>
                             <span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: '600' }}>Specialization: </span>
-                            <span style={{ color: '#374151' }}>{appointment.specialization}</span>
+                            <span style={{ color: '#374151' }}>{translateSpecialization(appointment.specialization)}</span>
                         </div>
                         <div>
                             <span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: '600' }}>Date & Time: </span>

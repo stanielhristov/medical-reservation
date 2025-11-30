@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AdminStatisticsCards = ({ statistics, onNavigation }) => {
+    const { t } = useTranslation();
+    
     const statCards = [
         {
-            title: 'Total Users',
+            title: t('admin.totalUsers'),
             value: statistics.totalUsers,
             icon: '👥',
             color: '#10b981',
@@ -12,7 +15,7 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
             path: '/admin/users'
         },
         {
-            title: 'Patients',
+            title: t('patients.title'),
             value: statistics.totalPatients,
             icon: '🏥',
             color: '#3b82f6',
@@ -21,7 +24,7 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
             path: '/admin/users?filter=patient'
         },
         {
-            title: 'Doctors',
+            title: t('doctors.title'),
             value: statistics.totalDoctors,
             icon: '👩‍⚕️',
             color: '#8b5cf6',
@@ -30,7 +33,7 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
             path: '/admin/doctors'
         },
         {
-            title: 'Appointments',
+            title: t('appointments.title'),
             value: statistics.totalAppointments,
             icon: '📅',
             color: '#f59e0b',
@@ -113,7 +116,7 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
                                 fontWeight: '600',
                                 border: `1px solid ${card.borderColor}`
                             }}>
-                                Live Data
+                                {t('common.liveData')}
                             </div>
                         </div>
                         
@@ -146,7 +149,7 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
                             fontSize: '0.9rem',
                             fontWeight: '600'
                         }}>
-                            <span>View Details</span>
+                            <span>{t('common.view')} {t('common.details')}</span>
                             <span style={{ fontSize: '0.8rem' }}>→</span>
                         </div>
                     </div>

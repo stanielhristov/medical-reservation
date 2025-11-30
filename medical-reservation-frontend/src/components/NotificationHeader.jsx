@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const NotificationHeader = ({ isDoctor = false }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -41,7 +43,7 @@ const NotificationHeader = ({ isDoctor = false }) => {
                 margin: '0 0 1rem',
                 letterSpacing: '-0.025em'
             }}>
-                Notifications Center
+                {t('notifications.notificationsCenter')}
             </h1>
             
             <p style={{
@@ -53,9 +55,9 @@ const NotificationHeader = ({ isDoctor = false }) => {
                 marginRight: 'auto',
                 lineHeight: '1.6'
             }}>
-{isDoctor 
-                    ? "Stay informed about patient appointments, schedule changes, and medical practice updates"
-                    : "Stay updated with appointment reminders, health updates, and important medical information"
+                {isDoctor 
+                    ? t('notifications.doctorDescription')
+                    : t('notifications.patientDescription')
                 }
             </p>
         </section>

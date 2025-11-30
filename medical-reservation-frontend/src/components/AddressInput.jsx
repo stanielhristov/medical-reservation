@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { COUNTRIES, COUNTRY_MAP } from '../utils/countryData';
 
 const AddressInput = ({ 
@@ -9,6 +10,7 @@ const AddressInput = ({
     countryCode, onCountryChange, 
     disabled 
 }) => {
+    const { t } = useTranslation();
     const selectedCountry = useMemo(() => 
         COUNTRY_MAP.get(countryCode) || COUNTRIES[0], 
         [countryCode]
@@ -27,7 +29,7 @@ const AddressInput = ({
                 color: '#374151',
                 fontSize: '0.9rem'
             }}>
-                Address
+                {t('common.address')}
             </label>
             
             <div style={{ marginBottom: '0.75rem' }}>
@@ -48,7 +50,7 @@ const AddressInput = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder="Street address"
+                    placeholder={t('auth.street')}
                 />
             </div>
 
@@ -70,7 +72,7 @@ const AddressInput = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder="City"
+                    placeholder={t('auth.city')}
                 />
                 <input
                     type="text"
@@ -89,7 +91,7 @@ const AddressInput = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder="State/Province"
+                    placeholder={t('auth.stateProvince')}
                 />
             </div>
 
@@ -111,7 +113,7 @@ const AddressInput = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder="Postal/ZIP Code"
+                    placeholder={t('auth.postalCode')}
                 />
                 <div style={{ flex: 2, position: 'relative' }}>
                     <select

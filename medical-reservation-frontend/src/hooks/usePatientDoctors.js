@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getActiveDoctors, getAvailableSpecializations } from '../api/doctors';
+import { translateSpecializations, translateSpecialization } from '../utils/specializationUtils';
+import i18n from '../i18n/config';
+import { useTranslation } from 'react-i18next';
 import { getDoctorRatingStats, getMyRatingForDoctor, createRating, updateRating } from '../api/ratings';
 import { getDoctorScheduleWithStatus } from '../api/schedule';
 
@@ -54,12 +57,14 @@ const getNextAvailableSlot = async (doctorId) => {
 };
 
 export const usePatientDoctors = (user) => {
+    const { i18n: i18nInstance } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSpecialization, setSelectedSpecialization] = useState('');
     const [doctors, setDoctors] = useState([]);
     const [specializations, setSpecializations] = useState(['All Specializations']);
+    const [englishSpecializations, setEnglishSpecializations] = useState(['All Specializations']);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [showRatingModal, setShowRatingModal] = useState(false);
@@ -172,10 +177,18 @@ export const usePatientDoctors = (user) => {
     const fetchSpecializations = useCallback(async () => {
         try {
             const availableSpecializations = await getAvailableSpecializations();
-            setSpecializations(['All Specializations', ...availableSpecializations]);
+            const allEnglishSpecializations = ['All Specializations', ...availableSpecializations];
+            setEnglishSpecializations(allEnglishSpecializations);
+            // Translate them for display
+            const translated = allEnglishSpecializations.map(spec => 
+                spec === 'All Specializations' 
+                    ? i18n.t('specializations.allSpecializations') 
+                    : translateSpecialization(spec)
+            );
+            setSpecializations(translated);
         } catch (error) {
             console.error('Error fetching specializations:', error);
-            setSpecializations([
+            const fallbackEnglish = [
                 'All Specializations',
                 'Cardiology',
                 'Dermatology', 
@@ -184,16 +197,36 @@ export const usePatientDoctors = (user) => {
                 'Orthopedics',
                 'Pediatrics',
                 'Psychiatry'
-            ]);
+            ];
+            setEnglishSpecializations(fallbackEnglish);
+            const translated = fallbackEnglish.map(spec => 
+                spec === 'All Specializations' 
+                    ? i18n.t('specializations.allSpecializations') 
+                    : translateSpecialization(spec)
+            );
+            setSpecializations(translated);
         }
     }, []);
+    
+    // Update specializations when language changes
+    useEffect(() => {
+        if (englishSpecializations.length > 0) {
+            const translated = englishSpecializations.map(spec => 
+                spec === 'All Specializations' 
+                    ? i18n.t('specializations.allSpecializations') 
+                    : translateSpecialization(spec)
+            );
+            setSpecializations(translated);
+        }
+    }, [i18nInstance.language, englishSpecializations]);
 
     const filteredDoctors = useMemo(() => {
         return doctors.filter(doctor => {
             const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesSpecialization = selectedSpecialization === '' ||
-                                         selectedSpecialization === 'All Specializations' ||
+            // selectedSpecialization contains the English value from the dropdown
+            const matchesSpecialization = !selectedSpecialization ||
+                                         selectedSpecialization === '' ||
                                          doctor.specialization === selectedSpecialization;
             return matchesSearch && matchesSpecialization;
         });
@@ -268,6 +301,7 @@ export const usePatientDoctors = (user) => {
         setSelectedSpecialization,
         doctors,
         specializations,
+        englishSpecializations,
         showBookingModal,
         setShowBookingModal,
         selectedDoctor,

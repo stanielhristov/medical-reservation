@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmationPopup = ({ isOpen, onClose, title, message, type = 'success', autoClose = true }) => {
+    const { t } = useTranslation();
     useEffect(() => {
         if (isOpen && autoClose && type === 'success') {
             const timer = setTimeout(() => {
@@ -167,7 +169,7 @@ const ConfirmationPopup = ({ isOpen, onClose, title, message, type = 'success', 
                             e.target.style.boxShadow = `0 4px 12px ${getBorderColor()}30`;
                         }}
                     >
-                        {type === 'success' && autoClose ? 'Awesome!' : 'Got it!'}
+                        {type === 'success' && autoClose ? t('common.awesome') : t('common.gotIt')}
                     </button>
                     
                     {type === 'success' && autoClose && (

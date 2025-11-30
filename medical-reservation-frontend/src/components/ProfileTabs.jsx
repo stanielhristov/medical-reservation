@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
+    const { t } = useTranslation();
     return (
         <div style={{
             display: 'flex',
@@ -65,7 +67,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                         borderRadius: '50%'
                     }} />
                 </div>
-                Profile Info
+                {t('profile.profileInfo')}
             </button>
             <button
                 onClick={() => setActiveTab('password')}
@@ -113,7 +115,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                         borderRadius: '2px'
                     }} />
                 </div>
-                Change Password
+                {t('profile.changePassword')}
             </button>
             {isPatient && (
                 <button
@@ -178,7 +180,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                             background: activeTab === 'medical' ? 'white' : '#6b7280'
                         }} />
                     </div>
-                    Medical Info
+                    {t('profile.medicalInfo')}
                 </button>
             )}
             {isDoctor && (
@@ -245,7 +247,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                             borderRadius: '50%'
                         }} />
                     </div>
-                    Doctor Info
+                    {t('profile.doctorInfo')}
                 </button>
             )}
             <button
@@ -329,7 +331,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isDoctor, isPatient }) => {
                         borderRadius: '1px'
                     }} />
                 </div>
-                Account Settings
+                {t('profile.accountSettings')}
             </button>
         </div>
     );

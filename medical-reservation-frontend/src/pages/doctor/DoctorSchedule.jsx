@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { getDoctorByUserId } from '../../api/doctors';
 import { useSchedule } from '../../hooks/useSchedule';
@@ -10,6 +11,7 @@ import ScheduleModal from '../../components/ScheduleModal';
 import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
 
 const DoctorScheduleRefactored = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [selectedView, setSelectedView] = useState('week');
@@ -32,10 +34,10 @@ const DoctorScheduleRefactored = () => {
     } = useSchedule(doctorId);
 
     const views = [
-        { id: 'week', name: 'Week View', icon: '📅', color: '#15803d' },
-        { id: 'month', name: 'Month View', icon: '🗓️', color: '#059669' },
-        { id: 'upcoming', name: 'Upcoming Slots', icon: '⏰', color: '#0d9488' },
-        { id: 'available', name: 'Available Only', icon: '✅', color: '#047857' }
+        { id: 'week', name: t('schedule.weekView'), icon: '📅', color: '#15803d' },
+        { id: 'month', name: t('schedule.monthView'), icon: '🗓️', color: '#059669' },
+        { id: 'upcoming', name: t('schedule.upcomingSlots'), icon: '⏰', color: '#0d9488' },
+        { id: 'available', name: t('schedule.availableOnly'), icon: '✅', color: '#047857' }
     ];
 
     useEffect(() => {
@@ -223,17 +225,17 @@ const DoctorScheduleRefactored = () => {
                 }}
                 onSave={handleSaveSchedule}
                 schedule={null}
-                title={'Add New Time Slot'}
+                title={t('schedule.addNewTimeSlot')}
             />
 
             <DeleteConfirmationDialog
                 isOpen={deleteConfirmation.isOpen}
                 onConfirm={handleDeleteConfirm}
                 onCancel={handleDeleteCancel}
-                title="Delete Schedule"
-                message="Are you sure you want to delete this schedule? This action cannot be undone."
-                confirmText="Yes"
-                cancelText="No"
+                title={t('schedule.deleteSchedule')}
+                message={t('schedule.deleteScheduleConfirm')}
+                confirmText={t('schedule.yes')}
+                cancelText={t('schedule.no')}
             />
 
             <style jsx>{`

@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
 import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
 
 const PatientCard = ({ patient, onClick, isSelected = false }) => {
+    const { t, i18n } = useTranslation();
     const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(date).toLocaleDateString(locale, {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
@@ -21,10 +24,10 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
 
     const getStatusText = (status) => {
         switch (status) {
-            case 'active': return 'Active';
-            case 'chronic': return 'Chronic';
-            case 'followup': return 'Follow-up';
-            default: return 'Unknown';
+            case 'active': return t('patients.active');
+            case 'chronic': return t('patients.chronic');
+            case 'followup': return t('patients.followup');
+            default: return t('patients.unknown');
         }
     };
 
@@ -113,7 +116,10 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     fontSize: '0.85rem',
                                     color: '#6b7280'
                                 }}>
-                                    {patient.age} years • {patient.gender}
+                                    {patient.age} {i18n.language === 'bg' ? 'години' : 'years'} • {patient.gender === 'MALE' ? t('common.male') : 
+                                                                                                patient.gender === 'FEMALE' ? t('common.female') : 
+                                                                                                patient.gender === 'Not specified' ? t('common.notProvided') : 
+                                                                                                patient.gender}
                                 </span>
                                 <span style={{
                                     padding: '0.125rem 0.5rem',
@@ -136,10 +142,10 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                     color: '#6b7280'
                 }}>
                     <div style={{ marginBottom: '0.25rem' }}>
-                        Total Visits: {patient.visitCount}
+                        {t('patients.totalVisits')}: {patient.visitCount}
                     </div>
                     <div>
-                        Blood Type: {getBloodTypeDisplay(patient.bloodType)}
+                        {t('patients.bloodType')}: {getBloodTypeDisplay(patient.bloodType)}
                     </div>
                 </div>
             </div>
@@ -159,7 +165,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         letterSpacing: '0.05em',
                         marginBottom: '0.25rem'
                     }}>
-                        Last Visit
+                        {t('patients.lastVisit')}
                     </div>
                     <div style={{
                         fontSize: '0.85rem',
@@ -174,12 +180,12 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     fontSize: '0.75rem',
                                     marginLeft: '0.25rem'
                                 }}>
-                                    ({daysSinceLastVisit} days ago)
+                                    ({t('patients.daysAgo', { days: daysSinceLastVisit })})
                                 </span>
                             </>
                         ) : (
                             <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                                No visits yet
+                                {t('patients.noVisitsYet')}
                             </span>
                         )}
                     </div>
@@ -194,7 +200,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         letterSpacing: '0.05em',
                         marginBottom: '0.25rem'
                     }}>
-                        Next Appointment
+                        {t('patients.nextAppointment')}
                     </div>
                     <div style={{
                         fontSize: '0.85rem',
@@ -210,19 +216,19 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     marginLeft: '0.25rem',
                                     fontWeight: daysUntilNextAppointment <= 7 ? '600' : '400'
                                 }}>
-                                    ({daysUntilNextAppointment > 0 ? `in ${daysUntilNextAppointment} days` : 'overdue'})
+                                    ({daysUntilNextAppointment > 0 ? t('patients.inDays', { days: daysUntilNextAppointment }) : t('patients.overdue')})
                                 </span>
                             </>
                         ) : (
                             <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                                No appointment scheduled
+                                {t('patients.noAppointmentScheduled')}
                             </span>
                         )}
                     </div>
                 </div>
             </div>
 
-            {patient.conditions && patient.conditions.length > 0 && patient.conditions[0] !== 'None' && (
+            {patient.conditions && patient.conditions.length > 0 && patient.conditions[0] !== 'None' && patient.conditions[0] !== t('patients.nothing') && (
                 <div style={{ marginBottom: '1rem' }}>
                     <div style={{
                         fontSize: '0.7rem',
@@ -232,7 +238,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         letterSpacing: '0.05em',
                         marginBottom: '0.5rem'
                     }}>
-                        Conditions
+                        {t('patients.conditions')}
                     </div>
                     <div style={{
                         display: 'flex',
@@ -251,7 +257,9 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     color: '#dc2626'
                                 }}
                             >
-                                {condition}
+                                {condition === 'Nothing' ? t('patients.nothing') : 
+                                 condition === 'None' ? t('patients.nothing') : 
+                                 condition}
                             </span>
                         ))}
                         {patient.conditions.length > 3 && (
@@ -263,14 +271,14 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                 background: '#6b728020',
                                 color: '#6b7280'
                             }}>
-                                +{patient.conditions.length - 3} more
+                                +{patient.conditions.length - 3} {t('patients.more')}
                             </span>
                         )}
                     </div>
                 </div>
             )}
 
-            {patient.allergies && patient.allergies.length > 0 && patient.allergies[0] !== 'None known' && (
+            {patient.allergies && patient.allergies.length > 0 && patient.allergies[0] !== 'None known' && patient.allergies[0] !== t('patients.noneKnown') && patient.allergies[0] !== t('patients.noAllergies') && (
                 <div>
                     <div style={{
                         fontSize: '0.7rem',
@@ -280,7 +288,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                         letterSpacing: '0.05em',
                         marginBottom: '0.5rem'
                     }}>
-                        Allergies
+                        {t('patients.allergies')}
                     </div>
                     <div style={{
                         display: 'flex',
@@ -299,7 +307,9 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     color: '#f59e0b'
                                 }}
                             >
-                                {allergy}
+                                {allergy === 'No allergies' ? t('patients.noAllergies') : 
+                                 allergy === 'None known' ? t('patients.noneKnown') : 
+                                 allergy}
                             </span>
                         ))}
                         {patient.allergies.length > 2 && (
@@ -311,7 +321,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                 background: '#6b728020',
                                 color: '#6b7280'
                             }}>
-                                +{patient.allergies.length - 2} more
+                                +{patient.allergies.length - 2} {t('patients.more')}
                             </span>
                         )}
                     </div>

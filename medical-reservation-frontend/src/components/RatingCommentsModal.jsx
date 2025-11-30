@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 import { getDoctorRatings } from '../api/ratings';
 import StarRating from './StarRating';
 
@@ -7,6 +9,7 @@ const RatingCommentsModal = ({
     onClose, 
     doctor 
 }) => {
+    const { t } = useTranslation();
     const [ratings, setRatings] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -78,7 +81,7 @@ const RatingCommentsModal = ({
                         color: '#374151',
                         margin: 0
                     }}>
-                        Patient Reviews
+                        {t('doctors.patientReviews')}
                     </h2>
                     <button
                         onClick={handleClose}
@@ -124,7 +127,7 @@ const RatingCommentsModal = ({
                             fontWeight: '500',
                             margin: '0 0 0.25rem'
                         }}>
-                            {doctor.specialization}
+                            {translateSpecialization(doctor.specialization)}
                         </p>
                         <div style={{
                             display: 'flex',
@@ -160,7 +163,7 @@ const RatingCommentsModal = ({
                             animation: 'spin 1s linear infinite',
                             marginRight: '1rem'
                         }} />
-                        Loading reviews...
+                        {t('doctors.loadingReviews')}
                     </div>
                 ) : ratings.length > 0 ? (
                     <div style={{
@@ -190,7 +193,7 @@ const RatingCommentsModal = ({
                                             color: '#374151',
                                             marginBottom: '0.25rem'
                                         }}>
-                                            {rating.userFullName || 'Anonymous Patient'}
+                                            {rating.userFullName || t('doctors.anonymousPatient')}
                                         </div>
                                         <StarRating
                                             rating={rating.rating}
@@ -203,7 +206,7 @@ const RatingCommentsModal = ({
                                         fontSize: '0.8rem',
                                         color: '#6b7280'
                                     }}>
-                                        {rating.createdAt ? new Date(rating.createdAt).toLocaleDateString() : 'Recent'}
+                                        {rating.createdAt ? new Date(rating.createdAt).toLocaleDateString() : t('doctors.recent')}
                                     </div>
                                 </div>
                                 
@@ -225,7 +228,7 @@ const RatingCommentsModal = ({
                                         margin: 0,
                                         fontStyle: 'italic'
                                     }}>
-                                        No comment provided
+                                        {t('doctors.noCommentProvided')}
                                     </p>
                                 )}
                             </div>
@@ -244,10 +247,10 @@ const RatingCommentsModal = ({
                             color: '#374151',
                             margin: '0 0 0.5rem'
                         }}>
-                            No Reviews Yet
+                            {t('doctors.noReviewsYet')}
                         </h3>
                         <p style={{ margin: 0 }}>
-                            Be the first to share your experience with this doctor
+                            {t('doctors.beFirstToReview')}
                         </p>
                     </div>
                 )}

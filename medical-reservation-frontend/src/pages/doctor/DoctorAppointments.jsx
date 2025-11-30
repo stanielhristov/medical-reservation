@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useDoctorAppointments } from '../../hooks/useDoctorAppointments';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -7,6 +8,7 @@ import DoctorAppointmentTabs from '../../components/DoctorAppointmentTabs';
 import DoctorAppointmentCard from '../../components/DoctorAppointmentCard';
 
 const DoctorAppointments = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const {
         loading,
@@ -28,7 +30,7 @@ const DoctorAppointments = () => {
     } = useDoctorAppointments();
 
     if (loading) {
-        return <LoadingSpinner message="Loading appointments..." />;
+        return <LoadingSpinner message={t('loading.loadingAppointments')} />;
     }
 
     return (
@@ -94,7 +96,7 @@ const DoctorAppointments = () => {
                                 margin: '0 0 0.5rem',
                                 color: '#374151'
                             }}>
-                                No appointments found
+                                {t('appointments.noAppointments')}
                             </h3>
                             <p style={{
                                 fontSize: '1rem',
@@ -104,7 +106,7 @@ const DoctorAppointments = () => {
                                 marginRight: 'auto',
                                 lineHeight: '1.5'
                             }}>
-                                There are no appointments in the selected category. Check other views or wait for new appointments to be scheduled.
+                                {t('appointments.noAppointmentsInCategory')}
                             </p>
                         </div>
                     ) : (
@@ -217,7 +219,7 @@ const DoctorAppointments = () => {
                                         margin: 0,
                                         fontWeight: '500'
                                     }}>
-                                        {selectedAppointment.type} • Age: {selectedAppointment.patientAge || 'Not provided'}
+                                        {selectedAppointment.type} • {t('common.age')}: {selectedAppointment.patientAge || t('common.notProvided')}
                                     </p>
                                 </div>
                             </div>
@@ -243,22 +245,22 @@ const DoctorAppointments = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        📞 Contact Information
+                                        📞 {t('common.contactInformation')}
                                     </h4>
                                     <div style={{ marginBottom: '0.75rem' }}>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Phone: </span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.phone')}: </span>
                                         <span style={{ 
-                                            color: selectedAppointment.patientPhone === 'Not provided' ? '#9ca3af' : '#374151',
-                                            fontStyle: selectedAppointment.patientPhone === 'Not provided' ? 'italic' : 'normal'
+                                            color: selectedAppointment.patientPhone === t('common.notProvided') || selectedAppointment.patientPhone === 'Not provided' ? '#9ca3af' : '#374151',
+                                            fontStyle: selectedAppointment.patientPhone === t('common.notProvided') || selectedAppointment.patientPhone === 'Not provided' ? 'italic' : 'normal'
                                         }}>
                                             {selectedAppointment.patientPhone}
                                         </span>
                                     </div>
                                     <div>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Email: </span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.email')}: </span>
                                         <span style={{ 
-                                            color: selectedAppointment.patientEmail === 'Not provided' ? '#9ca3af' : '#374151',
-                                            fontStyle: selectedAppointment.patientEmail === 'Not provided' ? 'italic' : 'normal'
+                                            color: selectedAppointment.patientEmail === t('common.notProvided') || selectedAppointment.patientEmail === 'Not provided' ? '#9ca3af' : '#374151',
+                                            fontStyle: selectedAppointment.patientEmail === t('common.notProvided') || selectedAppointment.patientEmail === 'Not provided' ? 'italic' : 'normal'
                                         }}>
                                             {selectedAppointment.patientEmail}
                                         </span>
@@ -280,18 +282,18 @@ const DoctorAppointments = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        🕐 Appointment Details
+                                        🕐 {t('appointments.appointmentDetails')}
                                     </h4>
                                     <div style={{ marginBottom: '0.75rem' }}>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Date: </span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.date')}: </span>
                                         <span style={{ color: '#374151' }}>{formatDate(selectedAppointment.appointmentDate)}</span>
                                     </div>
                                     <div style={{ marginBottom: '0.75rem' }}>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Time: </span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.time')}: </span>
                                         <span style={{ color: '#3b82f6', fontWeight: '600' }}>{formatTime(selectedAppointment.appointmentDate)}</span>
                                     </div>
                                     <div>
-                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>Duration: </span>
+                                        <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('appointments.duration')}: </span>
                                         <span style={{ color: '#374151' }}>{selectedAppointment.duration}</span>
                                     </div>
                                 </div>
@@ -314,7 +316,7 @@ const DoctorAppointments = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        📋 Medical History
+                                        📋 {t('patients.medicalHistory')}
                                     </h4>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                                         {selectedAppointment.medicalHistory.map((condition, index) => (
@@ -352,18 +354,18 @@ const DoctorAppointments = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '0.5rem'
-                                }}>
-                                    📝 Notes & Reason
+                                    }}>
+                                    📝 {t('appointments.notesAndReason')}
                                 </h4>
                                 <div style={{ marginBottom: '1rem' }}>
                                     <p style={{ color: '#374151', margin: 0, lineHeight: '1.5' }}>
-                                        <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>Reason for Visit:</span> {selectedAppointment.reason || 'No reason provided'}
+                                        <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>{t('appointments.reasonForVisit')}:</span> {selectedAppointment.reason || t('appointments.noReasonProvided')}
                                     </p>
                                 </div>
                                 {selectedAppointment.additionalNotes && (
                                     <div>
                                         <p style={{ color: '#374151', margin: 0, lineHeight: '1.5' }}>
-                                            <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>Additional Notes:</span> {selectedAppointment.additionalNotes}
+                                            <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>{t('appointments.additionalNotes')}:</span> {selectedAppointment.additionalNotes}
                                         </p>
                                     </div>
                                 )}
@@ -399,7 +401,7 @@ const DoctorAppointments = () => {
                                         e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
                                     }}
                                 >
-                                    📝 Add Notes
+                                    📝 {t('appointments.addNotes')}
                                 </button>
                                 <button
                                     onClick={() => setSelectedAppointment(null)}
@@ -423,7 +425,7 @@ const DoctorAppointments = () => {
                                         e.target.style.transform = 'translateY(0)';
                                     }}
                                 >
-                                    Close
+                                    {t('common.close')}
                                 </button>
                             </div>
                         </div>
@@ -483,7 +485,7 @@ const DoctorAppointments = () => {
                                 alignItems: 'center',
                                 gap: '0.75rem'
                             }}>
-                                📝 Add Notes
+                                📝 {t('appointments.addNotes')}
                             </h3>
 
                             <p style={{
@@ -491,13 +493,13 @@ const DoctorAppointments = () => {
                                 margin: '0 0 1.5rem',
                                 lineHeight: '1.5'
                             }}>
-                                Add clinical notes, observations, or follow-up instructions for {selectedAppointment?.patientName}.
+                                {t('appointments.addNotesDescription', { patientName: selectedAppointment?.patientName })}
                             </p>
 
                             <textarea
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
-                                placeholder="Enter your notes here..."
+                                placeholder={t('appointments.enterNotesPlaceholder')}
                                 style={{
                                     width: '100%',
                                     minHeight: '120px',
@@ -531,7 +533,7 @@ const DoctorAppointments = () => {
                                         transition: 'all 0.3s ease'
                                     }}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -555,7 +557,7 @@ const DoctorAppointments = () => {
                                         boxShadow: notes.trim() ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
                                     }}
                                 >
-                                    Save Notes
+                                    {t('appointments.saveNotes')}
                                 </button>
                             </div>
                         </div>

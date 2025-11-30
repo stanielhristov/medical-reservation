@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 import StarRating from './StarRating';
 
 const RatingModal = ({ 
@@ -9,6 +11,7 @@ const RatingModal = ({
     onSubmit,
     loading = false 
 }) => {
+    const { t } = useTranslation();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
 
@@ -25,7 +28,7 @@ const RatingModal = ({
     const handleSubmit = (e) => {
         e.preventDefault();
         if (rating === 0) {
-            alert('Please select a rating');
+            alert(t('doctors.pleaseSelectRating'));
             return;
         }
         
@@ -80,7 +83,7 @@ const RatingModal = ({
                         color: '#374151',
                         margin: 0
                     }}>
-                        {existingRating ? 'Update Rating' : 'Rate Doctor'}
+                        {existingRating ? t('doctors.updateRating') : t('doctors.rateDoctor')}
                     </h2>
                     <button
                         onClick={handleClose}
@@ -128,7 +131,7 @@ const RatingModal = ({
                             fontWeight: '500',
                             margin: 0
                         }}>
-                            {doctor.specialization}
+                            {translateSpecialization(doctor.specialization)}
                         </p>
                     </div>
                 </div>
@@ -143,7 +146,7 @@ const RatingModal = ({
                             color: '#374151',
                             marginBottom: '0.75rem'
                         }}>
-                            Your Rating *
+                            {t('doctors.yourRating')} *
                         </label>
                         <div style={{
                             display: 'flex',
@@ -170,11 +173,11 @@ const RatingModal = ({
                                 fontSize: '0.9rem',
                                 fontWeight: '500'
                             }}>
-                                {rating === 1 && `${rating} Star - Poor`}
-                                {rating === 2 && `${rating} Stars - Fair`}
-                                {rating === 3 && `${rating} Stars - Good`}
-                                {rating === 4 && `${rating} Stars - Very Good`}
-                                {rating === 5 && `${rating} Stars - Excellent`}
+                                {rating === 1 && `${rating} ${t('doctors.star')} - ${t('doctors.ratingPoor')}`}
+                                {rating === 2 && `${rating} ${t('doctors.stars')} - ${t('doctors.ratingFair')}`}
+                                {rating === 3 && `${rating} ${t('doctors.stars')} - ${t('doctors.ratingGood')}`}
+                                {rating === 4 && `${rating} ${t('doctors.stars')} - ${t('doctors.ratingVeryGood')}`}
+                                {rating === 5 && `${rating} ${t('doctors.stars')} - ${t('doctors.ratingExcellent')}`}
                             </p>
                         )}
                     </div>
@@ -188,12 +191,12 @@ const RatingModal = ({
                             color: '#374151',
                             marginBottom: '0.75rem'
                         }}>
-                            Comment (Optional)
+                            {t('doctors.commentOptional')}
                         </label>
                         <textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            placeholder="Share your experience with this doctor..."
+                            placeholder={t('doctors.shareExperience')}
                             disabled={loading}
                             rows={4}
                             style={{
@@ -241,7 +244,7 @@ const RatingModal = ({
                                 transition: 'all 0.2s ease'
                             }}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -258,7 +261,7 @@ const RatingModal = ({
                                 transition: 'all 0.2s ease'
                             }}
                         >
-                            {loading ? 'Submitting...' : existingRating ? 'Update Rating' : 'Submit Rating'}
+                            {loading ? t('doctors.submitting') : existingRating ? t('doctors.updateRating') : t('doctors.submitRating')}
                         </button>
                     </div>
                 </form>

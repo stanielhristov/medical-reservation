@@ -1,10 +1,14 @@
+import { useTranslation } from 'react-i18next';
+
 const ScheduleModal = ({ 
     isOpen, 
     onClose, 
     onSave, 
     schedule = null, 
-    title = "Add New Time Slot" 
+    title 
 }) => {
+    const { t } = useTranslation();
+    const modalTitle = title || t('schedule.addNewTimeSlot');
     const isEditing = !!schedule;
     
     if (!isOpen) return null;
@@ -25,12 +29,12 @@ const ScheduleModal = ({
         const startDateTime = new Date(startTime);
         
         if (startDateTime < now) {
-            alert('Cannot create slots for past dates or times. Please select a future date and time.');
+            alert(t('schedule.cannotCreatePastSlots'));
             return;
         }
 
         if (new Date(endTime) <= startDateTime) {
-            alert('End time must be after start time.');
+            alert(t('schedule.endTimeAfterStart'));
             return;
         }
 
@@ -122,12 +126,12 @@ const ScheduleModal = ({
                             color: '#374151',
                             margin: '0 0 0.5rem'
                         }}>
-                            {title}
+                            {modalTitle}
                         </h3>
                         <p style={{ color: '#6b7280', margin: 0 }}>
                             {isEditing 
-                                ? 'Update the time slot details'
-                                : 'Create a new available time slot for patient appointments'
+                                ? t('schedule.updateTimeSlotDetails')
+                                : t('schedule.createNewTimeSlot')
                             }
                         </p>
                     </div>
@@ -147,7 +151,7 @@ const ScheduleModal = ({
                                     color: '#374151',
                                     fontSize: '0.9rem'
                                 }}>
-                                    Start Time <span style={{ color: '#dc2626' }}>*</span>
+                                    {t('schedule.startTime')} <span style={{ color: '#dc2626' }}>*</span>
                                 </label>
                                 <input
                                     type="datetime-local"
@@ -184,7 +188,7 @@ const ScheduleModal = ({
                                     color: '#374151',
                                     fontSize: '0.9rem'
                                 }}>
-                                    End Time <span style={{ color: '#dc2626' }}>*</span>
+                                    {t('schedule.endTime')} <span style={{ color: '#dc2626' }}>*</span>
                                 </label>
                                 <input
                                     type="datetime-local"
@@ -222,7 +226,7 @@ const ScheduleModal = ({
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                Availability Status
+                                {t('schedule.availability')}
                             </label>
                             <div style={{ display: 'flex', gap: '1rem' }}>
                                 <label style={{
@@ -244,7 +248,7 @@ const ScheduleModal = ({
                                         defaultChecked={schedule?.available !== false}
                                         style={{ margin: 0 }}
                                     />
-                                    <span>✅ Available</span>
+                                    <span>✅ {t('schedule.available')}</span>
                                 </label>
                                 
                                 <label style={{
@@ -266,7 +270,7 @@ const ScheduleModal = ({
                                         defaultChecked={schedule?.available === false}
                                         style={{ margin: 0 }}
                                     />
-                                    <span>❌ Unavailable</span>
+                                    <span>❌ {t('schedule.unavailable')}</span>
                                 </label>
                             </div>
                         </div>
@@ -297,7 +301,7 @@ const ScheduleModal = ({
                                     e.target.style.background = 'rgba(107, 114, 128, 0.1)';
                                 }}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             
                             <button
@@ -323,7 +327,7 @@ const ScheduleModal = ({
                                     e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.3)';
                                 }}
                             >
-                                {isEditing ? 'Update Schedule' : 'Create Schedule'}
+                                {isEditing ? t('schedule.updateSchedule') : t('schedule.createSchedule')}
                             </button>
                         </div>
                     </form>

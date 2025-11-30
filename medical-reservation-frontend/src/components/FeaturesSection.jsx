@@ -1,41 +1,44 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const FeaturesSection = () => {
+    const { t } = useTranslation();
+    
     const features = [
         {
             icon: '🩺',
-            title: 'Expert Medical Care',
-            description: 'Connect with qualified doctors and healthcare professionals for comprehensive medical care.',
+            title: t('landing.feature1Title'),
+            description: t('landing.feature1Desc'),
             gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
         },
         {
             icon: '📅',
-            title: 'Easy Appointment Booking',
-            description: 'Schedule appointments with your preferred doctors at your convenience. No more waiting in long queues.',
+            title: t('landing.feature2Title'),
+            description: t('landing.feature2Desc'),
             gradient: 'linear-gradient(135deg, #059669 0%, #047857 100%)'
         },
         {
             icon: '📱',
-            title: 'Digital Health Records',
-            description: 'Access your complete medical history, prescriptions, and test results anytime, anywhere.',
+            title: t('landing.feature3Title'),
+            description: t('landing.feature3Desc'),
             gradient: 'linear-gradient(135deg, #15803d 0%, #14532d 100%)'
         },
         {
             icon: '🔔',
-            title: 'Smart Notifications',
-            description: 'Get reminders for appointments, medication schedules, and follow-up visits.',
+            title: t('landing.feature4Title'),
+            description: t('landing.feature4Desc'),
             gradient: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)'
         },
         {
             icon: '💊',
-            title: 'Prescription Management',
-            description: 'Track your medications, dosages, and get refill reminders from your healthcare providers.',
+            title: t('landing.feature5Title'),
+            description: t('landing.feature5Desc'),
             gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
         },
         {
             icon: '📊',
-            title: 'Health Analytics',
-            description: 'Monitor your health trends and get insights from your medical data and appointment history.',
+            title: t('landing.feature6Title'),
+            description: t('landing.feature6Desc'),
             gradient: 'linear-gradient(135deg, #34d399 0%, #10b981 100%)'
         }
     ];
@@ -59,16 +62,7 @@ const FeaturesSection = () => {
                     margin: '0 0 1rem',
                     letterSpacing: '-0.02em'
                 }}>
-                    Everything You Need for
-                    <br />
-                    <span style={{
-                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                    }}>
-                        Better Healthcare
-                    </span>
+                    {t('landing.featuresTitle')}
                 </h2>
                 <p style={{
                     fontSize: '1.2rem',
@@ -79,7 +73,7 @@ const FeaturesSection = () => {
                     marginRight: 'auto',
                     lineHeight: '1.6'
                 }}>
-                    Our comprehensive platform provides all the tools you need to manage your health journey effectively.
+                    {t('landing.featuresDescription')}
                 </p>
             </div>
 

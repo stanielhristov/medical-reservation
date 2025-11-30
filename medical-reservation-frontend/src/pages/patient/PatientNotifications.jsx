@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import NotificationFilters from '../../components/NotificationFilters';
 import NotificationCard from '../../components/NotificationCard';
 
 const PatientNotifications = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedNotification, setSelectedNotification] = useState(null);
@@ -24,7 +26,7 @@ const PatientNotifications = () => {
     const filteredNotifications = getFilteredNotifications(selectedCategory);
 
     if (loading) {
-        return <LoadingSpinner message="Loading notifications..." />;
+        return <LoadingSpinner message={t('loading.loadingNotifications')} />;
     }
 
     return (
@@ -85,8 +87,8 @@ const PatientNotifications = () => {
                         color: '#374151',
                         margin: '0 0 2rem 0'
                     }}>
-                        {selectedCategory === 'all' ? 'All Notifications' : 
-                         `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Notifications`}
+                        {selectedCategory === 'all' ? t('notifications.allNotifications') : 
+                         t(`notifications.${selectedCategory}Notifications`)}
                         <span style={{
                             fontSize: '1rem',
                             fontWeight: '500',
@@ -105,10 +107,10 @@ const PatientNotifications = () => {
                         }}>
                             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
                             <h3 style={{ fontSize: '1.2rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
-                                No notifications found
+                                {t('notifications.noNotificationsFound')}
                             </h3>
                             <p style={{ margin: 0 }}>
-                                You're all caught up! Check back later for new notifications.
+                                {t('notifications.allCaughtUp')}
                             </p>
                         </div>
                     ) : (

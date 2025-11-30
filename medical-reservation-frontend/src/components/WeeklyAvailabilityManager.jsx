@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useAvailability } from '../hooks/useAvailability';
 import { generateScheduleFromAvailability } from '../api/schedule';
 import WeeklySlotDisplay from './WeeklySlotDisplay';
 import ConfirmationPopup from './ConfirmationPopup';
 
 const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
+    const { t, i18n } = useTranslation();
     const {
         availabilities,
         loading,
@@ -38,20 +40,20 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
    
 
     const daysOfWeek = [
-        { key: 'MONDAY', label: 'Monday' },
-        { key: 'TUESDAY', label: 'Tuesday' },
-        { key: 'WEDNESDAY', label: 'Wednesday' },
-        { key: 'THURSDAY', label: 'Thursday' },
-        { key: 'FRIDAY', label: 'Friday' },
-        { key: 'SATURDAY', label: 'Saturday' },
-        { key: 'SUNDAY', label: 'Sunday' }
+        { key: 'MONDAY', label: t('schedule.monday') },
+        { key: 'TUESDAY', label: t('schedule.tuesday') },
+        { key: 'WEDNESDAY', label: t('schedule.wednesday') },
+        { key: 'THURSDAY', label: t('schedule.thursday') },
+        { key: 'FRIDAY', label: t('schedule.friday') },
+        { key: 'SATURDAY', label: t('schedule.saturday') },
+        { key: 'SUNDAY', label: t('schedule.sunday') }
     ];
 
     const slotDurationOptions = [
-        { value: 15, label: '15 minutes' },
-        { value: 30, label: '30 minutes' },
-        { value: 45, label: '45 minutes' },
-        { value: 60, label: '60 minutes' }
+        { value: 15, label: `15 ${t('schedule.minutes')}` },
+        { value: 30, label: `30 ${t('schedule.minutes')}` },
+        { value: 45, label: `45 ${t('schedule.minutes')}` },
+        { value: 60, label: `60 ${t('schedule.minutes')}` }
     ];
 
     useEffect(() => {
@@ -470,7 +472,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         const currentDayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][today.getDay()];
         
         if (selectedWeekOffset === 0 && dayKey === currentDayOfWeek) {
-            return `${daysOfWeek.find(d => d.key === dayKey).label} (Today)`;
+            return `${daysOfWeek.find(d => d.key === dayKey).label} (${t('schedule.today')})`;
         }
         return daysOfWeek.find(d => d.key === dayKey).label;
     };
@@ -479,21 +481,22 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         try {
             const { startOfSelectedWeek, endOfSelectedWeek } = getSelectedWeekDates();
             
+            const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
             const formatDate = (date) => {
-                return date.toLocaleDateString('en-US', { 
+                return date.toLocaleDateString(locale, { 
                     month: 'short', 
                     day: 'numeric' 
                 });
             };
             
-            const weekLabel = selectedWeekOffset === 0 ? 'Current Week' : 
-                             selectedWeekOffset === 1 ? 'Next Week' : 
-                             `Week +${selectedWeekOffset}`;
+            const weekLabel = selectedWeekOffset === 0 ? t('schedule.currentWeek') : 
+                             selectedWeekOffset === 1 ? t('schedule.nextWeek') : 
+                             `${t('schedule.week')} +${selectedWeekOffset}`;
             
             return `${weekLabel}: ${formatDate(startOfSelectedWeek)} - ${formatDate(endOfSelectedWeek)}`;
         } catch (err) {
             console.error('Error calculating week range:', err);
-            return 'Selected Week';
+            return t('schedule.week');
         }
     };
 
@@ -610,7 +613,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                         fontSize: '1.5rem',
                         fontWeight: '600'
                     }}>
-                        🗓️ Weekly Availability Manager
+                        🗓️ {t('schedule.weeklyAvailabilityManager')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -658,7 +661,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                             gap: '0.5rem'
                         }}
                     >
-                        ← Previous Week
+                        ← {t('schedule.previousWeek')}
                     </button>
                     
                     <div style={{
@@ -691,7 +694,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                             gap: '0.5rem'
                         }}
                     >
-                        Next Week →
+                        {t('schedule.nextWeek')} →
                     </button>
                 </div>
 
@@ -704,10 +707,10 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                         borderRadius: '8px',
                         marginBottom: '1rem'
                     }}>
-                        <strong>Error:</strong> {error}
+                        <strong>{t('errors.error')}:</strong> {error}
                         {error.includes('Access denied') && (
                             <div style={{ marginTop: '0.5rem', fontSize: '0.9em' }}>
-                                Make sure you are logged in with a doctor account.
+                                {t('errors.makeSureLoggedInDoctor')}
                             </div>
                         )}
                     </div>
@@ -715,7 +718,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
 
                 <div style={{ marginBottom: '2rem' }}>
                     <p style={{ color: '#666', margin: '0 0 1rem 0' }}>
-                        Configure your available time slots for the selected week. Use the navigation above to choose different weeks.
+                        {t('schedule.configureWeekSlots')}
                     </p>
                 </div>
 
@@ -811,7 +814,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 color: '#374151',
                                                 fontWeight: '500'
                                             }}>
-                                                Start Time
+                                                {t('schedule.startTime')}
                                             </label>
                                             <select
                                                 value={daySchedule.startTime || generateTimeOptions(day.key, false, null, globalSlotDuration)[0] || '08:00'}
@@ -841,7 +844,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 color: '#374151',
                                                 fontWeight: '500'
                                             }}>
-                                                End Time
+                                                {t('schedule.endTime')}
                                             </label>
                                             <select
                                                 value={(() => {
@@ -888,7 +891,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                                 color: '#374151',
                                                 fontWeight: '500'
                                             }}>
-                                                Slot Duration
+                                                {t('schedule.slotDuration')}
                                             </label>
                                             <select
                                                 value={globalSlotDuration}
@@ -937,7 +940,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                             fontWeight: '500'
                         }}
                     >
-                        📋 View Generated Slots
+                        📋 {t('schedule.viewGeneratedSlots')}
                     </button>
                     
                     <div style={{ display: 'flex', gap: '1rem' }}>
@@ -954,7 +957,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                 fontWeight: '500'
                             }}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             onClick={(e) => {
@@ -964,8 +967,8 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                 } catch (error) {
                                     console.error('Error in handleSave:', error);
                                     showConfirmation(
-                                        'Unexpected Error ❌',
-                                        'An unexpected error occurred. Please try again.',
+                                        t('errors.unexpectedError'),
+                                        t('errors.unexpectedErrorOccurred'),
                                         'error'
                                     );
                                 }
@@ -995,7 +998,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                     animation: 'spin 1s linear infinite'
                                 }} />
                             )}
-                            {saving ? 'Saving...' : 'Save Week Slots'}
+                            {saving ? t('schedule.saving') : t('schedule.saveWeekSlots')}
                         </button>
                     </div>
                 </div>

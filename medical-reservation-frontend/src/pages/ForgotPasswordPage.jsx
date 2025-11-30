@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { forgotPassword } from '../api/auth';
 
 export default function ForgotPasswordPage() {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -16,10 +18,10 @@ export default function ForgotPasswordPage() {
 
         try {
             await forgotPassword(email);
-            setMessage('If an account with this email exists, we have sent a password reset link! Please check your email for further instructions.');
+            setMessage(t('auth.resetEmailSent'));
             setEmail('');
         } catch (err) {
-            setError(err.message || 'Failed to send password reset email. Please try again.');
+            setError(err.message || t('auth.resetEmailFailed'));
         } finally {
             setLoading(false);
         }
@@ -97,7 +99,7 @@ export default function ForgotPasswordPage() {
                         margin: '0 0 0.5rem',
                         letterSpacing: '-0.025em'
                     }}>
-                        Forgot Password
+                        {t('auth.forgotPasswordTitle')}
                     </h1>
                     <p style={{
                         color: '#6b7280',
@@ -105,7 +107,7 @@ export default function ForgotPasswordPage() {
                         margin: 0,
                         lineHeight: 1.5
                     }}>
-                        Enter your email address and we'll send you a link to reset your password
+                        {t('auth.forgotPasswordDescription')}
                     </p>
                 </div>
 
@@ -157,7 +159,7 @@ export default function ForgotPasswordPage() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Email Address
+                            {t('auth.emailAddress')}
                         </label>
                         <div style={{
                             position: 'relative',
@@ -183,7 +185,7 @@ export default function ForgotPasswordPage() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Enter your email address"
+                                placeholder={t('auth.enterEmailAddress')}
                             />
                         </div>
                     </div>
@@ -235,10 +237,10 @@ export default function ForgotPasswordPage() {
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Sending Email...
+                                {t('auth.sendingEmail')}
                             </div>
                         ) : (
-                            'Send Reset Email'
+                            t('auth.sendResetEmail')
                         )}
                     </button>
 
@@ -266,7 +268,7 @@ export default function ForgotPasswordPage() {
                             }}
                         >
                             <span>←</span>
-                            Back to Login
+                            {t('auth.backToLogin')}
                         </Link>
                     </div>
                 </form>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../api/admin';
 import AdminHeader from '../../components/AdminHeader';
@@ -7,6 +8,7 @@ import UserTable from '../../components/UserTable';
 import ConfirmActionModal from '../../components/ConfirmActionModal';
 
 const AdminUsersRefactored = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -35,7 +37,7 @@ const AdminUsersRefactored = () => {
             setUsers(response.data);
         } catch (err) {
             console.error('Error loading users:', err);
-            setError('Failed to load users');
+            setError(t('errors.failedToLoadUsers'));
         } finally {
             setLoading(false);
         }
@@ -111,7 +113,7 @@ const AdminUsersRefactored = () => {
         } catch (err) {
             console.error(`Error performing ${action}:`, err);
 
-            let errorMessage = `Failed to ${action} user. Please try again.`;
+            let errorMessage = t(`errors.failedTo${action.charAt(0).toUpperCase() + action.slice(1)}User`);
             if (err.response?.data?.message) {
                 errorMessage = err.response.data.message;
             } else if (err.response?.data) {
@@ -152,7 +154,7 @@ const AdminUsersRefactored = () => {
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 1.5rem'
                     }} />
-                    <p style={{ color: '#6b7280', margin: 0 }}>Loading users...</p>
+                    <p style={{ color: '#6b7280', margin: 0 }}>{t('loading.loadingUsers')}</p>
                 </div>
             </div>
         );
@@ -196,7 +198,7 @@ const AdminUsersRefactored = () => {
                         color: '#374151',
                         margin: '0 0 1rem'
                     }}>
-                        Error Loading Users
+                        {t('errors.errorLoadingUsers')}
                     </h3>
                     <p style={{ color: '#6b7280', margin: '0 0 2rem' }}>
                         {error}
@@ -215,7 +217,7 @@ const AdminUsersRefactored = () => {
                             transition: 'all 0.2s ease'
                         }}
                     >
-                        Retry
+                        {t('common.retry')}
                     </button>
                 </div>
             </div>

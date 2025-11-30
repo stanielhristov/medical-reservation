@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BackgroundDecorations from '../components/BackgroundDecorations';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const AboutPage = () => {
+    const { t } = useTranslation();
+    
     return (
         <div style={{
             minHeight: '100vh',
@@ -50,10 +54,11 @@ const AboutPage = () => {
                             textDecoration: 'none',
                             letterSpacing: '-0.02em'
                         }}>
-                            MedReserve
+                            {t('landing.medReserve')}
                         </Link>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <LanguageSwitcher />
                         <Link to="/" style={{
                             color: '#6b7280',
                             textDecoration: 'none',
@@ -62,7 +67,7 @@ const AboutPage = () => {
                             transition: 'all 0.3s ease',
                             padding: '0.5rem 1rem',
                             borderRadius: '8px'
-                        }}>Home</Link>
+                        }}>{t('nav.home')}</Link>
                         <Link to="/contact" style={{
                             color: '#6b7280',
                             textDecoration: 'none',
@@ -71,7 +76,7 @@ const AboutPage = () => {
                             transition: 'all 0.3s ease',
                             padding: '0.5rem 1rem',
                             borderRadius: '8px'
-                        }}>Contact</Link>
+                        }}>{t('nav.contact')}</Link>
                         <Link to="/login" style={{
                             padding: '0.75rem 1.5rem',
                             background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
@@ -82,7 +87,7 @@ const AboutPage = () => {
                             fontSize: '1rem',
                             transition: 'all 0.3s ease',
                             boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
-                        }}>Login</Link>
+                        }}>{t('nav.signIn')}</Link>
                     </div>
                 </div>
             </nav>
@@ -106,7 +111,7 @@ const AboutPage = () => {
                         marginBottom: '1rem',
                         letterSpacing: '-0.02em'
                     }}>
-                        About MedReserve
+                        {t('about.title')}
                     </h1>
                     <p style={{
                         fontSize: '1.25rem',
@@ -115,7 +120,7 @@ const AboutPage = () => {
                         margin: '0 auto',
                         lineHeight: '1.6'
                     }}>
-                        Your trusted partner in revolutionizing healthcare accessibility and management
+                        {t('about.subtitle')}
                     </p>
                 </div>
 
@@ -154,23 +159,20 @@ const AboutPage = () => {
                             color: '#1f2937',
                             marginBottom: '1rem'
                         }}>
-                            Our Mission
+                            {t('about.ourMission')}
                         </h2>
                         <p style={{
                             color: '#6b7280',
                             lineHeight: '1.7',
                             marginBottom: '1rem'
                         }}>
-                            MedReserve is committed to revolutionizing healthcare accessibility by providing a 
-                            seamless platform for patients to connect with healthcare providers, manage appointments, 
-                            and maintain their medical records.
+                            {t('about.missionText1')}
                         </p>
                         <p style={{
                             color: '#6b7280',
                             lineHeight: '1.7'
                         }}>
-                            We believe that healthcare should be convenient, transparent, and accessible to everyone. 
-                            Our platform bridges the gap between patients and healthcare providers.
+                            {t('about.missionText2')}
                         </p>
                     </div>
 
@@ -202,15 +204,15 @@ const AboutPage = () => {
                             color: '#1f2937',
                             marginBottom: '1rem'
                         }}>
-                            Key Features
+                            {t('about.keyFeatures')}
                         </h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             {[
-                                'Easy appointment booking with qualified healthcare providers',
-                                'Comprehensive medical history management',
-                                'Real-time notifications and reminders',
-                                'Secure and confidential data handling',
-                                'Multi-platform accessibility'
+                                t('about.feature1'),
+                                t('about.feature2'),
+                                t('about.feature3'),
+                                t('about.feature4'),
+                                t('about.feature5')
                             ].map((feature, index) => (
                                 <div key={index} style={{
                                     display: 'flex',
@@ -253,7 +255,7 @@ const AboutPage = () => {
                         textAlign: 'center',
                         marginBottom: '3rem'
                     }}>
-                        How It Works
+                        {t('about.howItWorks')}
                     </h2>
                     <div style={{
                         display: 'grid',
@@ -261,9 +263,9 @@ const AboutPage = () => {
                         gap: '2rem'
                     }}>
                         {[
-                            { number: '1', title: 'Register', description: 'Create your account and complete your profile', icon: '👤' },
-                            { number: '2', title: 'Book', description: 'Find and book appointments with healthcare providers', icon: '📅' },
-                            { number: '3', title: 'Manage', description: 'Track your appointments and medical history', icon: '📊' }
+                            { number: '1', title: t('about.step1Title'), description: t('about.step1Desc'), icon: '👤' },
+                            { number: '2', title: t('about.step2Title'), description: t('about.step2Desc'), icon: '📅' },
+                            { number: '3', title: t('about.step3Title'), description: t('about.step3Desc'), icon: '📊' }
                         ].map((step, index) => (
                             <div key={index} style={{
                                 textAlign: 'center',

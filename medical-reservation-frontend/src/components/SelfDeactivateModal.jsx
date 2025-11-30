@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { selfDeactivateAccount } from '../api/profile';
 
 const SelfDeactivateModal = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const [isDeactivating, setIsDeactivating] = useState(false);
     const [error, setError] = useState(null);
     const { user, logout } = useAuth();
@@ -21,7 +23,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
             
         } catch (err) {
             console.error('Deactivation error:', err);
-            setError(err.message || 'Failed to deactivate account. Please try again.');
+            setError(err.message || t('profile.failedToDeactivate'));
         } finally {
             setIsDeactivating(false);
         }
@@ -78,14 +80,14 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                             color: '#374151',
                             margin: 0
                         }}>
-                            Deactivate Account
+                            {t('profile.deactivateAccount')}
                         </h2>
                         <p style={{
                             fontSize: '0.875rem',
                             color: '#6b7280',
                             margin: '0.25rem 0 0'
                         }}>
-                            This action will temporarily disable your account
+                            {t('profile.deactivateAccountDescription')}
                         </p>
                     </div>
                 </div>
@@ -105,7 +107,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                             color: '#ea580c',
                             margin: '0 0 0.5rem'
                         }}>
-                            What happens when you deactivate?
+                            {t('profile.whatHappensWhenDeactivate')}
                         </h3>
                         <ul style={{
                             fontSize: '0.875rem',
@@ -114,11 +116,11 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                             paddingLeft: '1.25rem',
                             lineHeight: '1.6'
                         }}>
-                            <li>Your account will be temporarily disabled</li>
-                            <li>You will be automatically logged out</li>
-                            <li>Others won't be able to book appointments with you</li>
-                            <li><strong>You can reactivate anytime by logging in again</strong></li>
-                            <li><em>Note: This is different from admin deactivation</em></li>
+                            <li>{t('profile.deactivateConsequence1')}</li>
+                            <li>{t('profile.deactivateConsequence2')}</li>
+                            <li>{t('profile.deactivateConsequence3')}</li>
+                            <li><strong>{t('profile.deactivateConsequence4')}</strong></li>
+                            <li><em>{t('profile.deactivateNote')}</em></li>
                         </ul>
                     </div>
 
@@ -140,7 +142,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                                 fontWeight: '600',
                                 color: '#0369a1'
                             }}>
-                                Good to know
+                                {t('profile.goodToKnow')}
                             </span>
                         </div>
                         <p style={{
@@ -149,8 +151,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                             margin: 0,
                             lineHeight: '1.6'
                         }}>
-                            This is different from permanently deleting your account. 
-                            You can easily reactivate by simply logging in again with your existing credentials.
+                            {t('profile.deactivateGoodToKnowDescription')}
                         </p>
                     </div>
 
@@ -205,7 +206,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                             }
                         }}
                     >
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                     <button
                         onClick={handleDeactivate}
@@ -252,7 +253,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                                 animation: 'spin 1s linear infinite'
                             }} />
                         )}
-                        {isDeactivating ? 'Deactivating...' : 'Deactivate Account'}
+                        {isDeactivating ? t('profile.deactivating') : t('profile.deactivateAccount')}
                     </button>
                 </div>
 

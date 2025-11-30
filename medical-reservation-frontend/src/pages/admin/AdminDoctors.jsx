@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { translateSpecialization } from '../../utils/specializationUtils';
 import { adminAPI } from '../../api/admin';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminDoctors = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useAuth();
     const [doctorRequests, setDoctorRequests] = useState([]);
@@ -327,7 +330,7 @@ const AdminDoctors = () => {
                             letterSpacing: '-0.03em',
                             lineHeight: '1.1'
                         }}>
-                            Doctor Management
+                            {t('admin.doctorManagement')}
                         </h1>
                         
                         <p style={{
@@ -340,8 +343,7 @@ const AdminDoctors = () => {
                             lineHeight: '1.6',
                             fontWeight: '400'
                         }}>
-                            Review and approve doctor registration requests. Manage medical professional credentials 
-                            and maintain platform quality standards ({doctorRequests.length} total requests).
+                            {t('admin.doctorManagementDescription', { total: doctorRequests.length })}
                         </p>
 
                         {/* Quick Stats */}
@@ -362,7 +364,7 @@ const AdminDoctors = () => {
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'PENDING').length}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Pending</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('appointments.pending')}</div>
                             </div>
                             <div style={{
                                 background: 'rgba(34, 197, 94, 0.1)',
@@ -374,7 +376,7 @@ const AdminDoctors = () => {
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'APPROVED').length}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Approved</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('reschedule.approved')}</div>
                             </div>
                             <div style={{
                                 background: 'rgba(239, 68, 68, 0.1)',
@@ -386,7 +388,7 @@ const AdminDoctors = () => {
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'REJECTED').length}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Rejected</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('reschedule.rejected')}</div>
                             </div>
                         </div>
                     </div>
@@ -480,7 +482,7 @@ const AdminDoctors = () => {
                                                 fontSize: '0.9rem',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                {request.specialization}
+                                                {translateSpecialization(request.specialization)}
                                             </div>
                                             <div style={{ 
                                                 color: '#6b7280', 
@@ -597,7 +599,7 @@ const AdminDoctors = () => {
                                                 fontWeight: '500',
                                                 padding: '0.75rem 1.5rem'
                                             }}>
-                                                {request.status === 'APPROVED' ? '✅ Approved' : '❌ Rejected'}
+                                                {request.status === 'APPROVED' ? `✅ ${t('reschedule.approved')}` : `❌ ${t('reschedule.rejected')}`}
                                             </span>
                                         )}
                                     </div>
@@ -709,7 +711,7 @@ const AdminDoctors = () => {
                                 color: '#6b7280',
                                 fontSize: '0.9rem'
                             }}>
-                                {selectedRequest.specialization} • License: {selectedRequest.licenseNumber}
+                                {translateSpecialization(selectedRequest.specialization)} • License: {selectedRequest.licenseNumber}
                             </div>
                         </div>
                         

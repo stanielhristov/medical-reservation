@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { translateSpecialization } from '../utils/specializationUtils';
 
 const DoctorSearchFilters = ({ 
     searchTerm, 
@@ -6,8 +8,10 @@ const DoctorSearchFilters = ({
     selectedSpecialization, 
     setSelectedSpecialization, 
     specializations, 
+    englishSpecializations = null,
     doctorCount 
 }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -32,11 +36,11 @@ const DoctorSearchFilters = ({
                         fontWeight: '600',
                         fontSize: '1rem'
                     }}>
-                        🔍 Search Doctors
+                        🔍 {t('doctors.searchDoctors')}
                     </label>
                     <input
                         type="text"
-                        placeholder="Search by name or specialization..."
+                        placeholder={t('doctors.searchPlaceholder')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
@@ -67,7 +71,7 @@ const DoctorSearchFilters = ({
                         fontWeight: '600',
                         fontSize: '1rem'
                     }}>
-                        🏥 Specialization
+                        🏥 {t('doctors.specialization')}
                     </label>
                     <select
                         value={selectedSpecialization}
@@ -91,11 +95,19 @@ const DoctorSearchFilters = ({
                             e.target.style.boxShadow = 'none';
                         }}
                     >
-                        {specializations.map(spec => (
-                            <option key={spec} value={spec === 'All Specializations' ? '' : spec}>
-                                {spec}
-                            </option>
-                        ))}
+                        {specializations.map((translatedSpec, index) => {
+                            // Use English value for option value (for filtering), translated text for display
+                            const englishSpec = englishSpecializations && englishSpecializations[index] !== undefined
+                                ? englishSpecializations[index]
+                                : (index === 0 ? 'All Specializations' : translatedSpec);
+                            const englishValue = englishSpec === 'All Specializations' ? '' : englishSpec;
+                            const displayText = translatedSpec;
+                            return (
+                                <option key={`${englishSpec}-${index}`} value={englishValue}>
+                                    {displayText}
+                                </option>
+                            );
+                        })}
                     </select>
                 </div>
                 
@@ -118,7 +130,7 @@ const DoctorSearchFilters = ({
                         gap: '0.5rem'
                     }}>
                         <span>👨‍⚕️</span>
-                        <span>{doctorCount} {doctorCount === 1 ? 'Doctor' : 'Doctors'} Found</span>
+                        <span>{doctorCount} {doctorCount === 1 ? t('doctors.doctor') : t('doctors.doctors')} {t('doctors.found')}</span>
                     </div>
                 </div>
             </div>

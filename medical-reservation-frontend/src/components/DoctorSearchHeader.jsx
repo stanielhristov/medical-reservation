@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DoctorSearchHeader = ({ onRefresh }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -33,7 +35,7 @@ const DoctorSearchHeader = ({ onRefresh }) => {
                 margin: '0 0 1rem',
                 letterSpacing: '-0.025em'
             }}>
-                Find Your Perfect Doctor
+                {t('doctors.findPerfectDoctor')}
             </h1>
             
             <p style={{
@@ -45,8 +47,7 @@ const DoctorSearchHeader = ({ onRefresh }) => {
                 marginRight: 'auto',
                 lineHeight: '1.6'
             }}>
-                Connect with experienced healthcare professionals. Browse specializations, read reviews, 
-                and book appointments with doctors who match your needs.
+                {t('doctors.findPerfectDoctorDescription')}
             </p>
             
             {onRefresh && (
@@ -77,7 +78,7 @@ const DoctorSearchHeader = ({ onRefresh }) => {
                     }}
                 >
                     <span>🔄</span>
-                    Refresh Doctors
+                    {t('doctors.refreshDoctors')}
                 </button>
             )}
         </section>

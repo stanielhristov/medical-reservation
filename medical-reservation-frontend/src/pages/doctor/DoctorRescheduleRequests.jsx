@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useRescheduleRequests } from '../../hooks/useRescheduleRequests';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import RescheduleRequestCard from '../../components/RescheduleRequestCard';
 
 const DoctorRescheduleRequests = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [selectedFilter, setSelectedFilter] = useState('all');
     const {
@@ -30,14 +32,14 @@ const DoctorRescheduleRequests = () => {
     const stats = getFilterStats();
 
     const filterOptions = [
-        { key: 'all', label: 'All Requests', count: stats.all, color: '#6b7280' },
-        { key: 'pending', label: 'Pending', count: stats.pending, color: '#f59e0b' },
-        { key: 'approved', label: 'Approved', count: stats.approved, color: '#10b981' },
-        { key: 'rejected', label: 'Rejected', count: stats.rejected, color: '#ef4444' }
+        { key: 'all', label: t('reschedule.allRequests'), count: stats.all, color: '#6b7280' },
+        { key: 'pending', label: t('appointments.pending'), count: stats.pending, color: '#f59e0b' },
+        { key: 'approved', label: t('reschedule.approved'), count: stats.approved, color: '#10b981' },
+        { key: 'rejected', label: t('reschedule.rejected'), count: stats.rejected, color: '#ef4444' }
     ];
 
     if (loading) {
-        return <LoadingSpinner message="Loading reschedule requests..." />;
+        return <LoadingSpinner message={t('loading.loadingRescheduleRequests')} />;
     }
 
     return (
@@ -83,7 +85,7 @@ const DoctorRescheduleRequests = () => {
                         WebkitTextFillColor: 'transparent',
                         margin: '0 0 1rem 0'
                     }}>
-                        Reschedule Requests
+                        {t('reschedule.rescheduleRequests')}
                     </h1>
                     <p style={{
                         fontSize: '1.2rem',
@@ -93,7 +95,7 @@ const DoctorRescheduleRequests = () => {
                         marginLeft: 'auto',
                         marginRight: 'auto'
                     }}>
-                        Review and manage patient reschedule requests for your appointments
+                        {t('reschedule.manageDescription')}
                     </p>
                 </div>
 
@@ -169,16 +171,16 @@ const DoctorRescheduleRequests = () => {
                                  selectedFilter === 'rejected' ? '❌' : '📋'}
                             </div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
-                                No {selectedFilter === 'all' ? '' : selectedFilter.toLowerCase()} reschedule requests
+                                {selectedFilter === 'all' ? t('reschedule.noRequests') : 
+                                 t('reschedule.noRequestsForFilter', { filter: selectedFilter === 'pending' ? t('reschedule.pending') : 
+                                                                        selectedFilter === 'approved' ? t('reschedule.approved') : 
+                                                                        t('reschedule.rejected') })}
                             </h3>
                             <p style={{ margin: 0, fontSize: '1.1rem' }}>
-                                {selectedFilter === 'pending' ? 
-                                    "You don't have any pending reschedule requests at the moment." :
-                                 selectedFilter === 'approved' ? 
-                                    "You haven't approved any reschedule requests yet." :
-                                 selectedFilter === 'rejected' ? 
-                                    "You haven't rejected any reschedule requests yet." :
-                                    "You don't have any reschedule requests yet."}
+                                {selectedFilter === 'pending' ? t('reschedule.noPendingRequests') :
+                                 selectedFilter === 'approved' ? t('reschedule.noApprovedRequests') :
+                                 selectedFilter === 'rejected' ? t('reschedule.noRejectedRequests') :
+                                 t('reschedule.noRequestsYet')}
                             </p>
                         </div>
                     ) : (
@@ -214,7 +216,7 @@ const DoctorRescheduleRequests = () => {
                         }}>
                             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📊</div>
                             <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#374151', margin: '0 0 0.5rem 0' }}>
-                                Total Requests
+                                {t('reschedule.totalRequests')}
                             </h4>
                             <p style={{ fontSize: '2rem', fontWeight: '700', color: '#3b82f6', margin: 0 }}>
                                 {stats.all}
@@ -232,7 +234,7 @@ const DoctorRescheduleRequests = () => {
                         }}>
                             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>⏳</div>
                             <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#374151', margin: '0 0 0.5rem 0' }}>
-                                Pending
+                                {t('reschedule.pending')}
                             </h4>
                             <p style={{ fontSize: '2rem', fontWeight: '700', color: '#f59e0b', margin: 0 }}>
                                 {stats.pending}
@@ -250,7 +252,7 @@ const DoctorRescheduleRequests = () => {
                         }}>
                             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>✅</div>
                             <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#374151', margin: '0 0 0.5rem 0' }}>
-                                Approved
+                                {t('reschedule.approved')}
                             </h4>
                             <p style={{ fontSize: '2rem', fontWeight: '700', color: '#10b981', margin: 0 }}>
                                 {stats.approved}
@@ -268,7 +270,7 @@ const DoctorRescheduleRequests = () => {
                         }}>
                             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>❌</div>
                             <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#374151', margin: '0 0 0.5rem 0' }}>
-                                Rejected
+                                {t('reschedule.rejected')}
                             </h4>
                             <p style={{ fontSize: '2rem', fontWeight: '700', color: '#ef4444', margin: 0 }}>
                                 {stats.rejected}

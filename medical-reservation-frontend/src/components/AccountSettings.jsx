@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SelfDeactivateModal from './SelfDeactivateModal';
 
 const AccountSettings = () => {
+    const { t } = useTranslation();
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
     return (
@@ -28,7 +30,7 @@ const AccountSettings = () => {
                 }}>
                     ⚙️
                 </div>
-                Account Settings
+                {t('profile.accountSettings')}
             </h2>
 
             <div style={{
@@ -52,7 +54,7 @@ const AccountSettings = () => {
                         gap: '0.5rem'
                     }}>
                         <span style={{ fontSize: '1.125rem' }}>✅</span>
-                        Account Status
+                        {t('profile.accountStatus')}
                     </h3>
                     <div style={{
                         background: 'white',
@@ -73,13 +75,13 @@ const AccountSettings = () => {
                                     color: '#1e293b',
                                     marginBottom: '0.25rem'
                                 }}>
-                                    Current Status
+                                    {t('profile.currentStatus')}
                                 </div>
                                 <div style={{
                                     fontSize: '0.875rem',
                                     color: '#64748b'
                                 }}>
-                                    Your account is currently active
+                                    {t('profile.accountCurrentlyActive')}
                                 </div>
                             </div>
                             <div style={{
@@ -91,7 +93,7 @@ const AccountSettings = () => {
                                 fontWeight: '600',
                                 border: '1px solid #86efac'
                             }}>
-                                Active
+                                {t('profile.active')}
                             </div>
                         </div>
                         <div style={{
@@ -99,8 +101,7 @@ const AccountSettings = () => {
                             color: '#64748b',
                             lineHeight: '1.6'
                         }}>
-                            Your account is active and you can access all features. 
-                            If you need to temporarily disable your account, you can deactivate it below.
+                            {t('profile.accountActiveDescription')}
                         </div>
                     </div>
                 </div>
@@ -122,7 +123,7 @@ const AccountSettings = () => {
                         gap: '0.5rem'
                     }}>
                         <span style={{ fontSize: '1.125rem' }}>⚠️</span>
-                        Account Deactivation
+                        {t('profile.accountDeactivation')}
                     </h3>
                     
                     <div style={{
@@ -138,7 +139,7 @@ const AccountSettings = () => {
                             color: '#92400e',
                             marginBottom: '0.75rem'
                         }}>
-                            Temporarily Deactivate Your Account
+                            {t('profile.temporarilyDeactivateAccount')}
                         </div>
                         <div style={{
                             fontSize: '0.875rem',
@@ -146,8 +147,7 @@ const AccountSettings = () => {
                             lineHeight: '1.6',
                             marginBottom: '1rem'
                         }}>
-                            You can temporarily deactivate your account if you need a break. 
-                            This will prevent others from booking appointments with you and limit your access to the platform.
+                            {t('profile.temporarilyDeactivateDescription')}
                         </div>
                         
                         <div style={{
@@ -163,7 +163,7 @@ const AccountSettings = () => {
                                 color: '#0369a1',
                                 marginBottom: '0.5rem'
                             }}>
-                                What happens when you deactivate?
+                                {t('profile.whatHappensWhenDeactivate')}
                             </div>
                             <ul style={{
                                 fontSize: '0.875rem',
@@ -172,10 +172,10 @@ const AccountSettings = () => {
                                 paddingLeft: '1.25rem',
                                 lineHeight: '1.6'
                             }}>
-                                <li>Your account will be temporarily disabled</li>
-                                <li>You will be automatically logged out</li>
-                                <li>Others won't be able to book appointments with you</li>
-                                <li><strong>You can reactivate anytime by logging in again</strong></li>
+                                <li>{t('profile.deactivateConsequence1')}</li>
+                                <li>{t('profile.deactivateConsequence2')}</li>
+                                <li>{t('profile.deactivateConsequence3')}</li>
+                                <li><strong>{t('profile.deactivateConsequence4')}</strong></li>
                             </ul>
                         </div>
 
@@ -206,7 +206,7 @@ const AccountSettings = () => {
                             }}
                         >
                             <span style={{ fontSize: '1rem' }}>⏸️</span>
-                            Deactivate Account
+                            {t('profile.deactivateAccount')}
                         </button>
                     </div>
                 </div>
@@ -228,7 +228,7 @@ const AccountSettings = () => {
                         gap: '0.5rem'
                     }}>
                         <span style={{ fontSize: '1.125rem' }}>🔒</span>
-                        Privacy & Security
+                        {t('profile.privacyAndSecurity')}
                     </h3>
                     
                     <div style={{
@@ -243,16 +243,16 @@ const AccountSettings = () => {
                             lineHeight: '1.6'
                         }}>
                             <p style={{ margin: '0 0 1rem' }}>
-                                <strong>Data Protection:</strong> Your personal and medical information is encrypted and stored securely according to healthcare privacy standards.
+                                <strong>{t('profile.dataProtection')}:</strong> {t('profile.dataProtectionDescription')}
                             </p>
                         <p style={{ margin: '0 0 1rem' }}>
-                            <strong>Self-Deactivation Recovery:</strong> If you deactivate your account yourself, all your data remains safe and will be restored when you log in again.
+                            <strong>{t('profile.selfDeactivationRecovery')}:</strong> {t('profile.selfDeactivationRecoveryDescription')}
                         </p>
                         <p style={{ margin: '0 0 1rem' }}>
-                            <strong>Admin Deactivation:</strong> If an administrator deactivates your account, only they can reactivate it. Contact support for assistance.
+                            <strong>{t('profile.adminDeactivation')}:</strong> {t('profile.adminDeactivationDescription')}
                         </p>
                             <p style={{ margin: 0 }}>
-                                <strong>Permanent Deletion:</strong> If you need to permanently delete your account, please contact our support team.
+                                <strong>{t('profile.permanentDeletion')}:</strong> {t('profile.permanentDeletionDescription')}
                             </p>
                         </div>
                     </div>

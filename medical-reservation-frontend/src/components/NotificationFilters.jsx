@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { NOTIFICATION_CATEGORIES } from '../utils/notificationUtils';
 
 const NotificationFilters = ({ 
@@ -7,6 +8,7 @@ const NotificationFilters = ({
     notifications, 
     onMarkAllAsRead 
 }) => {
+    const { t } = useTranslation();
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
     return (
@@ -31,7 +33,7 @@ const NotificationFilters = ({
                     color: '#374151',
                     margin: 0
                 }}>
-                    Filter Notifications
+                    {t('notifications.filterNotifications')}
                 </h2>
                 
                 <div style={{ display: 'flex', gap: '1rem' }}>
@@ -51,7 +53,7 @@ const NotificationFilters = ({
                                 boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
                             }}
                         >
-                            Mark All Read ({unreadCount})
+                            {t('notifications.markAllRead')} ({unreadCount})
                         </button>
                     )}
                 </div>
@@ -89,7 +91,7 @@ const NotificationFilters = ({
                         }}
                     >
                         <span>{category.icon}</span>
-                        {category.name}
+                        {t(`notifications.category.${category.id}`)}
                     </button>
                 ))}
             </div>

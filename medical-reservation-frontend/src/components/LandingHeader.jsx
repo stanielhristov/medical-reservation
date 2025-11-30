@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const LandingHeader = ({ onLogin, onRegister }) => {
+    const { t } = useTranslation();
+    
     return (
         <header style={{
             background: 'rgba(255, 255, 255, 0.95)',
@@ -39,7 +43,7 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                         margin: 0,
                         letterSpacing: '-0.02em'
                     }}>
-                        MedReserve
+                        {t('landing.medReserve')}
                     </h1>
                 </div>
 
@@ -68,7 +72,7 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                             e.target.style.background = 'transparent';
                         }}
                     >
-                        Features
+                        {t('landing.features')}
                     </a>
                     <a 
                         href="#about" 
@@ -90,7 +94,7 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                             e.target.style.background = 'transparent';
                         }}
                     >
-                        About
+                        {t('landing.about')}
                     </a>
                     <a 
                         href="#contact" 
@@ -112,11 +116,12 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                             e.target.style.background = 'transparent';
                         }}
                     >
-                        Contact
+                        {t('landing.contact')}
                     </a>
                 </nav>
 
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <LanguageSwitcher />
                     <button 
                         onClick={onLogin}
                         style={{
@@ -139,7 +144,7 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                             e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
                         }}
                     >
-                        Sign In
+                        {t('landing.signIn')}
                     </button>
                     <button 
                         onClick={onRegister}
@@ -164,7 +169,7 @@ const LandingHeader = ({ onLogin, onRegister }) => {
                             e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                         }}
                     >
-                        Get Started
+                        {t('landing.getStarted')}
                     </button>
                 </div>
             </div>

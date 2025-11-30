@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { resetPassword } from '../api/auth';
 
 export default function ResetPasswordPage() {
+    const { t } = useTranslation();
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -17,26 +19,26 @@ export default function ResetPasswordPage() {
 
     useEffect(() => {
         if (!token) {
-            setError('Invalid reset token. Please request a new password reset link.');
+            setError(t('auth.invalidResetToken'));
         }
-    }, [token]);
+    }, [token, t]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         if (!token) {
-            setError('Invalid reset token. Please request a new password reset link.');
+            setError(t('auth.invalidResetToken'));
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setError('Passwords do not match.');
+            setError(t('auth.passwordsDoNotMatch'));
             return;
         }
 
         if (newPassword.length < 6) {
-            setError('Password must be at least 6 characters long.');
+            setError(t('auth.passwordTooShort'));
             return;
         }
 
@@ -46,7 +48,7 @@ export default function ResetPasswordPage() {
             await resetPassword(token, newPassword, confirmPassword);
             setShowSuccessModal(true);
         } catch (err) {
-            setError(err.message || 'Something went wrong. Please try again.');
+            setError(err.message || t('errors.somethingWentWrong'));
         } finally {
             setLoading(false);
         }
@@ -124,7 +126,7 @@ export default function ResetPasswordPage() {
                         margin: '0 0 0.5rem',
                         letterSpacing: '-0.025em'
                     }}>
-                        Reset Password
+                        {t('auth.resetPasswordTitle')}
                     </h1>
                     <p style={{
                         color: '#6b7280',
@@ -132,7 +134,7 @@ export default function ResetPasswordPage() {
                         margin: 0,
                         lineHeight: 1.5
                     }}>
-                        Enter your new password below
+                        {t('auth.resetPasswordDescription')}
                     </p>
                 </div>
 
@@ -165,7 +167,7 @@ export default function ResetPasswordPage() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            New Password
+                            {t('auth.newPassword')}
                         </label>
                         <div style={{
                             position: 'relative',
@@ -191,7 +193,7 @@ export default function ResetPasswordPage() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Enter new password"
+                                placeholder={t('auth.enterNewPassword')}
                             />
                             <button
                                 type="button"
@@ -236,7 +238,7 @@ export default function ResetPasswordPage() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Confirm Password
+                            {t('auth.confirmPassword')}
                         </label>
                         <div style={{
                             position: 'relative',
@@ -262,7 +264,7 @@ export default function ResetPasswordPage() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Confirm new password"
+                                placeholder={t('auth.confirmNewPassword')}
                             />
                             <button
                                 type="button"
@@ -344,10 +346,10 @@ export default function ResetPasswordPage() {
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Resetting Password...
+                                {t('auth.resettingPassword')}
                             </div>
                         ) : (
-                            'Reset Password'
+                            t('auth.resetPassword')
                         )}
                     </button>
                 </form>
@@ -405,7 +407,7 @@ export default function ResetPasswordPage() {
                             margin: '0 0 1rem',
                             letterSpacing: '-0.025em'
                         }}>
-                            Password Reset Successful!
+                            {t('auth.passwordResetSuccessful')}
                         </h2>
 
                         <p style={{
@@ -414,7 +416,7 @@ export default function ResetPasswordPage() {
                             margin: '0 0 2rem',
                             lineHeight: 1.5
                         }}>
-                            Your password has been successfully updated. You will be redirected to the login page.
+                            {t('auth.passwordResetSuccessMessage')}
                         </p>
 
                         <button
@@ -444,7 +446,7 @@ export default function ResetPasswordPage() {
                                 e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.2)';
                             }}
                         >
-                            Continue to Login
+                            {t('auth.continueToLogin')}
                         </button>
                     </div>
                 </div>

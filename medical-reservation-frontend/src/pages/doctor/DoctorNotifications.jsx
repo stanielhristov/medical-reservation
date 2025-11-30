@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import NotificationFilters from '../../components/NotificationFilters';
 import NotificationCard from '../../components/NotificationCard';
 
 const DoctorNotifications = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedNotification, setSelectedNotification] = useState(null);
@@ -24,7 +26,7 @@ const DoctorNotifications = () => {
     const filteredNotifications = getFilteredNotifications(selectedCategory);
 
     if (loading) {
-        return <LoadingSpinner message="Loading notifications..." />;
+        return <LoadingSpinner message={t('loading.loadingNotifications')} />;
     }
 
     return (
@@ -89,7 +91,7 @@ const DoctorNotifications = () => {
                         alignItems: 'center',
                         gap: '0.75rem'
                     }}>
-                        🔔 Your Notifications
+                        🔔 {t('notifications.yourNotifications')}
                         {filteredNotifications.length > 0 && (
                             <span style={{
                                 background: 'rgba(16, 185, 129, 0.1)',
@@ -112,10 +114,10 @@ const DoctorNotifications = () => {
                         }}>
                             <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📬</div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
-                                No notifications yet
+                                {t('notifications.noNotificationsYet')}
                             </h3>
                             <p style={{ margin: 0, fontSize: '1.1rem' }}>
-                                You'll receive notifications here about appointments, patient updates, and system messages.
+                                {t('notifications.doctorNotificationsDescription')}
                             </p>
                         </div>
                     ) : (

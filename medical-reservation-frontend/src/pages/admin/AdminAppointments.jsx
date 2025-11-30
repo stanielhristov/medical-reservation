@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../api/admin';
 
 const AdminAppointments = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [appointments, setAppointments] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
@@ -406,7 +408,7 @@ const AdminAppointments = () => {
                             letterSpacing: '-0.03em',
                             lineHeight: '1.1'
                         }}>
-                            Appointments Overview
+                            {t('admin.appointmentsOverview')}
                         </h1>
                         
                         <p style={{
@@ -419,8 +421,7 @@ const AdminAppointments = () => {
                             lineHeight: '1.6',
                             fontWeight: '400'
                         }}>
-                            Comprehensive system-wide appointment monitoring and management. 
-                            Track all medical consultations across the platform ({statistics.total} total appointments).
+                            {t('admin.appointmentsOverviewDescription', { total: statistics.total })}
                         </p>
 
                         {/* Quick Stats */}

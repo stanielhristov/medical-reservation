@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginForm() {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -31,11 +33,11 @@ export default function LoginForm() {
                     navigate('/patient/dashboard');
                 }
             } else {
-                setError(result.message || 'Login failed. Please check your credentials and try again.');
+                setError(result.message || t('auth.loginFailed'));
             }
         } catch (err) {
             console.error('Login error:', err);
-            setError(err.message || 'Login failed. Please check your credentials and try again.');
+            setError(err.message || t('auth.loginFailed'));
         } finally {
             setLoading(false);
         }
@@ -113,7 +115,7 @@ export default function LoginForm() {
                         margin: '0 0 0.5rem',
                         letterSpacing: '-0.025em'
                     }}>
-                        Welcome Back
+                        {t('auth.welcomeBack')}
                     </h1>
                     <p style={{
                         color: '#6b7280',
@@ -121,7 +123,7 @@ export default function LoginForm() {
                         margin: 0,
                         lineHeight: 1.5
                     }}>
-                        Sign in to your medical portal
+                        {t('auth.signInToPortal')}
                     </p>
                 </div>
 
@@ -154,7 +156,7 @@ export default function LoginForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Email
+                            {t('auth.email')}
                         </label>
                         <div style={{
                             position: 'relative',
@@ -184,7 +186,7 @@ export default function LoginForm() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Enter your email"
+                                placeholder={t('auth.enterEmail')}
                             />
                         </div>
                     </div>
@@ -198,7 +200,7 @@ export default function LoginForm() {
                             color: '#374151',
                             fontSize: '0.9rem'
                         }}>
-                            Password
+                            {t('auth.password')}
                         </label>
                         <div style={{
                             position: 'relative',
@@ -224,7 +226,7 @@ export default function LoginForm() {
                                     boxSizing: 'border-box',
                                     color: '#374151'
                                 }}
-                                placeholder="Enter your password"
+                                placeholder={t('auth.enterPassword')}
                             />
                             <button
                                 type="button"
@@ -283,7 +285,7 @@ export default function LoginForm() {
                                 e.target.style.textDecoration = 'none';
                             }}
                         >
-                            Forgot Password?
+                            {t('auth.forgotPassword')}
                         </a>
                     </div>
 
@@ -333,10 +335,10 @@ export default function LoginForm() {
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite'
                                 }} />
-                                Signing in...
+                                {t('auth.signingIn')}
                             </div>
                         ) : (
-                            'Sign In'
+                            t('auth.signIn')
                         )}
                     </button>
                 </form>
@@ -392,7 +394,7 @@ export default function LoginForm() {
                             margin: '0 0 0.75rem',
                             letterSpacing: '-0.025em'
                         }}>
-                            New to our platform?
+                            {t('auth.newToPlatform')}
                         </h3>
                         
                         <p style={{ 
@@ -403,7 +405,7 @@ export default function LoginForm() {
                             maxWidth: '280px',
                             margin: '0 auto 2rem'
                         }}>
-                            Join thousands of patients who trust us with their healthcare management. Create your account to get started.
+                            {t('auth.joinThousands')}
                         </p>
 
                         {/* Enhanced Create Account Button */}
@@ -450,7 +452,7 @@ export default function LoginForm() {
                                 fontSize: '0.75rem',
                                 color: 'white'
                             }}>✨</span>
-                            Create Account
+                            {t('auth.createAccount')}
                         </a>
                     </div>
                 </div>

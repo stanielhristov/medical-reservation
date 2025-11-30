@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useMedicalHistory } from '../../hooks/useMedicalHistory';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -7,6 +8,7 @@ import MedicalRecordFilters from '../../components/MedicalRecordFilters';
 import MedicalRecordCard from '../../components/MedicalRecordCard';
 
 const PatientMedicalHistory = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const {
         loading,
@@ -24,7 +26,7 @@ const PatientMedicalHistory = () => {
     } = useMedicalHistory();
 
     if (loading) {
-        return <LoadingSpinner message="Loading medical history..." />;
+        return <LoadingSpinner message={t('loading.loadingMedicalHistory')} />;
     }
 
     return (
@@ -91,7 +93,7 @@ const PatientMedicalHistory = () => {
                                 margin: '0 0 0.5rem',
                                 color: '#374151'
                             }}>
-                                No records found
+                                {t('medicalHistory.noRecordsFound')}
                             </h3>
                             <p style={{
                                 fontSize: '1rem',
@@ -102,8 +104,8 @@ const PatientMedicalHistory = () => {
                                 lineHeight: '1.5'
                             }}>
                                 {selectedCategory === 'all' 
-                                    ? 'You don\'t have any medical records yet. Upload your first record to get started.'
-                                    : `No records found in the selected category. Try selecting a different category or upload new records.`}
+                                    ? t('medicalHistory.noRecordsYet')
+                                    : t('medicalHistory.noRecordsInCategory')}
                             </p>
                         </div>
                     ) : (

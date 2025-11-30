@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { APPOINTMENT_TABS } from '../utils/appointmentUtils';
 
 const AppointmentTabs = ({ selectedTab, onTabSelect, appointments }) => {
+    const { t } = useTranslation();
     const getTabCount = (tabId) => {
         const now = new Date();
         switch (tabId) {
@@ -77,14 +79,14 @@ const AppointmentTabs = ({ selectedTab, onTabSelect, appointments }) => {
                                     color: selectedTab === tab.id ? tab.color : '#374151',
                                     margin: 0
                                 }}>
-                                    {tab.name}
+                                    {t(`appointments.${tab.id}`)}
                                 </h3>
                                 <p style={{
                                     fontSize: '0.9rem',
                                     color: '#6b7280',
                                     margin: 0
                                 }}>
-                                    {count} appointments
+                                    {count} {t('appointments.appointments')}
                                 </p>
                             </div>
                         </div>

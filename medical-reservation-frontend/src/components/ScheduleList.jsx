@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const ScheduleList = ({ 
     schedules, 
     onDelete, 
@@ -10,6 +12,7 @@ const ScheduleList = ({
     onClearSelection,
     onBulkDelete
 }) => {
+    const { t } = useTranslation();
     const formatDateTime = (dateTimeString) => {
         const date = new Date(dateTimeString);
         const day = date.getDate().toString().padStart(2, '0');
@@ -91,14 +94,14 @@ const ScheduleList = ({
                     color: '#374151',
                     margin: '0 0 1rem'
                 }}>
-                    No Schedule Found
+                    {t('schedule.noScheduleFound')}
                 </h3>
                 <p style={{
                     color: '#6b7280',
                     margin: 0,
                     fontSize: '1rem'
                 }}>
-                    No time slots available for the selected view. Add some schedule entries to get started.
+                    {t('schedule.noTimeSlotsAvailable')}
                 </p>
             </div>
         );
@@ -163,7 +166,7 @@ const ScheduleList = ({
                                 accentColor: '#15803d'
                             }}
                         />
-                        Select All ({schedules.length})
+                        {t('schedule.selectAll')} ({schedules.length})
                     </label>
 
                     {selectedCount > 0 && (
@@ -175,7 +178,7 @@ const ScheduleList = ({
                             background: 'rgba(21, 128, 61, 0.1)',
                             color: '#15803d'
                         }}>
-                            {selectedCount} selected
+                            {selectedCount} {t('schedule.selected')}
                         </span>
                     )}
                 </div>
@@ -202,7 +205,7 @@ const ScheduleList = ({
                                 e.target.style.background = 'rgba(107, 114, 128, 0.1)';
                             }}
                         >
-                            Clear Selection
+                            {t('schedule.clearSelection')}
                         </button>
                         <button
                             onClick={handleBulkDelete}
@@ -227,7 +230,7 @@ const ScheduleList = ({
                                 e.target.style.background = 'rgba(239, 68, 68, 0.1)';
                             }}
                         >
-                            🗑️ Delete Selected ({selectedCount})
+                            🗑️ {t('schedule.deleteSelected')} ({selectedCount})
                         </button>
                     </div>
                 )}
@@ -327,10 +330,10 @@ const ScheduleList = ({
                                             schedule.status === 'PAST' ? '#6b7280' :
                                             schedule.available ? '#15803d' : '#dc2626'
                                     }}>
-                                        {schedule.status === 'BOOKED' ? '👤 Reserved' :
-                                         schedule.status === 'BLOCKED' ? '🚫 Blocked' :
-                                         schedule.status === 'PAST' ? '⏰ Past' :
-                                         schedule.available ? '✅ Available' : '❌ Unavailable'}
+                                        {schedule.status === 'BOOKED' ? `👤 ${t('schedule.reserved')}` :
+                                         schedule.status === 'BLOCKED' ? `🚫 ${t('schedule.blocked')}` :
+                                         schedule.status === 'PAST' ? `⏰ ${t('schedule.past')}` :
+                                         schedule.available ? `✅ ${t('schedule.available')}` : `❌ ${t('schedule.unavailable')}`}
                                     </span>
                                     {isPast && (
                                         <span style={{
@@ -341,7 +344,7 @@ const ScheduleList = ({
                                             background: 'rgba(107, 114, 128, 0.1)',
                                             color: '#6b7280'
                                         }}>
-                                            Past
+                                            {t('schedule.past')}
                                         </span>
                                     )}
                                 </div>
@@ -367,7 +370,7 @@ const ScheduleList = ({
                                                 fontWeight: '600',
                                                 fontSize: '0.9rem'
                                             }}>
-                                                Reserved by:
+                                                {t('schedule.reservedBy')}
                                             </span>
                                         </div>
                                         <div style={{
@@ -392,7 +395,7 @@ const ScheduleList = ({
                                             fontSize: '0.8rem', 
                                             fontWeight: '500' 
                                         }}>
-                                            Start Time
+                                            {t('schedule.startTime')}
                                         </div>
                                         <div style={{ 
                                             color: '#374151', 
@@ -409,7 +412,7 @@ const ScheduleList = ({
                                             fontSize: '0.8rem', 
                                             fontWeight: '500' 
                                         }}>
-                                            End Time
+                                            {t('schedule.endTime')}
                                         </div>
                                         <div style={{ 
                                             color: '#374151', 
@@ -426,7 +429,7 @@ const ScheduleList = ({
                                             fontSize: '0.8rem', 
                                             fontWeight: '500' 
                                         }}>
-                                            Duration
+                                            {t('schedule.duration')}
                                         </div>
                                         <div style={{ 
                                             color: '#374151', 
@@ -462,7 +465,7 @@ const ScheduleList = ({
                                             transition: 'all 0.2s ease',
                                             fontSize: '0.8rem'
                                         }}
-                                        title={schedule.available ? 'Mark as Unavailable' : 'Mark as Available'}
+                                        title={schedule.available ? t('schedule.markAsUnavailable') : t('schedule.markAsAvailable')}
                                     >
                                         {schedule.available ? '🚫' : '✅'}
                                     </button>
@@ -479,7 +482,7 @@ const ScheduleList = ({
                                         fontSize: '0.8rem',
                                         fontWeight: '500'
                                     }}>
-                                        📅 Booked
+                                        📅 {t('schedule.booked')}
                                     </div>
                                 )}
                                 
@@ -494,7 +497,7 @@ const ScheduleList = ({
                                         fontSize: '0.8rem',
                                         fontWeight: '500'
                                     }}>
-                                        🚫 Blocked
+                                        🚫 {t('schedule.blocked')}
                                     </div>
                                 )}
                                 
@@ -517,8 +520,8 @@ const ScheduleList = ({
                                             fontWeight: schedule.status === 'BOOKED' ? '600' : 'normal'
                                         }}
                                         title={schedule.status === 'BOOKED' 
-                                            ? "Cancel appointment and delete schedule" 
-                                            : "Delete Schedule"}
+                                            ? t('schedule.cancelAppointmentAndDelete')
+                                            : t('schedule.deleteSchedule')}
                                     >
                                         {schedule.status === 'BOOKED' ? '❌' : '🗑️'}
                                     </button>

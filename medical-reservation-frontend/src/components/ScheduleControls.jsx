@@ -1,19 +1,23 @@
+import { useTranslation } from 'react-i18next';
+
 const ScheduleControls = ({ 
     selectedView, 
     currentDate, 
     onDateChange, 
     onManageAvailability
 }) => {
+    const { t, i18n } = useTranslation();
     console.log('ScheduleControls rendering with:', {
         onManageAvailability: !!onManageAvailability
     });
     const formatDateForView = () => {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         const options = { 
             year: 'numeric', 
             month: 'long', 
             ...(selectedView === 'week' && { day: 'numeric' })
         };
-        return currentDate.toLocaleDateString('en-US', options);
+        return currentDate.toLocaleDateString(locale, options);
     };
 
     const navigateDate = (direction) => {
@@ -65,7 +69,7 @@ const ScheduleControls = ({
                                 e.target.style.background = 'rgba(21, 128, 61, 0.1)';
                             }}
                         >
-                            ← Previous
+                            ← {t('schedule.previous')}
                         </button>
                         
                         <div style={{
@@ -97,7 +101,7 @@ const ScheduleControls = ({
                                 e.target.style.background = 'rgba(21, 128, 61, 0.1)';
                             }}
                         >
-                            Next →
+                            {t('schedule.next')} →
                         </button>
                     </>
                 )}
@@ -108,7 +112,7 @@ const ScheduleControls = ({
                         fontWeight: '600',
                         color: '#374151'
                     }}>
-                        {selectedView === 'upcoming' ? 'Upcoming Appointments' : 'Available Slots'}
+                        {selectedView === 'upcoming' ? t('schedule.upcomingAppointments') : t('schedule.availableSlots')}
                     </div>
                 )}
             </div>
@@ -144,7 +148,7 @@ const ScheduleControls = ({
                             e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
                         }}
                     >
-                        🗓️ Available Slots
+                        🗓️ {t('schedule.availableSlots')}
                     </button>
                 )}
             </div>

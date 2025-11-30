@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const MedicalHistoryHeader = ({ onUploadClick }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -33,7 +35,7 @@ const MedicalHistoryHeader = ({ onUploadClick }) => {
                 margin: '0 0 0.5rem',
                 letterSpacing: '-0.02em'
             }}>
-                Medical History
+                {t('patient.medicalHistoryHeader')}
             </h1>
             
             <p style={{
@@ -42,7 +44,7 @@ const MedicalHistoryHeader = ({ onUploadClick }) => {
                 margin: '0 0 2.5rem',
                 fontWeight: '500'
             }}>
-                Access your complete medical records, test results, and health documentation
+                {t('patient.medicalHistoryDescription')}
             </p>
 
             <div style={{
@@ -78,7 +80,7 @@ const MedicalHistoryHeader = ({ onUploadClick }) => {
                     }}
                 >
                     <span>📤</span>
-                    Upload New Record
+                    {t('patient.uploadRecord')}
                 </button>
                 
                 <button
@@ -109,7 +111,7 @@ const MedicalHistoryHeader = ({ onUploadClick }) => {
                     }}
                 >
                     <span>📊</span>
-                    Export Records
+                    {t('patient.exportRecords')}
                 </button>
             </div>
         </section>

@@ -1,7 +1,20 @@
 import React from 'react';
-import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
+import { useTranslation } from 'react-i18next';
+import { formatDoctorScheduleDateTime, translateAppointmentType } from '../utils/appointmentUtils';
 
 const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatDate, getStatusColor, onNavigation }) => {
+    const { t } = useTranslation();
+
+    const getStatusTranslation = (status) => {
+        const statusMap = {
+            'completed': t('appointments.completed'),
+            'confirmed': t('appointments.confirmed'),
+            'pending': t('appointments.pending'),
+            'cancelled': t('appointments.cancelled'),
+            'rescheduled': t('appointments.rescheduled')
+        };
+        return statusMap[status?.toLowerCase()] || status;
+    };
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -39,7 +52,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                     }}>
                         ⏰
                     </span>
-                    Upcoming Appointments
+                    {t('dashboard.upcomingAppointments')}
                 </h2>
                 
                 <button
@@ -68,7 +81,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                         e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
                     }}
                 >
-                    View All
+                    {t('dashboard.viewAll')}
                     <span>→</span>
                 </button>
             </div>
@@ -92,7 +105,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                         margin: '0 0 0.75rem',
                         color: '#374151'
                     }}>
-                        No upcoming appointments
+                        {t('dashboard.noUpcomingAppointments')}
                     </h3>
                     <p style={{
                         fontSize: '1rem',
@@ -102,7 +115,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                         marginRight: 'auto',
                         lineHeight: '1.5'
                     }}>
-                        Your upcoming schedule is clear. Use this time to prepare for future appointments or review patient cases.
+                        {t('dashboard.clearUpcomingScheduleMessage')}
                     </p>
                     <button
                         onClick={() => onNavigation('/doctor/schedule')}
@@ -119,7 +132,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                             boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
                         }}
                     >
-                        Update Schedule
+                        {t('dashboard.updateSchedule')}
                     </button>
                 </div>
             ) : (
@@ -189,7 +202,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                                                 color: '#6b7280',
                                                 margin: '0 0 0.5rem'
                                             }}>
-                                                {appointment.type} • {appointment.duration}
+                                                {translateAppointmentType(appointment.type)} • {appointment.duration}
                                             </p>
                                             <div style={{
                                                 display: 'flex',
@@ -219,7 +232,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                                             border: `1px solid ${statusColors.border}`,
                                             textTransform: 'capitalize'
                                         }}>
-                                            {appointment.status}
+                                            {getStatusTranslation(appointment.status)}
                                         </div>
                                         
                                         {appointment.reason && (
@@ -253,7 +266,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                                 margin: 0,
                                 fontWeight: '600'
                             }}>
-                                + {upcomingAppointments.length - 5} more upcoming appointments
+                                + {upcomingAppointments.length - 5} {t('dashboard.moreUpcomingAppointments')}
                             </p>
                         </div>
                     )}

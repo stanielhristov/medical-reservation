@@ -1,7 +1,10 @@
 import React from 'react';
-import { views } from '../utils/doctorAppointmentUtils';
+import { useTranslation } from 'react-i18next';
+import { getViews } from '../utils/doctorAppointmentUtils';
 
 const DoctorAppointmentTabs = ({ selectedView, onViewChange }) => {
+    const { t } = useTranslation();
+    const views = getViews();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',

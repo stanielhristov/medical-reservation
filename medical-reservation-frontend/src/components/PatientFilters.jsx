@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const PatientFilters = ({ 
     filters, 
     selectedFilter, 
@@ -6,6 +8,7 @@ const PatientFilters = ({
     onSearchChange,
     patientCounts = {}
 }) => {
+    const { t } = useTranslation();
     return (
         <div style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -30,13 +33,13 @@ const PatientFilters = ({
                     color: '#374151',
                     margin: 0
                 }}>
-                    Filter Patients
+                    {t('patients.filterPatients')}
                 </h3>
                 
                 <div style={{ position: 'relative', minWidth: '250px' }}>
                     <input
                         type="text"
-                        placeholder="Search patients..."
+                        placeholder={t('patients.searchPatients')}
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
                         style={{

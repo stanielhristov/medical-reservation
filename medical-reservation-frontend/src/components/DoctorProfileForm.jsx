@@ -1,5 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FormField from './FormField';
+import { MEDICAL_SPECIALIZATIONS } from '../utils/countryData';
+import { translateSpecialization } from '../utils/specializationUtils';
 
 const DoctorProfileForm = ({ 
     doctorProfileData,
@@ -9,6 +12,7 @@ const DoctorProfileForm = ({
     saving, 
     hasDoctorDataChanged 
 }) => {
+    const { t } = useTranslation();
     const handleInputChange = (e) => {
         onInputChange(e, 'doctor');
     };
@@ -22,40 +26,78 @@ const DoctorProfileForm = ({
                 marginBottom: '2rem'
             }}>
                 <FormField
-                    label="Specialization"
+                    label={t('profile.specialization')}
                     name="specialization"
                     value={doctorProfileData.specialization}
                     onChange={handleInputChange}
                     required
-                    placeholder="e.g. Cardiology, Dermatology, etc."
-                />
+                >
+                    <select
+                        name="specialization"
+                        value={doctorProfileData.specialization}
+                        onChange={handleInputChange}
+                        required
+                        style={{
+                            width: '100%',
+                            padding: '1rem',
+                            border: '2px solid rgba(34, 197, 94, 0.2)',
+                            borderRadius: '12px',
+                            fontSize: '1rem',
+                            transition: 'all 0.3s ease',
+                            background: 'rgba(255, 255, 255, 0.8)',
+                            outline: 'none',
+                            appearance: 'none',
+                            backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e")',
+                            backgroundPosition: 'right 0.5rem center',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundSize: '1.5em 1.5em',
+                            paddingRight: '2.5rem',
+                            cursor: 'pointer'
+                        }}
+                        onFocus={(e) => {
+                            e.target.style.borderColor = '#22c55e';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                        }}
+                        onBlur={(e) => {
+                            e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                            e.target.style.boxShadow = 'none';
+                        }}
+                    >
+                        <option value="">{t('profile.selectSpecialization')}</option>
+                        {MEDICAL_SPECIALIZATIONS.map(spec => (
+                            <option key={spec} value={spec}>
+                                {translateSpecialization(spec)}
+                            </option>
+                        ))}
+                    </select>
+                </FormField>
 
                 <FormField
-                    label="License Number"
+                    label={t('profile.licenseNumber')}
                     name="licenseNumber"
                     value={doctorProfileData.licenseNumber}
                     onChange={handleInputChange}
                     required
-                    placeholder="Medical license number"
+                    placeholder={t('profile.licenseNumberPlaceholder')}
                 />
 
                 <FormField
-                    label="Consultation Fee"
+                    label={t('profile.consultationFee')}
                     name="price"
                     value={doctorProfileData.price}
                     onChange={handleInputChange}
                     type="number"
                     min="0"
                     step="1"
-                    placeholder="e.g. 120"
+                    placeholder={t('profile.consultationFeePlaceholder')}
                 />
 
                 <FormField
-                    label="Location"
+                    label={t('profile.location')}
                     name="location"
                     value={doctorProfileData.location}
                     onChange={handleInputChange}
-                    placeholder="e.g. Medical Center, Downtown Clinic"
+                    placeholder={t('profile.locationPlaceholder')}
                 />
 
                 {doctorData?.rating !== undefined && (
@@ -67,7 +109,7 @@ const DoctorProfileForm = ({
                             fontWeight: '600',
                             fontSize: '0.95rem'
                         }}>
-                            Current Rating
+                            {t('profile.currentRating')}
                         </label>
                         <div style={{
                             width: '100%',
@@ -86,7 +128,7 @@ const DoctorProfileForm = ({
                                 {doctorData.rating?.toFixed(1) || '0.0'}
                             </span>
                             <span style={{ color: '#6b7280' }}>
-                                ({doctorData.totalRatings || 0} reviews)
+                                ({doctorData.totalRatings || 0} {doctorData.totalRatings === 1 ? t('doctors.review') : t('doctors.reviews')})
                             </span>
                         </div>
                     </div>
@@ -100,7 +142,7 @@ const DoctorProfileForm = ({
                         fontWeight: '600',
                         fontSize: '0.95rem'
                     }}>
-                        Account Status
+                        {t('profile.accountStatus')}
                     </label>
                     <div style={{
                         width: '100%',
@@ -124,7 +166,7 @@ const DoctorProfileForm = ({
                             fontWeight: '600',
                             color: doctorData?.isActive ? '#22c55e' : '#ef4444'
                         }}>
-                            {doctorData?.isActive ? 'Active' : 'Inactive'}
+                            {doctorData?.isActive ? t('profile.active') : t('profile.inactive')}
                         </span>
                     </div>
                 </div>
@@ -132,18 +174,18 @@ const DoctorProfileForm = ({
 
             <div style={{ marginBottom: '1.5rem' }}>
                 <FormField
-                    label="Education"
+                    label={t('profile.education')}
                     name="education"
                     value={doctorProfileData.education}
                     onChange={handleInputChange}
-                    placeholder="Medical degree, university, graduation year..."
+                    placeholder={t('profile.educationPlaceholder')}
                 >
                     <textarea
                         name="education"
                         value={doctorProfileData.education}
                         onChange={handleInputChange}
                         rows="3"
-                        placeholder="Medical degree, university, graduation year..."
+                        placeholder={t('profile.educationPlaceholder')}
                         style={{
                             width: '100%',
                             padding: '1rem',
@@ -170,18 +212,18 @@ const DoctorProfileForm = ({
 
             <div style={{ marginBottom: '1.5rem' }}>
                 <FormField
-                    label="Experience"
+                    label={t('profile.experience')}
                     name="experience"
                     value={doctorProfileData.experience}
                     onChange={handleInputChange}
-                    placeholder="Years of experience, previous positions, certifications..."
+                    placeholder={t('profile.experiencePlaceholder')}
                 >
                     <textarea
                         name="experience"
                         value={doctorProfileData.experience}
                         onChange={handleInputChange}
                         rows="3"
-                        placeholder="Years of experience, previous positions, certifications..."
+                        placeholder={t('profile.experiencePlaceholder')}
                         style={{
                             width: '100%',
                             padding: '1rem',
@@ -208,18 +250,18 @@ const DoctorProfileForm = ({
 
             <div style={{ marginBottom: '2rem' }}>
                 <FormField
-                    label="Bio"
+                    label={t('profile.bio')}
                     name="bio"
                     value={doctorProfileData.bio}
                     onChange={handleInputChange}
-                    placeholder="Brief professional bio..."
+                    placeholder={t('profile.bioPlaceholder')}
                 >
                     <textarea
                         name="bio"
                         value={doctorProfileData.bio}
                         onChange={handleInputChange}
                         rows="4"
-                        placeholder="Brief professional bio..."
+                        placeholder={t('profile.bioPlaceholder')}
                         style={{
                             width: '100%',
                             padding: '1rem',
@@ -280,7 +322,7 @@ const DoctorProfileForm = ({
                                 borderRadius: '50%',
                                 animation: 'spin 1s linear infinite'
                             }} />
-                            Saving...
+                            {t('profile.saving')}
                         </>
                     ) : (
                         <>
@@ -326,7 +368,7 @@ const DoctorProfileForm = ({
                                     borderRadius: '50%'
                                 }} />
                             </div>
-                            Save Doctor Info
+                            {t('profile.saveDoctorInfo')}
                         </>
                     )}
                 </button>
