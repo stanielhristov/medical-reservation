@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 const UserTypeSelector = ({ value, onChange, disabled }) => {
+    const { t } = useTranslation();
+    
     return (
         <div style={{ marginBottom: '2rem' }}>
             <label style={{
@@ -8,7 +12,7 @@ const UserTypeSelector = ({ value, onChange, disabled }) => {
                 color: '#374151',
                 fontSize: '1rem'
             }}>
-                I want to register as:
+                {t('auth.iWantToRegisterAs')}
             </label>
             <div style={{ display: 'flex', gap: '1rem' }}>
                 <label style={{
@@ -34,7 +38,7 @@ const UserTypeSelector = ({ value, onChange, disabled }) => {
                         style={{ display: 'none' }}
                     />
                     <span style={{ fontSize: '1.25rem' }}>👤</span>
-                    <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>Patient</span>
+                    <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>{t('auth.patient')}</span>
                 </label>
                 <label style={{
                     display: 'flex',
@@ -59,7 +63,7 @@ const UserTypeSelector = ({ value, onChange, disabled }) => {
                         style={{ display: 'none' }}
                     />
                     <span style={{ fontSize: '1.25rem' }}>👨‍⚕️</span>
-                    <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>Doctor</span>
+                    <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>{t('auth.doctor')}</span>
                 </label>
             </div>
         </div>

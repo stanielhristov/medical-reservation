@@ -180,7 +180,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     fontSize: '0.75rem',
                                     marginLeft: '0.25rem'
                                 }}>
-                                    ({t('patients.daysAgo', { days: daysSinceLastVisit })})
+                                    ({t('patients.daysAgo', { days: daysSinceLastVisit || 0 })})
                                 </span>
                             </>
                         ) : (
@@ -216,7 +216,7 @@ const PatientCard = ({ patient, onClick, isSelected = false }) => {
                                     marginLeft: '0.25rem',
                                     fontWeight: daysUntilNextAppointment <= 7 ? '600' : '400'
                                 }}>
-                                    ({daysUntilNextAppointment > 0 ? t('patients.inDays', { days: daysUntilNextAppointment }) : t('patients.overdue')})
+                                    ({daysUntilNextAppointment > 0 ? t('patients.inDays', { days: daysUntilNextAppointment || 0 }) : t('patients.overdue')})
                                 </span>
                             </>
                         ) : (

@@ -46,13 +46,29 @@ export const formatDoctorScheduleDateTime = (dateTime) => {
     const currentLang = i18n.language || 'en';
     const locale = currentLang === 'bg' ? 'bg-BG' : 'en-US';
     
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleDateString(locale, { month: 'short' });
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    
-    return `${day} ${month} ${year} – ${hours}:${minutes}`;
+    // Format date with day name and full date
+    if (currentLang === 'bg') {
+        const weekday = date.toLocaleDateString('bg-BG', { weekday: 'long' });
+        const day = date.getDate();
+        const month = date.toLocaleDateString('bg-BG', { month: 'long' });
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        
+        return `${weekday}, ${day} ${month} ${year} в ${hours}:${minutes}`;
+    } else {
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
+        const month = date.toLocaleDateString('en-US', { month: 'long' });
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const time = date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+        
+        return `${weekday}, ${month} ${day}, ${year} at ${time}`;
+    }
 };
 
 export const formatPatientDateTime = (dateTime) => {
@@ -144,11 +160,11 @@ export const getRelativeTimeUntil = (date) => {
     const diffTime = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Tomorrow';
-    if (diffDays > 1) return `In ${diffDays} days`;
-    if (diffDays === -1) return 'Yesterday';
-    if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
+    if (diffDays === 0) return i18n.t('appointments.today');
+    if (diffDays === 1) return i18n.t('appointments.tomorrow');
+    if (diffDays > 1) return i18n.t('appointments.inDays', { days: diffDays });
+    if (diffDays === -1) return i18n.t('appointments.yesterday');
+    if (diffDays < -1) return i18n.t('appointments.daysAgo', { days: Math.abs(diffDays) });
     
     return '';
 };

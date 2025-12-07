@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { COUNTRIES, COUNTRY_MAP } from '../utils/countryData';
+import { translateCountryName } from '../utils/countryUtils';
 
 const PhoneInput = ({ 
     label, 
@@ -11,6 +13,7 @@ const PhoneInput = ({
     required = false, 
     placeholder 
 }) => {
+    const { t } = useTranslation();
     const selectedCountry = useMemo(() =>
         COUNTRY_MAP.get(countryCode) || COUNTRIES[0], 
         [countryCode]
@@ -53,7 +56,7 @@ const PhoneInput = ({
                     >
                         {COUNTRIES.map(country => (
                             <option key={country.code} value={country.code}>
-                                {country.flag} {country.name}
+                                {country.flag} {translateCountryName(country.code, country.name)}
                             </option>
                         ))}
                     </select>
@@ -86,7 +89,7 @@ const PhoneInput = ({
                 marginTop: '0.25rem',
                 marginLeft: '0.5rem'
             }}>
-                Selected: {selectedCountry.flag} {selectedCountry.name} ({selectedCountry.phone})
+                {t('common.selected')}: {selectedCountry.flag} {translateCountryName(selectedCountry.code, selectedCountry.name)} ({selectedCountry.phone})
             </div>
         </div>
     );

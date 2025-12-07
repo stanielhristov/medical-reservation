@@ -211,7 +211,7 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, formatTime, formatD
                                                 color: '#059669',
                                                 fontWeight: '600'
                                             }}>
-                                                <span>📅 {formatDoctorScheduleDateTime(appointment.appointmentDate)}</span>
+                                                <span>📅 {formatDoctorScheduleDateTime(appointment.appointmentTime || appointment.appointmentDate || appointment.date)}</span>
                                             </div>
                                         </div>
                                     </div>

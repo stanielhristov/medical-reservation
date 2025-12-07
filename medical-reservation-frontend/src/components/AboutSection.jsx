@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AboutSection = () => {
+    const { t } = useTranslation();
+    
     return (
         <section id="about" style={{
             padding: '6rem 2rem',
@@ -24,7 +27,7 @@ const AboutSection = () => {
                         marginBottom: '1rem',
                         letterSpacing: '-0.02em'
                     }}>
-                        About MedReserve
+                        {t('about.title')}
                     </h2>
                     <p style={{
                         fontSize: '1.25rem',
@@ -33,7 +36,7 @@ const AboutSection = () => {
                         margin: '0 auto',
                         lineHeight: '1.6'
                     }}>
-                        Your trusted partner in revolutionizing healthcare accessibility and management
+                        {t('about.subtitle')}
                     </p>
                 </div>
 
@@ -72,23 +75,20 @@ const AboutSection = () => {
                             color: '#1f2937',
                             marginBottom: '1rem'
                         }}>
-                            Our Mission
+                            {t('about.ourMission')}
                         </h3>
                         <p style={{
                             color: '#6b7280',
                             lineHeight: '1.7',
                             marginBottom: '1rem'
                         }}>
-                            MedReserve is committed to revolutionizing healthcare accessibility by providing a 
-                            seamless platform for patients to connect with healthcare providers, manage appointments, 
-                            and maintain their medical records.
+                            {t('about.missionText1')}
                         </p>
                         <p style={{
                             color: '#6b7280',
                             lineHeight: '1.7'
                         }}>
-                            We believe that healthcare should be convenient, transparent, and accessible to everyone. 
-                            Our platform bridges the gap between patients and healthcare providers.
+                            {t('about.missionText2')}
                         </p>
                     </div>
 
@@ -120,15 +120,15 @@ const AboutSection = () => {
                             color: '#1f2937',
                             marginBottom: '1rem'
                         }}>
-                            Key Features
+                            {t('about.keyFeatures')}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             {[
-                                'Easy appointment booking with qualified healthcare providers',
-                                'Comprehensive medical history management',
-                                'Real-time notifications and reminders',
-                                'Secure and confidential data handling',
-                                'Multi-platform accessibility'
+                                t('about.feature1'),
+                                t('about.feature2'),
+                                t('about.feature3'),
+                                t('about.feature4'),
+                                t('about.feature5')
                             ].map((feature, index) => (
                                 <div key={index} style={{
                                     display: 'flex',
@@ -171,7 +171,7 @@ const AboutSection = () => {
                         textAlign: 'center',
                         marginBottom: '3rem'
                     }}>
-                        How It Works
+                        {t('about.howItWorks')}
                     </h3>
                     <div style={{
                         display: 'grid',
@@ -179,9 +179,9 @@ const AboutSection = () => {
                         gap: '2rem'
                     }}>
                         {[
-                            { number: '1', title: 'Register', description: 'Create your account and complete your profile', icon: '👤' },
-                            { number: '2', title: 'Book', description: 'Find and book appointments with healthcare providers', icon: '📅' },
-                            { number: '3', title: 'Manage', description: 'Track your appointments and medical history', icon: '📊' }
+                            { number: '1', title: t('about.step1Title'), description: t('about.step1Desc'), icon: '👤' },
+                            { number: '2', title: t('about.step2Title'), description: t('about.step2Desc'), icon: '📅' },
+                            { number: '3', title: t('about.step3Title'), description: t('about.step3Desc'), icon: '📊' }
                         ].map((step, index) => (
                             <div key={index} style={{
                                 textAlign: 'center',

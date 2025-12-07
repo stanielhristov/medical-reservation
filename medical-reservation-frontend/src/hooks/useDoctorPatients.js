@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getDoctorPatients, getDoctorByUserId } from '../api/doctors';
-import { getPatientMedicalHistory } from '../api/medicalHistory';
+import { getPatientMedicalHistory, createMedicalHistory } from '../api/medicalHistory';
 
 export const useDoctorPatients = () => {
     const { t } = useTranslation();
@@ -150,14 +150,70 @@ export const useDoctorPatients = () => {
 
     const handleSaveRecord = useCallback(async (recordData) => {
         try {
-            console.log('Saving medical record:', recordData);
+            const doctorData = await getDoctorByUserId(user.id);
+            
+            const mapTypeToBackend = (type) => {
+                switch (type?.toLowerCase()) {
+                    case 'consultation':
+                    case 'checkup':
+                    case 'routine checkup':
+                    case 'followup':
+                    case 'follow-up visit':
+                        return 'consultation';
+                    case 'test':
+                    case 'lab':
+                    case 'lab_result':
+                    case 'test/lab results':
+                        return 'lab_result';
+                    case 'procedure':
+                    case 'medical procedure':
+                    case 'emergency':
+                    case 'emergency visit':
+                        return 'procedure';
+                    default:
+                        return 'consultation';
+                }
+            };
+            
+            const medicalHistoryData = {
+                patientId: recordData.patientId,
+                doctorId: doctorData.id,
+                title: recordData.title,
+                description: recordData.description,
+                diagnosis: recordData.diagnosis,
+                treatment: recordData.treatment,
+                medications: recordData.prescription || null,
+                recordType: mapTypeToBackend(recordData.type),
+                recordDate: recordData.date || new Date().toISOString()
+            };
+            
+            await createMedicalHistory(medicalHistoryData);
+            
             setShowAddRecord(false);
+            
             await fetchPatients();
+            
+            if (selectedPatient && selectedPatient.id === recordData.patientId) {
+                const updatedMedicalHistory = await getPatientMedicalHistory(recordData.patientId);
+                setSelectedPatient(prev => ({
+                    ...prev,
+                    medicalRecords: updatedMedicalHistory.map(record => ({
+                        id: record.id,
+                        date: new Date(record.recordDate || record.createdAt),
+                        type: record.recordType?.toLowerCase() || 'consultation',
+                        title: record.title || record.diagnosis || 'Medical Record',
+                        description: record.notes || record.description || 'No description available',
+                        diagnosis: record.diagnosis || 'No diagnosis',
+                        treatment: record.treatment || 'No treatment specified',
+                        prescription: record.prescription || 'No prescription'
+                    }))
+                }));
+            }
         } catch (error) {
             console.error('Error saving medical record:', error);
             throw error;
         }
-    }, [fetchPatients]);
+    }, [user?.id, fetchPatients, selectedPatient]);
 
     const filters = [
         { id: 'all', name: t('patients.allPatients'), icon: '👥', color: '#059669' },

@@ -216,7 +216,7 @@ const TodayAppointmentsSection = ({ todayAppointments, formatTime, getStatusColo
                                                     margin: 0,
                                                     fontWeight: '600'
                                                 }}>
-                                                    🕐 {formatDoctorScheduleDateTime(appointment.appointmentDate)}
+                                                    🕐 {formatDoctorScheduleDateTime(appointment.appointmentTime || appointment.appointmentDate || appointment.date)}
                                                 </p>
                                             </div>
                                         </div>

@@ -117,7 +117,7 @@ const DoctorAppointmentCard = ({
                             margin: 0,
                             fontWeight: '500'
                         }}>
-                            {appointment.patientAge ? `Age: ${appointment.patientAge}` : 'Age: Not provided'} • {translateAppointmentType(appointment.type)}
+                            {appointment.patientAge ? `${t('common.age')}: ${appointment.patientAge}` : `${t('common.age')}: ${t('common.notProvided')}`} • {translateAppointmentType(appointment.type)}
                         </p>
                     </div>
                 </div>
@@ -198,7 +198,7 @@ const DoctorAppointmentCard = ({
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Service
+                            {t('appointments.service')}
                         </p>
                         <p style={{
                             fontSize: '1rem',
@@ -218,7 +218,7 @@ const DoctorAppointmentCard = ({
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Consultation Fee
+                            {t('profile.consultationFee')}
                         </p>
                         <p style={{
                             fontSize: '1.1rem',
@@ -240,7 +240,7 @@ const DoctorAppointmentCard = ({
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                     }}>
-                        Reason for Visit
+                        {t('appointments.reasonForVisit')}
                     </p>
                     <p style={{
                         fontSize: '1rem',
@@ -315,7 +315,7 @@ const DoctorAppointmentCard = ({
                                     e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                                 }}
                             >
-                                ✓ Approve
+                                ✓ {t('reschedule.approve')}
                             </button>
                             <button
                                 onClick={(e) => {
@@ -343,7 +343,7 @@ const DoctorAppointmentCard = ({
                                     e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
                                 }}
                             >
-                                ✗ Decline
+                                ✗ {t('reschedule.reject')}
                             </button>
                         </>
                     )}
@@ -375,7 +375,7 @@ const DoctorAppointmentCard = ({
                                 e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
                             }}
                         >
-                            ✓ Mark Complete
+                            ✓ {t('appointments.markComplete')}
                         </button>
                     )}
                 </div>

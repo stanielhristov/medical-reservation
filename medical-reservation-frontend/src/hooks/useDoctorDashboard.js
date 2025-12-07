@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getDoctorDashboard, getDoctorByUserId } from '../api/doctors';
+import i18n from '../i18n/config';
 
 export const useDoctorDashboard = (user) => {
     const [loading, setLoading] = useState(true);
@@ -23,8 +24,20 @@ export const useDoctorDashboard = (user) => {
 
             const dashboardData = await getDoctorDashboard(doctorProfile.id);
             
-            setTodayAppointments(dashboardData.todayAppointments || []);
-            setUpcomingAppointments(dashboardData.upcomingAppointments || []);
+            // Transform appointments to ensure consistent structure
+            const transformAppointment = (appointment) => ({
+                ...appointment,
+                appointmentDate: appointment.appointmentTime || appointment.appointmentDate || appointment.date,
+                appointmentTime: appointment.appointmentTime || appointment.appointmentDate || appointment.date,
+                patientName: appointment.patientName || appointment.patient?.fullName || 'Unknown Patient',
+                patientAge: appointment.patientAge || appointment.patient?.age || null,
+                patientPhone: appointment.patientPhone || appointment.phone || appointment.patient?.phoneNumber || null,
+                patientEmail: appointment.patientEmail || appointment.email || appointment.patient?.email || null,
+                reason: appointment.reason || appointment.notes || null
+            });
+            
+            setTodayAppointments((dashboardData.todayAppointments || []).map(transformAppointment));
+            setUpcomingAppointments((dashboardData.upcomingAppointments || []).map(transformAppointment));
             
             const stats = dashboardData.statistics || {};
             setDashboardStats(stats);
@@ -45,20 +58,41 @@ export const useDoctorDashboard = (user) => {
 
     const formatTime = useCallback((dateString) => {
         if (!dateString) return '';
-        return new Date(dateString).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
+        const currentLang = i18n.language || 'en';
+        const locale = currentLang === 'bg' ? 'bg-BG' : 'en-US';
+        
+        if (currentLang === 'bg') {
+            const date = new Date(dateString);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        } else {
+            return new Date(dateString).toLocaleTimeString(locale, {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
     }, []);
 
     const formatDate = useCallback((dateString) => {
         if (!dateString) return '';
-        return new Date(dateString).toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'short',
-            day: 'numeric'
-        });
+        const currentLang = i18n.language || 'en';
+        const locale = currentLang === 'bg' ? 'bg-BG' : 'en-US';
+        
+        if (currentLang === 'bg') {
+            const date = new Date(dateString);
+            const weekday = date.toLocaleDateString('bg-BG', { weekday: 'long' });
+            const day = date.getDate();
+            const month = date.toLocaleDateString('bg-BG', { month: 'long' });
+            return `${weekday}, ${day} ${month}`;
+        } else {
+            return new Date(dateString).toLocaleDateString(locale, {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
     }, []);
 
     const getStatusColor = useCallback((status) => {

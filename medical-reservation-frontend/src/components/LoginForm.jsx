@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function LoginForm() {
     const { t } = useTranslation();
@@ -48,14 +49,85 @@ export default function LoginForm() {
             minHeight: '100vh',
             width: '100vw',
             background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '20px',
             position: 'relative',
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
+            {/* Header with Language Switcher */}
+            <header style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                padding: '1.5rem 2rem',
+                boxShadow: '0 8px 32px rgba(34, 197, 94, 0.1)',
+                border: '1px solid rgba(34, 197, 94, 0.1)',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000
+            }}>
+                <div style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}>
+                    <Link to="/" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        textDecoration: 'none',
+                        color: '#374151'
+                    }}>
+                        <div style={{
+                            width: '50px',
+                            height: '50px',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            borderRadius: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)'
+                        }}>
+                            <span style={{ fontSize: '1.5rem', color: 'white' }}>🏥</span>
+                        </div>
+                        <h1 style={{
+                            fontSize: '1.8rem',
+                            fontWeight: '800',
+                            color: '#374151',
+                            margin: 0,
+                            letterSpacing: '-0.02em'
+                        }}>
+                            {t('landing.medReserve')}
+                        </h1>
+                    </Link>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <LanguageSwitcher />
+                        <Link to="/" style={{
+                            color: '#6b7280',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            fontSize: '1rem',
+                            transition: 'all 0.3s ease',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '8px'
+                        }}>
+                            {t('nav.home')}
+                        </Link>
+                    </div>
+                </div>
+            </header>
+
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh',
+                padding: '100px 20px 20px',
+                position: 'relative',
+                boxSizing: 'border-box'
+            }}>
             {/* Minimalistic background decoration */}
             <div style={{
                 position: 'absolute',
@@ -456,6 +528,8 @@ export default function LoginForm() {
                         </a>
                     </div>
                 </div>
+            </div>
+
             </div>
 
             <style jsx>{`

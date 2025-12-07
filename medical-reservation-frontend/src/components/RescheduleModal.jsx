@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getAvailableSlots } from '../api/schedule';
 import { createRescheduleRequest } from '../api/rescheduleRequests';
+import { translateAppointmentType } from '../utils/appointmentUtils';
 import LoadingSpinner from './LoadingSpinner';
 
 const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
+    const { t, i18n } = useTranslation();
     const [selectedDate, setSelectedDate] = useState('');
     const [availableSlots, setAvailableSlots] = useState([]);
     const [selectedSlot, setSelectedSlot] = useState(null);
@@ -103,7 +106,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             }
         } catch (error) {
             console.error('Error fetching available dates:', error);
-            setError('Failed to load available dates. Please try again.');
+            setError(t('reschedule.failedToLoadDates'));
         } finally {
             setDatesLoading(false);
         }
@@ -129,7 +132,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             ));
         } catch (error) {
             console.error('Error fetching available slots:', error);
-            setError('Failed to load available slots. Please try again.');
+            setError(t('reschedule.failedToLoadSlots'));
             setAvailableSlots([]);
         } finally {
             setSlotsLoading(false);
@@ -139,7 +142,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedSlot) {
-            setError('Please select a time slot');
+            setError(t('reschedule.selectTimeSlot'));
             return;
         }
 
@@ -167,7 +170,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             
             onSuccess && onSuccess();
         
-            alert('Reschedule request submitted successfully! The doctor will review your request and respond soon.');
+            alert(t('reschedule.requestSubmittedSuccess'));
             
             onClose();
         
@@ -178,7 +181,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             setAvailableDates([]);
         } catch (error) {
             console.error('Error creating reschedule request:', error);
-            setError(error.message || 'Failed to submit reschedule request. Please try again.');
+            setError(error.message || t('reschedule.failedToSubmitRequest'));
         } finally {
             setLoading(false);
         }
@@ -198,7 +201,8 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     };
 
     const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return date.toLocaleDateString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -209,12 +213,13 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     const formatShortDate = (date) => {
         const today = new Date();
         const isToday = date.toDateString() === today.toDateString();
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         
         if (isToday) {
-            return 'Today';
+            return t('appointments.today');
         }
         
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString(locale, {
             weekday: 'short',
             month: 'short',
             day: 'numeric'
@@ -222,24 +227,27 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     };
 
     const formatTime = (dateString) => {
-        return new Date(dateString).toLocaleTimeString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(dateString).toLocaleTimeString(locale, {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: i18n.language !== 'bg'
         });
     };
 
     const formatSlotTime = (startTime, endTime) => {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        const hour12 = i18n.language !== 'bg';
         const start = new Date(startTime);
         const end = new Date(endTime);
-        return `${start.toLocaleTimeString('en-US', { 
+        return `${start.toLocaleTimeString(locale, { 
             hour: 'numeric', 
             minute: '2-digit',
-            hour12: true 
-        })} - ${end.toLocaleTimeString('en-US', { 
+            hour12: hour12
+        })} - ${end.toLocaleTimeString(locale, { 
             hour: 'numeric', 
             minute: '2-digit',
-            hour12: true 
+            hour12: hour12
         })}`;
     };
 
@@ -281,7 +289,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                         color: '#374151',
                         margin: 0
                     }}>
-                        Reschedule Appointment
+                        {t('reschedule.rescheduleAppointment')}
                     </h2>
                     <button
                         onClick={handleClose}
@@ -313,17 +321,17 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                             color: '#374151',
                             marginBottom: '1rem'
                         }}>
-                            Current Appointment
+                            {t('reschedule.currentAppointment')}
                         </h3>
                         <div style={{ color: '#6b7280' }}>
                             <p style={{ margin: '0.5rem 0' }}>
-                                <strong>Doctor:</strong> {appointment.doctorName}
+                                <strong>{t('appointments.doctor')}:</strong> {appointment.doctorName}
                             </p>
                             <p style={{ margin: '0.5rem 0' }}>
-                                <strong>Date & Time:</strong> {formatDate(appointment.date)} at {formatTime(appointment.date)}
+                                <strong>{t('appointments.dateAndTime')}:</strong> {formatDate(appointment.date)} {i18n.language === 'bg' ? 'в' : 'at'} {formatTime(appointment.date)}
                             </p>
                             <p style={{ margin: '0.5rem 0' }}>
-                                <strong>Type:</strong> {appointment.type}
+                                <strong>{t('appointments.service')}:</strong> {translateAppointmentType(appointment.type)}
                             </p>
                         </div>
                     </div>
@@ -338,7 +346,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                             color: '#374151',
                             marginBottom: '1rem'
                         }}>
-                            Select New Date <span style={{ color: '#dc2626' }}>*</span>
+                            {t('reschedule.selectNewDate')} <span style={{ color: '#dc2626' }}>*</span>
                         </label>
                         
                         {datesLoading ? (
@@ -348,7 +356,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 color: '#6b7280'
                             }}>
                                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
-                                <p>Loading available dates...</p>
+                                <p>{t('reschedule.loadingAvailableDates')}</p>
                             </div>
                         ) : availableDates.length === 0 ? (
                             <div style={{
@@ -360,9 +368,9 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 color: '#6b7280'
                             }}>
                                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
-                                <p><strong>No available dates found.</strong></p>
+                                <p><strong>{t('reschedule.noAvailableDatesFound')}</strong></p>
                                 <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                                    The doctor may not have set up their schedule yet. Please try again later.
+                                    {t('reschedule.noAvailableDatesDescription')}
                                 </p>
                             </div>
                         ) : (
@@ -414,8 +422,8 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                             fontWeight: '600'
                                         }}>
                                             {dateInfo.hasSlots 
-                                                ? `${dateInfo.slotsCount} slot${dateInfo.slotsCount > 1 ? 's' : ''}`
-                                                : 'No slots'
+                                                ? `${dateInfo.slotsCount} ${dateInfo.slotsCount > 1 ? t('reschedule.slots') : t('reschedule.slot')}`
+                                                : t('reschedule.noSlots')
                                             }
                                         </div>
                                     </div>
@@ -433,7 +441,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 color: '#374151',
                                 marginBottom: '0.5rem'
                             }}>
-                                Available Time Slots <span style={{ color: '#dc2626' }}>*</span>
+                                {t('reschedule.availableTimeSlots')} <span style={{ color: '#dc2626' }}>*</span>
                             </label>
                             
                             {slotsLoading ? (
@@ -443,7 +451,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                     color: '#6b7280'
                                 }}>
                                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
-                                    <p>Loading available slots...</p>
+                                    <p>{t('reschedule.loadingAvailableSlots')}</p>
                                 </div>
                             ) : availableSlots.length === 0 ? (
                                 <div style={{
@@ -455,10 +463,9 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                     color: '#6b7280'
                                 }}>
                                     <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
-                                    <p><strong>No available slots for this date.</strong></p>
+                                    <p><strong>{t('appointments.noSlotsForDate')}</strong></p>
                                     <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                                        The doctor may not have set up their schedule for this date yet, 
-                                        or all slots may be booked. Please try another date.
+                                        {t('appointments.noSlotsDescription', { doctorName: appointment?.doctorName || appointment?.doctor?.fullName || t('doctors.doctor') })}
                                     </p>
                                 </div>
                             ) : (
@@ -508,12 +515,12 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                             color: '#374151',
                             marginBottom: '0.5rem'
                         }}>
-                            Reason for Rescheduling (Optional)
+                            {t('reschedule.reasonForRescheduling')}
                         </label>
                         <textarea
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
-                            placeholder="Please provide a reason for rescheduling..."
+                            placeholder={t('reschedule.reasonForReschedulingPlaceholder')}
                             disabled={loading}
                             rows={3}
                             style={{
@@ -571,7 +578,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                 cursor: loading ? 'not-allowed' : 'pointer'
                             }}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -606,11 +613,11 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                                         borderRadius: '50%',
                                         animation: 'spin 1s linear infinite'
                                     }} />
-                                    Submitting...
+                                    {t('reschedule.submitting')}
                                 </>
                             ) : (
                                 <>
-                                    📅 Submit Request
+                                    📅 {t('reschedule.submitRequest')}
                                 </>
                             )}
                         </button>
@@ -629,8 +636,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                         fontSize: '0.9rem',
                         color: '#0369a1'
                     }}>
-                        <strong>Note:</strong> Your reschedule request will be sent to the doctor for approval. 
-                        The appointment will only be rescheduled once the doctor approves your request.
+                        <strong>{t('reschedule.note')}:</strong> {t('reschedule.rescheduleNote')}
                     </p>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getPatientMedicalHistory } from '../api/medicalHistory';
+import { getPatientAppointments } from '../api/appointments';
+import i18n from '../i18n/config';
 
 export const useMedicalHistory = () => {
     const [loading, setLoading] = useState(true);
@@ -10,52 +12,28 @@ export const useMedicalHistory = () => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const { user } = useAuth();
 
-    useEffect(() => {
-        if (user?.id) {
-            fetchMedicalHistory();
-        }
-    }, [user?.id]);
-
-    const fetchMedicalHistory = useCallback(async () => {
-        try {
-            setLoading(true);
-            const response = await getPatientMedicalHistory(user.id);
-            // Transform backend data to match frontend structure
-            const transformedRecords = response.map(record => ({
-                id: record.id,
-                type: mapRecordTypeFromBackend(record.recordType),
-                title: record.title || record.diagnosis || 'Medical Record',
-                doctor: record.doctor?.fullName || 'Unknown Doctor',
-                date: new Date(record.recordDate || record.createdAt),
-                summary: record.notes || record.description || 'No summary available',
-                details: record.treatment || record.prescription || record.notes || 'No details available',
-                attachments: record.attachments || [],
-                category: record.category || 'General Medicine',
-                status: record.status?.toLowerCase() || 'completed'
-            }));
-            setMedicalRecords(transformedRecords);
-        } catch (error) {
-            console.error('Error fetching medical history:', error);
-            setMedicalRecords([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [user?.id]);
-
-    // Helper function to map backend record types to frontend types
-    const mapRecordTypeFromBackend = (backendType) => {
+    const mapRecordTypeFromBackend = useCallback((backendType) => {
         switch (backendType?.toLowerCase()) {
             case 'consultation':
             case 'visit':
+            case 'checkup':
+            case 'routine checkup':
+            case 'followup':
+            case 'follow-up visit':
                 return 'visits';
             case 'lab_result':
+            case 'lab':
             case 'test':
+            case 'test/lab results':
                 return 'tests';
             case 'prescription':
             case 'medication':
                 return 'prescriptions';
             case 'procedure':
+            case 'medical procedure':
             case 'surgery':
+            case 'emergency':
+            case 'emergency visit':
                 return 'procedures';
             case 'vaccination':
             case 'vaccine':
@@ -65,7 +43,84 @@ export const useMedicalHistory = () => {
             default:
                 return 'visits';
         }
-    };
+    }, []);
+
+    const fetchMedicalHistory = useCallback(async () => {
+        try {
+            setLoading(true);
+            
+            const [medicalHistoryResponse, appointmentsResponse] = await Promise.all([
+                getPatientMedicalHistory(user.id).catch(err => {
+                    console.warn('Error fetching medical history:', err);
+                    return [];
+                }),
+                getPatientAppointments(user.id).catch(err => {
+                    console.warn('Error fetching appointments:', err);
+                    return [];
+                })
+            ]);
+            
+            const transformedRecords = medicalHistoryResponse.map(record => {
+                const recordType = mapRecordTypeFromBackend(record.recordType || record.type);
+                return {
+                    id: record.id,
+                    type: recordType,
+                    title: record.title || record.diagnosis || 'Medical Record',
+                    doctor: record.doctor?.fullName || record.doctorName || 'Unknown Doctor',
+                    date: new Date(record.recordDate || record.createdAt),
+                    summary: record.description || record.notes || 'No summary available',
+                    details: record.treatment || record.medications || record.notes || 'No details available',
+                    attachments: [],
+                    category: recordType,
+                    status: record.status?.toLowerCase() || 'completed',
+                    isAppointment: false
+                };
+            });
+            
+            const appointmentRecords = appointmentsResponse
+                .filter(appointment => {
+                    const status = appointment.status?.toLowerCase();
+                    return status === 'completed' || status === 'confirmed' || status === 'cancelled';
+                })
+                .map(appointment => {
+                    const appointmentDate = new Date(appointment.appointmentTime || appointment.appointmentDate || appointment.date);
+                    return {
+                        id: `appointment-${appointment.id}`,
+                        type: 'visits',
+                        title: appointment.serviceName || appointment.type || 'Doctor Visit',
+                        doctor: appointment.doctor?.fullName || appointment.doctorName || 'Unknown Doctor',
+                        date: appointmentDate,
+                        summary: appointment.notes || appointment.reason || 'Doctor consultation',
+                        details: `Appointment type: ${appointment.serviceName || appointment.type || 'Consultation'}\nDuration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,
+                        attachments: [],
+                        category: 'visits',
+                        status: appointment.status?.toLowerCase() || 'completed',
+                        isAppointment: true,
+                        appointmentId: appointment.id,
+                        appointmentType: appointment.serviceName || appointment.type,
+                        appointmentDuration: appointment.duration,
+                        appointmentLocation: appointment.doctorLocation || appointment.location
+                    };
+                });
+            
+            const allRecords = [...transformedRecords, ...appointmentRecords].sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            setMedicalRecords(allRecords);
+        } catch (error) {
+            console.error('Error fetching medical history:', error);
+            setMedicalRecords([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [user?.id, mapRecordTypeFromBackend]);
+
+    useEffect(() => {
+        if (user?.id) {
+            fetchMedicalHistory();
+        }
+    }, [user?.id, fetchMedicalHistory]);
 
     const filteredRecords = useMemo(() => {
         return medicalRecords.filter(record => 
@@ -97,7 +152,12 @@ export const useMedicalHistory = () => {
     }, []);
 
     const formatDate = useCallback((date) => {
-        return date.toLocaleDateString('en-US', {
+        if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+        const currentLang = i18n.language || 'en';
+        const locale = currentLang === 'bg' ? 'bg-BG' : 'en-US';
+        return date.toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
             day: 'numeric'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getRoleRoutes } from '../utils/roleBasedNavigation';
@@ -10,6 +10,7 @@ const Layout = ({ children }) => {
     const { t } = useTranslation();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
@@ -207,31 +208,36 @@ const Layout = ({ children }) => {
                                 marginLeft: '2rem'
                             }}>
                                 {navigationRoutes.map((route) => {
-                                    const getIcon = (routeName) => {
+                                    // Check if current route is active
+                                    const isActive = location.pathname === route.path || 
+                                        (route.path !== '/' && location.pathname.startsWith(route.path));
+                                    
+                                    const getIcon = (routeName, isActiveRoute) => {
+                                        const iconColor = isActiveRoute ? '#22c55e' : '#6b7280';
                                         const iconStyle = {
                                             width: '16px',
                                             height: '16px',
-                                            background: '#6b7280',
+                                            background: iconColor,
                                             borderRadius: '2px'
                                         };
                                         
                                         switch(routeName) {
                                             case 'Dashboard':
                                                 return (
-                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '4px', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '6px', background: '#6b7280'}} />
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, borderRadius: '4px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '6px', background: iconColor}} />
                                                     </div>
                                                 );
                                             case 'Appointments':
                                                 return (
-                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '10px', height: '2px', background: '#6b7280'}} />
-                                                        <div style={{position: 'absolute', top: '6px', left: '2px', width: '10px', height: '2px', background: '#6b7280'}} />
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '10px', height: '2px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '6px', left: '2px', width: '10px', height: '2px', background: iconColor}} />
                                                     </div>
                                                 );
                                             case 'Doctors':
                                                 return (
-                                                    <div style={{...iconStyle, background: '#6b7280', borderRadius: '50%', position: 'relative'}}>
+                                                    <div style={{...iconStyle, background: iconColor, borderRadius: '50%', position: 'relative'}}>
                                                         <div style={{position: 'absolute', top: '10px', left: '4px', width: '8px', height: '2px', background: 'white'}} />
                                                         <div style={{position: 'absolute', top: '6px', left: '6px', width: '4px', height: '2px', background: 'white'}} />
                                                     </div>
@@ -239,32 +245,33 @@ const Layout = ({ children }) => {
                                             case 'Patients':
                                                 return (
                                                     <div style={{...iconStyle, background: 'none', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
-                                                        <div style={{position: 'absolute', top: '2px', left: '8px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
-                                                        <div style={{position: 'absolute', top: '8px', left: '1px', width: '6px', height: '4px', background: '#6b7280', borderRadius: '2px'}} />
-                                                        <div style={{position: 'absolute', top: '8px', left: '7px', width: '6px', height: '4px', background: '#6b7280', borderRadius: '2px'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '4px', height: '4px', background: iconColor, borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '8px', width: '4px', height: '4px', background: iconColor, borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '1px', width: '6px', height: '4px', background: iconColor, borderRadius: '2px'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '7px', width: '6px', height: '4px', background: iconColor, borderRadius: '2px'}} />
                                                     </div>
                                                 );
                                             case 'Schedule':
+                                            case 'Schedule Management':
                                                 return (
-                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '4px', left: '2px', width: '10px', height: '1px', background: '#6b7280'}} />
-                                                        <div style={{position: 'absolute', top: '7px', left: '2px', width: '10px', height: '1px', background: '#6b7280'}} />
-                                                        <div style={{position: 'absolute', top: '10px', left: '2px', width: '4px', height: '1px', background: '#6b7280'}} />
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '4px', left: '2px', width: '10px', height: '1px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '7px', left: '2px', width: '10px', height: '1px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '10px', left: '2px', width: '4px', height: '1px', background: iconColor}} />
                                                     </div>
                                                 );
                                             case 'Medical History':
                                                 return (
-                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '2px', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '1px', background: '#6b7280'}} />
-                                                        <div style={{position: 'absolute', top: '5px', left: '2px', width: '8px', height: '1px', background: '#6b7280'}} />
-                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '5px', height: '1px', background: '#6b7280'}} />
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, borderRadius: '2px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '1px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '5px', left: '2px', width: '8px', height: '1px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '5px', height: '1px', background: iconColor}} />
                                                     </div>
                                                 );
                                             case 'Notifications':
                                                 return (
-                                                    <div style={{...iconStyle, background: '#6b7280', borderRadius: '8px 8px 2px 2px', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '8px', left: '6px', width: '4px', height: '4px', background: '#6b7280', borderRadius: '50%'}} />
+                                                    <div style={{...iconStyle, background: iconColor, borderRadius: '8px 8px 2px 2px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '8px', left: '6px', width: '4px', height: '4px', background: iconColor, borderRadius: '50%'}} />
                                                         {/* Red notification badge */}
                                                         {route.name === 'Notifications' && unreadNotificationCount > 0 && (
                                                             <div style={{
@@ -293,17 +300,25 @@ const Layout = ({ children }) => {
                                             case 'Users':
                                                 return (
                                                     <div style={{...iconStyle, background: 'none', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '4px', width: '8px', height: '6px', background: '#6b7280', borderRadius: '4px 4px 0 0'}} />
-                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '12px', height: '6px', background: '#6b7280', borderRadius: '0 0 4px 4px'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '4px', width: '8px', height: '6px', background: iconColor, borderRadius: '4px 4px 0 0'}} />
+                                                        <div style={{position: 'absolute', top: '8px', left: '2px', width: '12px', height: '6px', background: iconColor, borderRadius: '0 0 4px 4px'}} />
                                                     </div>
                                                 );
                                             case 'Comments':
                                                 return (
-                                                    <div style={{...iconStyle, background: 'none', border: '2px solid #6b7280', borderRadius: '8px', position: 'relative'}}>
-                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
-                                                        <div style={{position: 'absolute', top: '2px', left: '6px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
-                                                        <div style={{position: 'absolute', top: '2px', left: '10px', width: '2px', height: '2px', background: '#6b7280', borderRadius: '50%'}} />
-                                                        <div style={{position: 'absolute', bottom: '2px', left: '2px', width: '6px', height: '1px', background: '#6b7280'}} />
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, borderRadius: '8px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '2px', height: '2px', background: iconColor, borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '6px', width: '2px', height: '2px', background: iconColor, borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', top: '2px', left: '10px', width: '2px', height: '2px', background: iconColor, borderRadius: '50%'}} />
+                                                        <div style={{position: 'absolute', bottom: '2px', left: '2px', width: '6px', height: '1px', background: iconColor}} />
+                                                    </div>
+                                                );
+                                            case 'Reschedule Requests':
+                                                return (
+                                                    <div style={{...iconStyle, background: 'none', border: `2px solid ${iconColor}`, borderRadius: '4px', position: 'relative'}}>
+                                                        <div style={{position: 'absolute', top: '2px', left: '2px', width: '8px', height: '2px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '6px', left: '2px', width: '8px', height: '2px', background: iconColor}} />
+                                                        <div style={{position: 'absolute', top: '10px', left: '2px', width: '4px', height: '2px', background: iconColor}} />
                                                     </div>
                                                 );
                                             default:
@@ -316,8 +331,8 @@ const Layout = ({ children }) => {
                                             key={route.path}
                                             to={route.path}
                                             style={{
-                                                color: '#4b5563',
-                                                fontWeight: '500',
+                                                color: isActive ? '#22c55e' : '#4b5563',
+                                                fontWeight: isActive ? '600' : '500',
                                                 fontSize: '0.9rem',
                                                 padding: '0.5rem 1rem',
                                                 borderRadius: '8px',
@@ -326,38 +341,52 @@ const Layout = ({ children }) => {
                                                 position: 'relative',
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                gap: '0.5rem'
+                                                gap: '0.5rem',
+                                                background: isActive ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
+                                                border: isActive ? '1px solid rgba(34, 197, 94, 0.2)' : 'none'
                                             }}
                                             onMouseEnter={e => {
-                                                e.target.style.background = 'rgba(34, 197, 94, 0.1)';
-                                                e.target.style.color = '#22c55e';
-                                                // Change icon color on hover
-                                                const iconElements = e.target.querySelectorAll('div');
-                                                iconElements.forEach(el => {
-                                                    if (el.style.background && el.style.background.includes('#6b7280')) {
-                                                        el.style.background = el.style.background.replace('#6b7280', '#22c55e');
-                                                    }
-                                                    if (el.style.border && el.style.border.includes('#6b7280')) {
-                                                        el.style.border = el.style.border.replace('#6b7280', '#22c55e');
-                                                    }
-                                                });
+                                                if (!isActive) {
+                                                    e.target.style.background = 'rgba(34, 197, 94, 0.1)';
+                                                    e.target.style.color = '#22c55e';
+                                                }
+                                                // Change icon color on hover (only if not active)
+                                                if (!isActive) {
+                                                    const iconElements = e.target.querySelectorAll('div');
+                                                    iconElements.forEach(el => {
+                                                        if (el.style.background && el.style.background.includes('#6b7280')) {
+                                                            el.style.background = el.style.background.replace('#6b7280', '#22c55e');
+                                                        }
+                                                        if (el.style.border && el.style.border.includes('#6b7280')) {
+                                                            el.style.border = el.style.border.replace('#6b7280', '#22c55e');
+                                                        }
+                                                        if (el.style.background && el.style.background.includes('rgb(107, 114, 128)')) {
+                                                            el.style.background = '#22c55e';
+                                                        }
+                                                        if (el.style.border && el.style.border.includes('rgb(107, 114, 128)')) {
+                                                            el.style.border = el.style.border.replace('rgb(107, 114, 128)', '#22c55e');
+                                                        }
+                                                    });
+                                                }
                                             }}
                                             onMouseLeave={e => {
-                                                e.target.style.background = 'transparent';
-                                                e.target.style.color = '#4b5563';
-                                                // Reset icon color
-                                                const iconElements = e.target.querySelectorAll('div');
-                                                iconElements.forEach(el => {
-                                                    if (el.style.background && el.style.background.includes('#22c55e')) {
-                                                        el.style.background = el.style.background.replace('#22c55e', '#6b7280');
-                                                    }
-                                                    if (el.style.border && el.style.border.includes('#22c55e')) {
-                                                        el.style.border = el.style.border.replace('#22c55e', '#6b7280');
-                                                    }
-                                                });
+                                                if (!isActive) {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = '#4b5563';
+                                                    // Reset icon color
+                                                    const iconElements = e.target.querySelectorAll('div');
+                                                    iconElements.forEach(el => {
+                                                        if (el.style.background && el.style.background.includes('#22c55e')) {
+                                                            el.style.background = el.style.background.replace('#22c55e', '#6b7280');
+                                                        }
+                                                        if (el.style.border && el.style.border.includes('#22c55e')) {
+                                                            el.style.border = el.style.border.replace('#22c55e', '#6b7280');
+                                                        }
+                                                    });
+                                                }
                                             }}
                                         >
-                                            {getIcon(route.name)}
+                                            {getIcon(route.name, isActive)}
                                             {route.translationKey ? t(route.translationKey) : route.name}
                                         </Link>
                                     );

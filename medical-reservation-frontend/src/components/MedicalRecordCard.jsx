@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { getRecordTypeColor } from '../utils/medicalHistoryUtils';
 
 const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, onRecordClick }) => {
+    const { t } = useTranslation();
     const statusColors = getStatusColor(record.status);
     const typeColors = getRecordTypeColor(record.type);
 
@@ -147,7 +149,7 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                             color: typeColors.primary,
                             fontWeight: '600'
                         }}>
-                            {record.category}
+                            {t(`medicalHistory.category.${record.type}`)}
                         </span>
                     </div>
                 </div>
@@ -167,20 +169,9 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
 
                 <div style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        fontSize: '0.8rem',
-                        color: '#6b7280'
-                    }}>
-                        <span>📎</span>
-                        <span>{record.attachments?.length || 0} attachments</span>
-                    </div>
-                    
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',

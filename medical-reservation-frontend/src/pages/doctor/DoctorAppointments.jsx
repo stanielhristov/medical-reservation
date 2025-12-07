@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useDoctorAppointments } from '../../hooks/useDoctorAppointments';
+import { translateAppointmentType, translateDuration } from '../../utils/appointmentUtils';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import DoctorAppointmentHeader from '../../components/DoctorAppointmentHeader';
 import DoctorAppointmentTabs from '../../components/DoctorAppointmentTabs';
@@ -219,7 +220,7 @@ const DoctorAppointments = () => {
                                         margin: 0,
                                         fontWeight: '500'
                                     }}>
-                                        {selectedAppointment.type} • {t('common.age')}: {selectedAppointment.patientAge || t('common.notProvided')}
+                                        {translateAppointmentType(selectedAppointment.type)} • {t('common.age')}: {selectedAppointment.patientAge || t('common.notProvided')}
                                     </p>
                                 </div>
                             </div>
@@ -294,7 +295,7 @@ const DoctorAppointments = () => {
                                     </div>
                                     <div>
                                         <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('appointments.duration')}: </span>
-                                        <span style={{ color: '#374151' }}>{selectedAppointment.duration}</span>
+                                        <span style={{ color: '#374151' }}>{translateDuration(selectedAppointment.duration)}</span>
                                     </div>
                                 </div>
                             </div>

@@ -1,27 +1,42 @@
+import { useState } from 'react';
+
 const MedicalRecordModal = ({ 
     isOpen, 
     onClose, 
     onSave, 
     patient = null 
 }) => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState(null);
+
     if (!isOpen || !patient) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const recordData = {
-            patientId: patient.id,
-            type: formData.get('type'),
-            title: formData.get('title'),
-            description: formData.get('description'),
-            diagnosis: formData.get('diagnosis'),
-            treatment: formData.get('treatment'),
-            prescription: formData.get('prescription'),
-            date: new Date().toISOString()
-        };
+        setError(null);
+        setIsSaving(true);
         
-        onSave(recordData);
-        onClose();
+        try {
+            const formData = new FormData(e.target);
+            const recordData = {
+                patientId: patient.id,
+                type: formData.get('type'),
+                title: formData.get('title'),
+                description: formData.get('description'),
+                diagnosis: formData.get('diagnosis'),
+                treatment: formData.get('treatment'),
+                prescription: formData.get('prescription'),
+                date: new Date().toISOString()
+            };
+            
+            await onSave(recordData);
+            onClose();
+        } catch (err) {
+            setError(err.message || 'Failed to save medical record. Please try again.');
+            console.error('Error saving medical record:', err);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const recordTypes = [
@@ -340,6 +355,19 @@ const MedicalRecordModal = ({
                             />
                         </div>
 
+                        {error && (
+                            <div style={{
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                borderRadius: '8px',
+                                padding: '1rem',
+                                marginBottom: '1.5rem',
+                                color: '#dc2626'
+                            }}>
+                                {error}
+                            </div>
+                        )}
+
                         <div style={{ 
                             display: 'flex', 
                             gap: '1rem',
@@ -348,22 +376,28 @@ const MedicalRecordModal = ({
                             <button
                                 type="button"
                                 onClick={onClose}
+                                disabled={isSaving}
                                 style={{
                                     padding: '0.75rem 1.5rem',
                                     background: 'rgba(107, 114, 128, 0.1)',
                                     color: '#6b7280',
                                     border: '1px solid rgba(107, 114, 128, 0.2)',
                                     borderRadius: '8px',
-                                    cursor: 'pointer',
+                                    cursor: isSaving ? 'not-allowed' : 'pointer',
                                     fontWeight: '500',
                                     fontSize: '1rem',
-                                    transition: 'all 0.2s ease'
+                                    transition: 'all 0.2s ease',
+                                    opacity: isSaving ? 0.6 : 1
                                 }}
                                 onMouseEnter={e => {
-                                    e.target.style.background = 'rgba(107, 114, 128, 0.15)';
+                                    if (!isSaving) {
+                                        e.target.style.background = 'rgba(107, 114, 128, 0.15)';
+                                    }
                                 }}
                                 onMouseLeave={e => {
-                                    e.target.style.background = 'rgba(107, 114, 128, 0.1)';
+                                    if (!isSaving) {
+                                        e.target.style.background = 'rgba(107, 114, 128, 0.1)';
+                                    }
                                 }}
                             >
                                 Cancel
@@ -371,28 +405,36 @@ const MedicalRecordModal = ({
                             
                             <button
                                 type="submit"
+                                disabled={isSaving}
                                 style={{
                                     padding: '0.75rem 1.5rem',
-                                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                    background: isSaving 
+                                        ? 'rgba(107, 114, 128, 0.3)' 
+                                        : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '8px',
-                                    cursor: 'pointer',
+                                    cursor: isSaving ? 'not-allowed' : 'pointer',
                                     fontWeight: '600',
                                     fontSize: '1rem',
                                     transition: 'all 0.2s ease',
-                                    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)'
+                                    boxShadow: isSaving ? 'none' : '0 4px 12px rgba(5, 150, 105, 0.3)',
+                                    opacity: isSaving ? 0.7 : 1
                                 }}
                                 onMouseEnter={e => {
-                                    e.target.style.transform = 'translateY(-1px)';
-                                    e.target.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+                                    if (!isSaving) {
+                                        e.target.style.transform = 'translateY(-1px)';
+                                        e.target.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+                                    }
                                 }}
                                 onMouseLeave={e => {
-                                    e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                                    if (!isSaving) {
+                                        e.target.style.transform = 'translateY(0)';
+                                        e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                                    }
                                 }}
                             >
-                                Save Medical Record
+                                {isSaving ? 'Saving...' : 'Save Medical Record'}
                             </button>
                         </div>
                     </form>

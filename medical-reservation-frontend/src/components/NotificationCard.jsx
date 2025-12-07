@@ -1,7 +1,9 @@
 import React from 'react';
-import { getPriorityColor, getCategoryIcon, formatTimeAgo } from '../utils/notificationUtils';
+import { useTranslation } from 'react-i18next';
+import { getPriorityColor, getCategoryIcon, formatTimeAgo, translateNotificationTitle, translateNotificationMessage } from '../utils/notificationUtils';
 
 const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails }) => {
+    const { t } = useTranslation();
     const priorityStyle = getPriorityColor(notification.priority);
 
     return (
@@ -71,7 +73,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                             margin: 0,
                             lineHeight: '1.4'
                         }}>
-                            {notification.title}
+                            {translateNotificationTitle(notification.title)}
                         </h3>
                         
                         <div style={{
@@ -89,7 +91,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                                 textTransform: 'uppercase',
                                 border: `1px solid ${priorityStyle.border}`
                             }}>
-                                {notification.priority}
+                                {t(`notifications.priority.${notification.priority?.toLowerCase() || 'medium'}`)}
                             </div>
                             
                             <span style={{
@@ -108,7 +110,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                         margin: '0 0 1rem 0',
                         lineHeight: '1.6'
                     }}>
-                        {notification.message}
+                        {translateNotificationMessage(notification.message)}
                     </p>
                     
                     <div style={{
@@ -155,7 +157,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                                         transition: 'all 0.2s ease'
                                     }}
                                 >
-                                    Mark as Read
+                                    {t('notifications.markAsRead')}
                                 </button>
                             )}
                         </div>
@@ -178,7 +180,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}
-                            title="Delete notification"
+                            title={t('notifications.deleteNotification')}
                         >
                             🗑️
                         </button>

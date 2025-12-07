@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ContactSection = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -20,7 +22,7 @@ const ContactSection = () => {
         e.preventDefault();
         console.log('Contact form submitted:', formData);
         setFormData({ name: '', email: '', subject: '', message: '' });
-        alert('Thank you for your message! We will get back to you soon.');
+        alert(t('contact.messageSent'));
     };
 
     return (
@@ -46,7 +48,7 @@ const ContactSection = () => {
                         marginBottom: '1rem',
                         letterSpacing: '-0.02em'
                     }}>
-                        Get In Touch
+                        {t('contact.title')}
                     </h2>
                     <p style={{
                         fontSize: '1.25rem',
@@ -55,7 +57,7 @@ const ContactSection = () => {
                         margin: '0 auto',
                         lineHeight: '1.6'
                     }}>
-                        Have questions or need support? We're here to help you every step of the way
+                        {t('contact.subtitle')}
                     </p>
                 </div>
 
@@ -79,7 +81,7 @@ const ContactSection = () => {
                             color: '#1f2937',
                             marginBottom: '2rem'
                         }}>
-                            Contact Information
+                            {t('contact.contactInformation')}
                         </h3>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -105,13 +107,13 @@ const ContactSection = () => {
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
-                                        Email Support
+                                        {t('contact.emailSupport')}
                                     </h4>
                                     <p style={{ color: '#22c55e', fontWeight: '600', marginBottom: '0.25rem' }}>
                                         support@medreserve.com
                                     </p>
                                     <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                                        Available 24/7 for your assistance
+                                        {t('contact.available247')}
                                     </p>
                                 </div>
                             </div>
@@ -138,13 +140,13 @@ const ContactSection = () => {
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
-                                        Phone Support
+                                        {t('contact.phoneSupport')}
                                     </h4>
                                     <p style={{ color: '#22c55e', fontWeight: '600', marginBottom: '0.25rem' }}>
                                         +359 (2) 123-4567
                                     </p>
                                     <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                                        Mon-Fri: 8:00 AM - 8:00 PM (Bulgaria Time)
+                                        {t('contact.phoneHours')}
                                     </p>
                                 </div>
                             </div>
@@ -171,13 +173,13 @@ const ContactSection = () => {
                                         color: '#1f2937',
                                         marginBottom: '0.5rem'
                                     }}>
-                                        Emergency
+                                        {t('contact.emergency')}
                                     </h4>
                                     <p style={{ color: '#ef4444', fontWeight: '600', marginBottom: '0.25rem' }}>
-                                        For medical emergencies, call 112
+                                        {t('contact.emergencyText')}
                                     </p>
                                     <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                                        This platform is not for emergency services
+                                        {t('contact.emergencyNotice')}
                                     </p>
                                 </div>
                             </div>
@@ -197,16 +199,16 @@ const ContactSection = () => {
                                 color: '#1f2937',
                                 marginBottom: '1rem'
                             }}>
-                                Quick FAQ
+                                {t('contact.quickFAQ')}
                             </h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                                    <strong>Q:</strong> How do I book an appointment?<br />
-                                    <strong>A:</strong> Register, browse doctors, and select your preferred time slot.
+                                    <strong>{t('contact.faq1Q')}</strong><br />
+                                    {t('contact.faq1A')}
                                 </p>
                                 <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                                    <strong>Q:</strong> Can I cancel appointments?<br />
-                                    <strong>A:</strong> Yes, from your dashboard with 24h notice when possible.
+                                    <strong>{t('contact.faq2Q')}</strong><br />
+                                    {t('contact.faq2A')}
                                 </p>
                             </div>
                         </div>
@@ -227,7 +229,7 @@ const ContactSection = () => {
                             color: '#1f2937',
                             marginBottom: '2rem'
                         }}>
-                            Send us a Message
+                            {t('contact.sendMessage')}
                         </h3>
 
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -239,7 +241,7 @@ const ContactSection = () => {
                                     color: '#374151',
                                     marginBottom: '0.5rem'
                                 }}>
-                                    Full Name *
+                                    {t('contact.fullName')} *
                                 </label>
                                 <input
                                     type="text"
@@ -265,7 +267,7 @@ const ContactSection = () => {
                                         e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
                                         e.target.style.boxShadow = 'none';
                                     }}
-                                    placeholder="Enter your full name"
+                                    placeholder={t('contact.enterFullName')}
                                 />
                             </div>
 
@@ -277,7 +279,7 @@ const ContactSection = () => {
                                     color: '#374151',
                                     marginBottom: '0.5rem'
                                 }}>
-                                    Email Address *
+                                    {t('common.email')} *
                                 </label>
                                 <input
                                     type="email"
@@ -303,7 +305,7 @@ const ContactSection = () => {
                                         e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
                                         e.target.style.boxShadow = 'none';
                                     }}
-                                    placeholder="Enter your email address"
+                                    placeholder={t('contact.enterEmail')}
                                 />
                             </div>
 
@@ -315,7 +317,7 @@ const ContactSection = () => {
                                     color: '#374151',
                                     marginBottom: '0.5rem'
                                 }}>
-                                    Subject *
+                                    {t('contact.subject')} *
                                 </label>
                                 <input
                                     type="text"
@@ -341,7 +343,7 @@ const ContactSection = () => {
                                         e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
                                         e.target.style.boxShadow = 'none';
                                     }}
-                                    placeholder="What is this regarding?"
+                                    placeholder={t('contact.subjectPlaceholder')}
                                 />
                             </div>
 
@@ -353,7 +355,7 @@ const ContactSection = () => {
                                     color: '#374151',
                                     marginBottom: '0.5rem'
                                 }}>
-                                    Message *
+                                    {t('contact.message')} *
                                 </label>
                                 <textarea
                                     name="message"
@@ -381,7 +383,7 @@ const ContactSection = () => {
                                         e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
                                         e.target.style.boxShadow = 'none';
                                     }}
-                                    placeholder="Tell us how we can help you..."
+                                    placeholder={t('contact.messagePlaceholder')}
                                 />
                             </div>
 
@@ -408,7 +410,7 @@ const ContactSection = () => {
                                     e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                                 }}
                             >
-                                Send Message
+                                {t('contact.sendMessageButton')}
                             </button>
                         </form>
                     </div>

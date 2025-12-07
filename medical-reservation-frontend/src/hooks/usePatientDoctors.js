@@ -20,7 +20,7 @@ const getNextAvailableSlot = async (doctorId) => {
         
         const availableSlots = slots.filter(slot => slot.status === 'FREE');
         if (availableSlots.length === 0) {
-            return 'No available slots';
+            return i18n.t('doctors.noAvailableSlots');
         }
         
         availableSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
@@ -31,28 +31,31 @@ const getNextAvailableSlot = async (doctorId) => {
         const isToday = startTime.toDateString() === now.toDateString();
         const isTomorrow = startTime.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
         
+        const currentLanguage = i18n.language || 'en';
+        const locale = currentLanguage === 'bg' ? 'bg-BG' : 'en-US';
+        
         let datePrefix = '';
         if (isToday) {
-            datePrefix = 'Today ';
+            datePrefix = i18n.t('doctors.today') + ' ';
         } else if (isTomorrow) {
-            datePrefix = 'Tomorrow ';
+            datePrefix = i18n.t('doctors.tomorrow') + ' ';
         } else {
-            datePrefix = startTime.toLocaleDateString('en-US', { 
+            datePrefix = startTime.toLocaleDateString(locale, { 
                 month: 'short', 
                 day: 'numeric' 
             }) + ' ';
         }
         
-        const timeString = startTime.toLocaleTimeString('en-US', {
+        const timeString = startTime.toLocaleTimeString(locale, {
             hour: 'numeric',
             minute: '2-digit',
-            hour12: true
+            hour12: currentLanguage !== 'bg'
         });
         
         return `${datePrefix}${timeString}`;
     } catch (error) {
         console.error(`Error fetching next available slot for doctor ${doctorId}:`, error);
-        return 'Contact for availability';
+        return i18n.t('doctors.contactForAvailability');
     }
 };
 
@@ -108,7 +111,7 @@ export const usePatientDoctors = (user) => {
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
-                        consultationFee: doctor.price ? `$${doctor.price}` : "Price not set"
+                        consultationFee: doctor.price ? `$${doctor.price}` : i18n.t('doctors.priceNotSet')
                     };
                 } catch (error) {
                     console.error(`Error fetching data for doctor ${doctor.id}:`, error);
@@ -125,7 +128,7 @@ export const usePatientDoctors = (user) => {
                         image: "👨‍⚕️",
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
-                        consultationFee: doctor.price ? `$${doctor.price}` : "Price not set"
+                        consultationFee: doctor.price ? `$${doctor.price}` : i18n.t('doctors.priceNotSet')
                     };
                 }
             }));

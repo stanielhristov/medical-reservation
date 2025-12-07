@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { useValidation } from '../hooks/useValidation';
 
 const DateOfBirthInput = ({ value, onChange, disabled, error }) => {
+    const { t } = useTranslation();
     const { calculateAge } = useValidation();
 
     return (
@@ -12,7 +14,7 @@ const DateOfBirthInput = ({ value, onChange, disabled, error }) => {
                 color: '#374151',
                 fontSize: '0.9rem'
             }}>
-                📅 Date of Birth <span style={{ color: '#dc2626' }}>*</span>
+                📅 {t('auth.dateOfBirth')} <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
                 <input
@@ -50,7 +52,7 @@ const DateOfBirthInput = ({ value, onChange, disabled, error }) => {
                         fontWeight: '600',
                         pointerEvents: 'none'
                     }}>
-                        {calculateAge(value)} years
+                        {calculateAge(value)} {t('auth.years')}
                     </div>
                 )}
             </div>
@@ -75,7 +77,7 @@ const DateOfBirthInput = ({ value, onChange, disabled, error }) => {
                     alignItems: 'center',
                     gap: '0.25rem'
                 }}>
-                    ✓ Age: {calculateAge(value)} years old
+                    ✓ {t('common.age')}: {calculateAge(value)} {t('auth.yearsOld')}
                 </div>
             )}
         </div>

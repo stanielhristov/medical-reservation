@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { getDoctorAppointments, updateAppointmentStatus as updateAppointmentStatusAPI, cancelAppointment as cancelAppointmentAPI } from '../api/appointments';
 import { getDoctorByUserId } from '../api/doctors';
 
@@ -11,6 +12,7 @@ export const useDoctorAppointments = () => {
     const [showNotes, setShowNotes] = useState(false);
     const [notes, setNotes] = useState('');
     const { user } = useAuth();
+    const { i18n } = useTranslation();
 
     useEffect(() => {
         if (user?.id && user?.role === 'DOCTOR') {
@@ -175,21 +177,29 @@ export const useDoctorAppointments = () => {
     }, []);
 
     const formatTime = useCallback((date) => {
+        if (i18n.language === 'bg') {
+            const dateObj = new Date(date);
+            const hours = dateObj.getHours();
+            const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+            const period = hours < 12 ? 'сутринта' : hours < 18 ? 'следобед' : 'вечерта';
+            return `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+        }
         return new Date(date).toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true
         });
-    }, []);
+    }, [i18n.language]);
 
     const formatDate = useCallback((date) => {
-        return new Date(date).toLocaleDateString('en-US', {
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        return new Date(date).toLocaleDateString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
-    }, []);
+    }, [i18n.language]);
 
     const filteredAppointments = useMemo(() => getFilteredAppointments(), [getFilteredAppointments]);
 

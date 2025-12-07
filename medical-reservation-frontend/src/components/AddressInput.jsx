@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { COUNTRIES, COUNTRY_MAP } from '../utils/countryData';
+import { translateCountryName } from '../utils/countryUtils';
 
 const AddressInput = ({ 
     street, onStreetChange, 
@@ -136,7 +137,7 @@ const AddressInput = ({
                     >
                         {COUNTRIES.map(country => (
                             <option key={country.code} value={country.code}>
-                                {country.flag} {country.name}
+                                {country.flag} {translateCountryName(country.code, country.name)}
                             </option>
                         ))}
                     </select>
@@ -149,7 +150,7 @@ const AddressInput = ({
                 marginTop: '0.5rem',
                 marginLeft: '0.5rem'
             }}>
-                Selected country: {selectedCountry.flag} {selectedCountry.name}
+                {t('common.selectedCountry')}: {selectedCountry.flag} {translateCountryName(selectedCountry.code, selectedCountry.name)}
             </div>
         </div>
     );

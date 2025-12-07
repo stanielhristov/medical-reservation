@@ -794,7 +794,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                                     
                                     {!daySchedule.enabled && (
                                         <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                                            Not available
+                                            {t('schedule.notAvailable')}
                                         </span>
                                     )}
                                 </div>
