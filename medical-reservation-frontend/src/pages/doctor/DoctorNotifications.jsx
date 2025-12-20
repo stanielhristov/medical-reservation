@@ -31,14 +31,14 @@ const DoctorNotifications = () => {
 
     return (
         <div style={{ position: 'relative' }}>
-            {/* Background decorative elements */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '5%',
                 right: '8%',
                 width: '300px',
                 height: '300px',
-                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 100%)',
+                background: 'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 50%, transparent 100%)',
                 borderRadius: '50%',
                 zIndex: 0
             }} />
@@ -49,7 +49,7 @@ const DoctorNotifications = () => {
                 left: '5%',
                 width: '250px',
                 height: '250px',
-                background: 'radial-gradient(circle, rgba(5, 150, 105, 0.08) 0%, rgba(5, 150, 105, 0.03) 50%, transparent 100%)',
+                background: 'radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, rgba(22, 163, 74, 0.03) 50%, transparent 100%)',
                 borderRadius: '50%',
                 zIndex: 0
             }} />
@@ -79,8 +79,8 @@ const DoctorNotifications = () => {
                     backdropFilter: 'blur(20px)',
                     borderRadius: '24px',
                     padding: '2rem',
-                    boxShadow: '0 16px 32px rgba(0, 0, 0, 0.06)',
-                    border: '1px solid rgba(0, 0, 0, 0.08)'
+                    boxShadow: '0 16px 32px rgba(34, 197, 94, 0.08)',
+                    border: '1px solid rgba(34, 197, 94, 0.15)'
                 }}>
                     <h2 style={{
                         fontSize: '1.5rem',
@@ -91,11 +91,15 @@ const DoctorNotifications = () => {
                         alignItems: 'center',
                         gap: '0.75rem'
                     }}>
-                        🔔 {t('notifications.yourNotifications')}
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        {t('notifications.yourNotifications')}
                         {filteredNotifications.length > 0 && (
                             <span style={{
-                                background: 'rgba(16, 185, 129, 0.1)',
-                                color: '#059669',
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                color: '#22c55e',
                                 padding: '0.25rem 0.75rem',
                                 borderRadius: '12px',
                                 fontSize: '0.9rem',
@@ -112,7 +116,13 @@ const DoctorNotifications = () => {
                             padding: '4rem 2rem',
                             color: '#9ca3af'
                         }}>
-                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📬</div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                                    <line x1="12" y1="2" x2="12" y2="4"/>
+                                </svg>
+                            </div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
                                 {t('notifications.noNotificationsYet')}
                             </h3>

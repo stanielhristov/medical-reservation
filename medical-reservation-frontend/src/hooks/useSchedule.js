@@ -94,17 +94,21 @@ export const useSchedule = (doctorId) => {
 
     const toggleAvailability = useCallback(async (schedule) => {
         try {
-            if (schedule.available) {
+            if (schedule.available || schedule.status === 'FREE') {
                 await markSlotUnavailable(schedule.id);
+                setSchedules(prev => prev.map(s => 
+                    s.id === schedule.id 
+                        ? { ...s, available: false, status: 'UNAVAILABLE' }
+                        : s
+                ));
             } else {
                 await markSlotAvailable(schedule.id);
+                setSchedules(prev => prev.map(s => 
+                    s.id === schedule.id 
+                        ? { ...s, available: true, status: 'FREE' }
+                        : s
+                ));
             }
-            
-            setSchedules(prev => prev.map(s => 
-                s.id === schedule.id 
-                    ? { ...s, available: !s.available }
-                    : s
-            ));
         } catch (err) {
             console.error('Error toggling availability:', err);
             setError(err.message);

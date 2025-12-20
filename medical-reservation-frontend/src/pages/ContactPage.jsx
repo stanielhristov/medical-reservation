@@ -120,7 +120,7 @@ const ContactPage = () => {
                 position: 'relative',
                 zIndex: 5
             }}>
-                {/* Section Header */}
+                {}
                 <div style={{
                     textAlign: 'center',
                     marginBottom: '4rem'
@@ -150,7 +150,7 @@ const ContactPage = () => {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
                     gap: '3rem'
                 }}>
-                    {/* Contact Information */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',
@@ -169,7 +169,7 @@ const ContactPage = () => {
                         </h2>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            {/* Email Support */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -202,7 +202,7 @@ const ContactPage = () => {
                                 </div>
                             </div>
 
-                            {/* Phone Support */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -235,7 +235,7 @@ const ContactPage = () => {
                                 </div>
                             </div>
 
-                            {/* Emergency Notice */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -269,7 +269,7 @@ const ContactPage = () => {
                             </div>
                         </div>
 
-                        {/* FAQ Section */}
+                        {}
                         <div style={{
                             marginTop: '2.5rem',
                             padding: '1.5rem',
@@ -298,7 +298,7 @@ const ContactPage = () => {
                         </div>
                     </div>
 
-                    {/* Contact Form */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',

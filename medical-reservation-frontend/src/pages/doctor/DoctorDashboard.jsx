@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -79,7 +80,7 @@ const DoctorDashboard = () => {
                     onAppointmentClick={handleAppointmentClick}
                 />
 
-                {selectedAppointment && (
+                {selectedAppointment && ReactDOM.createPortal(
                     <div style={{
                         position: 'fixed',
                         top: 0,
@@ -104,7 +105,7 @@ const DoctorDashboard = () => {
                             overflow: 'auto',
                             boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
                             position: 'relative',
-                            border: '1px solid rgba(59, 130, 246, 0.2)'
+                            border: '1px solid rgba(34, 197, 94, 0.2)'
                         }} onClick={e => e.stopPropagation()}>
                             <button
                                 onClick={() => setSelectedAppointment(null)}
@@ -143,15 +144,17 @@ const DoctorDashboard = () => {
                                 <div style={{
                                     width: '80px',
                                     height: '80px',
-                                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                     borderRadius: '20px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    fontSize: '2.5rem',
-                                    boxShadow: '0 12px 25px rgba(59, 130, 246, 0.3)'
+                                    boxShadow: '0 12px 25px rgba(34, 197, 94, 0.3)'
                                 }}>
-                                    👤
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
                                 </div>
                                 <div>
                                     <h2 style={{
@@ -194,7 +197,10 @@ const DoctorDashboard = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        📞 {t('common.contactInformation')}
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                        </svg>
+                                        {t('common.contactInformation')}
                                     </h4>
                                     <div style={{ marginBottom: '0.75rem' }}>
                                         <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.phone')}: </span>
@@ -225,7 +231,11 @@ const DoctorDashboard = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        🕐 {t('appointments.appointmentDetails')}
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        {t('appointments.appointmentDetails')}
                                     </h4>
                                     <div style={{ marginBottom: '0.75rem' }}>
                                         <span style={{ fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>{t('common.date')}: </span>
@@ -259,7 +269,14 @@ const DoctorDashboard = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        📝 {t('appointments.notesAndReason')}
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="16" y1="13" x2="8" y2="13"/>
+                                            <line x1="16" y1="17" x2="8" y2="17"/>
+                                            <polyline points="10 9 9 9 8 9"/>
+                                        </svg>
+                                        {t('appointments.notesAndReason')}
                                     </h4>
                                     <div>
                                         <p style={{ color: '#374151', margin: 0, lineHeight: '1.5' }}>
@@ -283,7 +300,7 @@ const DoctorDashboard = () => {
                                     }}
                                     style={{
                                         padding: '0.8rem 1.5rem',
-                                        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '12px',
@@ -291,7 +308,7 @@ const DoctorDashboard = () => {
                                         fontSize: '1rem',
                                         fontWeight: '600',
                                         transition: 'all 0.3s ease',
-                                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                                        boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
                                     }}
                                 >
                                     {t('appointments.viewDetails')}
@@ -314,7 +331,8 @@ const DoctorDashboard = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </main>
         </div>

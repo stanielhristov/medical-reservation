@@ -18,23 +18,20 @@ export const NotificationProvider = ({ children }) => {
         type: 'info'
     });
 
-
     useEffect(() => {
-        // Intercept window.alert
+        
         const originalAlert = window.alert;
         window.alert = (message) => {
             console.log('🚨 Alert intercepted globally:', message);
             showNotification('System Notice', String(message), 'warning');
         };
 
-        // Intercept window.confirm
         const originalConfirm = window.confirm;
         window.confirm = (message) => {
             console.log('🚨 Confirm intercepted globally:', message);
-            // For now, we'll show the notification and return true
-            // In a real implementation, you'd want to handle this differently
+
             showNotification('Confirmation', String(message), 'warning');
-            return true; // Default to true for now
+            return true; 
         };
 
         return () => {
@@ -70,7 +67,7 @@ export const NotificationProvider = ({ children }) => {
         <NotificationContext.Provider value={value}>
             {children}
 
-            {/* Global Notification Modal */}
+            {}
             {notification.isOpen && (
                 <div style={{
                     position: 'fixed',

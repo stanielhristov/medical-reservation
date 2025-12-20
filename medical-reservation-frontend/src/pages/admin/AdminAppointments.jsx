@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../api/admin';
 
 const AdminAppointments = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [appointments, setAppointments] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
@@ -42,13 +42,13 @@ const AdminAppointments = () => {
             if (appointmentsResponse.status === 'fulfilled') {
                 const transformedAppointments = appointmentsResponse.value.data.map(appointment => ({
                     id: appointment.id,
-                    patientName: appointment.patientName || 'Unknown Patient',
-                    doctorName: appointment.doctorName || 'Unknown Doctor',
-                    service: appointment.serviceName || 'Consultation',
+                    patientName: appointment.patientName || t('admin.unknownPatient'),
+                    doctorName: appointment.doctorName || t('admin.unknownDoctor'),
+                    service: appointment.serviceName || t('admin.consultation'),
                     appointmentTime: appointment.appointmentTime,
                     status: appointment.status,
-                    reason: appointment.notes || 'Routine visit',
-                    location: 'Medical Center', 
+                    reason: appointment.notes || t('admin.routineVisit'),
+                    location: t('admin.medicalCenter'), 
                     consultationFee: null 
                 }));
                 setAppointments(transformedAppointments);
@@ -57,9 +57,9 @@ const AdminAppointments = () => {
                 setAppointments([]);
                 
                 if (appointmentsResponse.reason?.response?.status === 404) {
-                    setError('Admin appointments endpoint not implemented yet. Please check backend implementation.');
+                    setError(t('admin.failedToLoadAppointments'));
                 } else {
-                    setError('Failed to load appointments');
+                    setError(t('admin.failedToLoadAppointments'));
                 }
             }
             
@@ -72,7 +72,7 @@ const AdminAppointments = () => {
             
         } catch (err) {
             console.error('Error loading appointments:', err);
-            setError('Failed to load appointments');
+            setError(t('admin.failedToLoadAppointments'));
             setAppointments([]);
         } finally {
             setLoading(false);
@@ -144,7 +144,7 @@ const AdminAppointments = () => {
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString(i18n.language === 'bg' ? 'bg-BG' : 'en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -192,7 +192,7 @@ const AdminAppointments = () => {
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 1.5rem'
                     }} />
-                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>Loading appointments...</p>
+                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>{t('admin.loadingAppointments')}</p>
                 </div>
             </div>
         );
@@ -231,7 +231,7 @@ const AdminAppointments = () => {
                         e.target.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.25)';
                     }}
                 >
-                    Retry
+                    {t('admin.retry')}
                 </button>
             </div>
         );
@@ -241,7 +241,7 @@ const AdminAppointments = () => {
         <div style={{
             position: 'relative'
         }}>
-            {/* Enhanced background decorations */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '8%',
@@ -275,13 +275,13 @@ const AdminAppointments = () => {
                 zIndex: 0
             }} />
 
-            {/* Main Content */}
+            {}
             <main style={{
                 padding: '2.5rem 0',
                 position: 'relative',
                 zIndex: 1
             }}>
-                {/* Enhanced Welcome Section */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -294,7 +294,7 @@ const AdminAppointments = () => {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
-                    {/* Background pattern */}
+                    {}
                     <div style={{
                         position: 'absolute',
                         top: '-50%',
@@ -320,7 +320,7 @@ const AdminAppointments = () => {
                             border: '3px solid #047857',
                             position: 'relative'
                         }}>
-                            {/* Calendar Icon */}
+                            {}
                             <div style={{
                                 width: '60px',
                                 height: '60px',
@@ -339,7 +339,7 @@ const AdminAppointments = () => {
                                     borderRadius: '4px',
                                     boxShadow: '0 3px 12px rgba(0,0,0,0.15)'
                                 }}>
-                                    {/* Calendar header */}
+                                    {}
                                     <div style={{
                                         position: 'absolute',
                                         top: '0',
@@ -349,7 +349,7 @@ const AdminAppointments = () => {
                                         background: 'rgba(220, 252, 231, 0.9)',
                                         borderRadius: '4px 4px 0 0'
                                     }} />
-                                    {/* Calendar rings */}
+                                    {}
                                     <div style={{
                                         position: 'absolute',
                                         top: '-3px',
@@ -368,7 +368,7 @@ const AdminAppointments = () => {
                                         background: 'rgba(220, 252, 231, 0.9)',
                                         borderRadius: '1px'
                                     }} />
-                                    {/* Calendar grid */}
+                                    {}
                                     <div style={{
                                         position: 'absolute',
                                         top: '12px',
@@ -424,7 +424,7 @@ const AdminAppointments = () => {
                             {t('admin.appointmentsOverviewDescription', { total: statistics.total })}
                         </p>
 
-                        {/* Quick Stats */}
+                        {}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -433,28 +433,22 @@ const AdminAppointments = () => {
                             margin: '0 auto'
                         }}>
                             <div style={{
-                                background: 'rgba(107, 114, 128, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(107, 114, 128, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#6b7280', fontSize: '2rem', marginBottom: '0.5rem' }}>📊</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"/>
+                                        <line x1="12" y1="20" x2="12" y2="4"/>
+                                        <line x1="6" y1="20" x2="6" y2="14"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {statistics.total}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Total</div>
-                            </div>
-                            <div style={{
-                                background: 'rgba(59, 130, 246, 0.1)',
-                                padding: '1.5rem',
-                                borderRadius: '16px',
-                                border: '1px solid rgba(59, 130, 246, 0.2)'
-                            }}>
-                                <div style={{ color: '#3b82f6', fontSize: '2rem', marginBottom: '0.5rem' }}>⏰</div>
-                                <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
-                                    {statistics.scheduled}
-                                </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Scheduled</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.total')}</div>
                             </div>
                             <div style={{
                                 background: 'rgba(34, 197, 94, 0.1)',
@@ -462,41 +456,76 @@ const AdminAppointments = () => {
                                 borderRadius: '16px',
                                 border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#22c55e', fontSize: '2rem', marginBottom: '0.5rem' }}>✅</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                </div>
+                                <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
+                                    {statistics.scheduled}
+                                </div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.scheduled')}</div>
+                            </div>
+                            <div style={{
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                padding: '1.5rem',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
+                            }}>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {statistics.completed}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Completed</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.completed')}</div>
                             </div>
                             <div style={{
-                                background: 'rgba(239, 68, 68, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(239, 68, 68, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#ef4444', fontSize: '2rem', marginBottom: '0.5rem' }}>❌</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {statistics.cancelled}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Cancelled</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.cancelled')}</div>
                             </div>
                             <div style={{
-                                background: 'rgba(168, 85, 247, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(168, 85, 247, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#a855f7', fontSize: '2rem', marginBottom: '0.5rem' }}>📅</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {statistics.today}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Today</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('common.today')}</div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Filters Section */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -527,7 +556,7 @@ const AdminAppointments = () => {
                             color: 'white',
                             fontSize: '1.5rem'
                         }}>🔍</span>
-                        Filter Appointments
+                        {t('admin.filterAppointments')}
                     </h3>
                     <div style={{
                         display: 'grid',
@@ -541,10 +570,10 @@ const AdminAppointments = () => {
                                 fontWeight: '600',
                                 color: '#374151',
                                 marginBottom: '0.5rem'
-                            }}>Search</label>
+                            }}>{t('common.search')}</label>
                             <input
                                 type="text"
-                                placeholder="Search appointments..."
+                                placeholder={t('admin.searchAppointments')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 style={{
@@ -574,7 +603,7 @@ const AdminAppointments = () => {
                                 fontWeight: '600',
                                 color: '#374151',
                                 marginBottom: '0.5rem'
-                            }}>Status</label>
+                            }}>{t('common.status')}</label>
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -597,11 +626,11 @@ const AdminAppointments = () => {
                                     e.target.style.boxShadow = 'none';
                                 }}
                             >
-                                <option value="all">All Status</option>
-                                <option value="SCHEDULED">Scheduled</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="CANCELLED">Cancelled</option>
-                                <option value="NO_SHOW">No Show</option>
+                                <option value="all">{t('admin.allStatus')}</option>
+                                <option value="SCHEDULED">{t('admin.scheduled')}</option>
+                                <option value="COMPLETED">{t('admin.completed')}</option>
+                                <option value="CANCELLED">{t('admin.cancelled')}</option>
+                                <option value="NO_SHOW">{t('admin.noShow')}</option>
                             </select>
                         </div>
                         <div>
@@ -611,7 +640,7 @@ const AdminAppointments = () => {
                                 fontWeight: '600',
                                 color: '#374151',
                                 marginBottom: '0.5rem'
-                            }}>Date Range</label>
+                            }}>{t('admin.dateRange')}</label>
                             <select
                                 value={dateFilter}
                                 onChange={(e) => setDateFilter(e.target.value)}
@@ -634,10 +663,10 @@ const AdminAppointments = () => {
                                     e.target.style.boxShadow = 'none';
                                 }}
                             >
-                                <option value="all">All Dates</option>
-                                <option value="today">Today</option>
-                                <option value="week">This Week</option>
-                                <option value="month">This Month</option>
+                                <option value="all">{t('admin.allDates')}</option>
+                                <option value="today">{t('common.today')}</option>
+                                <option value="week">{t('admin.thisWeek')}</option>
+                                <option value="month">{t('admin.thisMonth')}</option>
                             </select>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'end' }}>
@@ -669,7 +698,7 @@ const AdminAppointments = () => {
                                     e.target.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.25)';
                                 }}
                             >
-                                Clear Filters
+                                {t('admin.clearFilters')}
                             </button>
                         </div>
                     </div>
@@ -683,11 +712,11 @@ const AdminAppointments = () => {
                         fontSize: '0.9rem',
                         fontWeight: '500'
                     }}>
-                        Showing {filteredAppointments.length} of {appointments.length} appointments
+                        {t('admin.showingAppointments', { count: filteredAppointments.length, total: appointments.length })}
                     </div>
                 </section>
 
-                {/* Appointments Table */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -718,10 +747,10 @@ const AdminAppointments = () => {
                             color: 'white',
                             fontSize: '1.5rem'
                         }}>📋</span>
-                        All Appointments
+                        {t('admin.allAppointments')}
                     </h3>
                     
-                    {/* Appointments Table */}
+                    {}
                     {filteredAppointments.length === 0 ? (
                         <div style={{
                             background: 'rgba(107, 114, 128, 0.05)',
@@ -748,14 +777,14 @@ const AdminAppointments = () => {
                                 fontWeight: '700',
                                 color: '#374151',
                                 margin: '0 0 1rem'
-                            }}>No Appointments Found</h4>
+                            }}>{t('admin.noAppointmentsFound')}</h4>
                             <p style={{
                                 color: '#6b7280',
                                 margin: 0,
                                 fontSize: '1rem',
                                 lineHeight: '1.6'
                             }}>
-                                No appointments match your current filters. Try adjusting the search criteria.
+                                {t('admin.noAppointmentsMatchFilters')}
                             </p>
                         </div>
                     ) : (
@@ -774,7 +803,7 @@ const AdminAppointments = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
-                                        }}>Patient</th>
+                                        }}>{t('admin.patient')}</th>
                                         <th style={{
                                             padding: '1rem',
                                             textAlign: 'left',
@@ -782,7 +811,7 @@ const AdminAppointments = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
-                                        }}>Doctor</th>
+                                        }}>{t('admin.doctor')}</th>
                                         <th style={{
                                             padding: '1rem',
                                             textAlign: 'left',
@@ -790,7 +819,7 @@ const AdminAppointments = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
-                                        }}>Service</th>
+                                        }}>{t('admin.service')}</th>
                                         <th style={{
                                             padding: '1rem',
                                             textAlign: 'left',
@@ -798,7 +827,7 @@ const AdminAppointments = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
-                                        }}>Date & Time</th>
+                                        }}>{t('admin.dateTime')}</th>
                                         <th style={{
                                             padding: '1rem',
                                             textAlign: 'center',
@@ -806,7 +835,7 @@ const AdminAppointments = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
-                                        }}>Status</th>
+                                        }}>{t('common.status')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -865,10 +894,13 @@ const AdminAppointments = () => {
                                                     padding: '0.5rem 0.75rem',
                                                     borderRadius: '8px',
                                                     fontSize: '0.8rem',
-                                                    fontWeight: '600',
-                                                    textTransform: 'capitalize'
+                                                    fontWeight: '600'
                                                 }} className={getStatusColor(appointment.status)}>
-                                                    {appointment.status?.toLowerCase()}
+                                                    {appointment.status === 'SCHEDULED' ? t('admin.scheduled') :
+                                                     appointment.status === 'COMPLETED' ? t('admin.completed') :
+                                                     appointment.status === 'CANCELLED' ? t('admin.cancelled') :
+                                                     appointment.status === 'NO_SHOW' ? t('admin.noShow') :
+                                                     appointment.status}
                                                 </span>
                                             </td>
                                         </tr>

@@ -4,7 +4,6 @@ public enum GenderEnum {
     MALE("Male"),
     FEMALE("Female");
 
-
     private final String displayName;
 
     GenderEnum(String displayName) {

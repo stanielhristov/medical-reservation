@@ -62,7 +62,7 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
         e.preventDefault();
         
         try {
-            // Validate form
+            
             if (!formData.startTime || !formData.endTime || !formData.reason.trim()) {
                 showNotification('Validation Error', 'Please fill in all fields', 'error');
                 return;
@@ -543,7 +543,7 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
                 </div>
             </div>
 
-            {/* Delete Confirmation Modal */}
+            {}
             {deleteConfirmation.isOpen && (
                 <div style={{
                     position: 'fixed',
@@ -632,7 +632,7 @@ const BlockedSlotsManager = ({ doctorId, onClose }) => {
                 </div>
             )}
 
-            {/* Notification Modal */}
+            {}
             {notification.isOpen && (
                 <div style={{
                     position: 'fixed',

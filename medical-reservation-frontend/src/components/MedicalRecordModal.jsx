@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const MedicalRecordModal = ({ 
     isOpen, 
@@ -8,6 +8,14 @@ const MedicalRecordModal = ({
 }) => {
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedType, setSelectedType] = useState('');
+
+    useEffect(() => {
+        if (!isOpen) {
+            setSelectedType('');
+            setError(null);
+        }
+    }, [isOpen]);
 
     if (!isOpen || !patient) return null;
 
@@ -150,6 +158,8 @@ const MedicalRecordModal = ({
                                 <select
                                     name="type"
                                     required
+                                    value={selectedType}
+                                    onChange={(e) => setSelectedType(e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '0.75rem',
@@ -212,148 +222,407 @@ const MedicalRecordModal = ({
                             </div>
                         </div>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{
-                                display: 'block',
-                                marginBottom: '0.5rem',
-                                fontWeight: '600',
-                                color: '#374151',
-                                fontSize: '0.9rem'
-                            }}>
-                                Description <span style={{ color: '#dc2626' }}>*</span>
-                            </label>
-                            <textarea
-                                name="description"
-                                required
-                                rows={3}
-                                placeholder="Describe the medical visit, symptoms, or procedure"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.75rem',
-                                    border: '2px solid rgba(5, 150, 105, 0.2)',
-                                    borderRadius: '8px',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical',
-                                    minHeight: '80px',
-                                    transition: 'border-color 0.2s ease'
-                                }}
-                                onFocus={e => {
-                                    e.target.style.borderColor = '#059669';
-                                }}
-                                onBlur={e => {
-                                    e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
-                                }}
-                            />
-                        </div>
+                        {selectedType === 'test' ? (
+                            <>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Test Description <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        required
+                                        rows={3}
+                                        placeholder="Describe the test performed and patient symptoms"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{
-                                display: 'block',
-                                marginBottom: '0.5rem',
-                                fontWeight: '600',
-                                color: '#374151',
-                                fontSize: '0.9rem'
-                            }}>
-                                Diagnosis <span style={{ color: '#dc2626' }}>*</span>
-                            </label>
-                            <textarea
-                                name="diagnosis"
-                                required
-                                rows={2}
-                                placeholder="Enter the medical diagnosis"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.75rem',
-                                    border: '2px solid rgba(5, 150, 105, 0.2)',
-                                    borderRadius: '8px',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical',
-                                    minHeight: '60px',
-                                    transition: 'border-color 0.2s ease'
-                                }}
-                                onFocus={e => {
-                                    e.target.style.borderColor = '#059669';
-                                }}
-                                onBlur={e => {
-                                    e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
-                                }}
-                            />
-                        </div>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Test Results <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="diagnosis"
+                                        required
+                                        rows={3}
+                                        placeholder="Enter test results, values, and reference ranges"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{
-                                display: 'block',
-                                marginBottom: '0.5rem',
-                                fontWeight: '600',
-                                color: '#374151',
-                                fontSize: '0.9rem'
-                            }}>
-                                Treatment Plan <span style={{ color: '#dc2626' }}>*</span>
-                            </label>
-                            <textarea
-                                name="treatment"
-                                required
-                                rows={3}
-                                placeholder="Describe the treatment plan or recommendations"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.75rem',
-                                    border: '2px solid rgba(5, 150, 105, 0.2)',
-                                    borderRadius: '8px',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical',
-                                    minHeight: '80px',
-                                    transition: 'border-color 0.2s ease'
-                                }}
-                                onFocus={e => {
-                                    e.target.style.borderColor = '#059669';
-                                }}
-                                onBlur={e => {
-                                    e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
-                                }}
-                            />
-                        </div>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Interpretation <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="treatment"
+                                        required
+                                        rows={3}
+                                        placeholder="Interpret the test results and clinical significance"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        ) : selectedType === 'procedure' || selectedType === 'emergency' ? (
+                            <>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Procedure Description <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        required
+                                        rows={3}
+                                        placeholder="Describe the procedure performed or emergency situation"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
 
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label style={{
-                                display: 'block',
-                                marginBottom: '0.5rem',
-                                fontWeight: '600',
-                                color: '#374151',
-                                fontSize: '0.9rem'
-                            }}>
-                                Prescription
-                            </label>
-                            <textarea
-                                name="prescription"
-                                rows={2}
-                                placeholder="Enter prescription details (optional)"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.75rem',
-                                    border: '2px solid rgba(5, 150, 105, 0.2)',
-                                    borderRadius: '8px',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical',
-                                    minHeight: '60px',
-                                    transition: 'border-color 0.2s ease'
-                                }}
-                                onFocus={e => {
-                                    e.target.style.borderColor = '#059669';
-                                }}
-                                onBlur={e => {
-                                    e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
-                                }}
-                            />
-                        </div>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Findings/Outcome <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="diagnosis"
+                                        required
+                                        rows={3}
+                                        placeholder="Enter findings, complications, or outcome of the procedure"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Post-Procedure Care <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="treatment"
+                                        required
+                                        rows={3}
+                                        placeholder="Describe post-procedure care, follow-up instructions, or recovery plan"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Medications/Prescription
+                                    </label>
+                                    <textarea
+                                        name="prescription"
+                                        rows={2}
+                                        placeholder="Enter any medications or prescriptions (optional)"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '60px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Description <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        required
+                                        rows={3}
+                                        placeholder="Describe the medical visit, symptoms, or consultation"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Diagnosis <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="diagnosis"
+                                        required
+                                        rows={2}
+                                        placeholder="Enter the medical diagnosis"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '60px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Treatment Plan <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="treatment"
+                                        required
+                                        rows={3}
+                                        placeholder="Describe the treatment plan or recommendations"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        Prescription
+                                    </label>
+                                    <textarea
+                                        name="prescription"
+                                        rows={2}
+                                        placeholder="Enter prescription details (optional)"
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '60px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        )}
 
                         {error && (
                             <div style={{

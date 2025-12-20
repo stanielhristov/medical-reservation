@@ -24,7 +24,6 @@ const DoctorScheduleRefactored = () => {
         schedule: null,
         type: 'single' 
     });
-    
 
     const {
         schedules,
@@ -78,7 +77,6 @@ const DoctorScheduleRefactored = () => {
         }
     };
 
-
     const handleDeleteSchedule = (schedule) => {
         setDeleteConfirmation({
             isOpen: true,
@@ -109,23 +107,12 @@ const DoctorScheduleRefactored = () => {
 
     const handleToggleAvailability = async (schedule) => {
         try {
-            // If marking as unavailable, just toggle without opening manager
-            if (schedule.available) {
-                await toggleAvailability(schedule);
-            } else {
-                // If marking as available, open availability manager with slot data
-                setClickedSlotData({
-                    startTime: schedule.startTime,
-                    endTime: schedule.endTime,
-                    date: schedule.startTime // Extract date from startTime
-                });
-                setShowAvailabilityManager(true);
-            }
+            
+            await toggleAvailability(schedule);
         } catch (error) {
             console.error('Error toggling availability:', error);
         }
     };
-
 
     const handleBulkDelete = (scheduleIds) => {
         setDeleteConfirmation({
@@ -134,8 +121,6 @@ const DoctorScheduleRefactored = () => {
             type: 'bulk'
         });
     };
-
-
 
     const filteredSchedules = getFilteredSchedules(selectedView, currentDate);
 
@@ -222,7 +207,7 @@ const DoctorScheduleRefactored = () => {
                     currentDate={currentDate}
                     onDateChange={setCurrentDate}
                     onManageAvailability={() => {
-                        setClickedSlotData(null); // No specific slot clicked
+                        setClickedSlotData(null); 
                         setShowAvailabilityManager(true);
                     }}
                 />
@@ -239,7 +224,6 @@ const DoctorScheduleRefactored = () => {
                     onBulkDelete={handleBulkDelete}
                 />
             </main>
-
 
             {showAvailabilityManager && (
                 <WeeklyAvailabilityManager

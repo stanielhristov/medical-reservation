@@ -40,7 +40,6 @@ const Layout = ({ children }) => {
 
     const navigationRoutes = user ? getRoleRoutes(user.role, t) : [];
 
-    // Fetch unread notification count
     useEffect(() => {
         const fetchUnreadCount = async () => {
             if (user?.id) {
@@ -83,7 +82,7 @@ const Layout = ({ children }) => {
             background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #bbf7d0 70%, #a7f3d0 100%)',
             position: 'relative'
         }}>
-            {/* Background decorations */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '5%',
@@ -106,7 +105,7 @@ const Layout = ({ children }) => {
                 zIndex: 0
             }} />
 
-            {/* Minimalistic Navigation Header */}
+            {}
             <nav style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(12px)',
@@ -127,7 +126,7 @@ const Layout = ({ children }) => {
                         height: '60px'
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {/* Medical Cross Logo */}
+                            {}
                             <button
                                 onClick={handleHomeNavigation}
                                 style={{
@@ -148,7 +147,7 @@ const Layout = ({ children }) => {
                                     e.target.closest('button').style.background = 'none';
                                 }}
                             >
-                                {/* Medical Cross Icon */}
+                                {}
                                 <div style={{
                                     width: '36px',
                                     height: '36px',
@@ -161,7 +160,7 @@ const Layout = ({ children }) => {
                                     position: 'relative',
                                     border: '1px solid #047857'
                                 }}>
-                                    {/* Medical Cross */}
+                                    {}
                                     <div style={{
                                         position: 'relative',
                                         width: '20px',
@@ -200,7 +199,7 @@ const Layout = ({ children }) => {
                                 </div>
                             </button>
                             
-                            {/* Navigation Links */}
+                            {}
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -208,7 +207,7 @@ const Layout = ({ children }) => {
                                 marginLeft: '2rem'
                             }}>
                                 {navigationRoutes.map((route) => {
-                                    // Check if current route is active
+                                    
                                     const isActive = location.pathname === route.path || 
                                         (route.path !== '/' && location.pathname.startsWith(route.path));
                                     
@@ -272,7 +271,7 @@ const Layout = ({ children }) => {
                                                 return (
                                                     <div style={{...iconStyle, background: iconColor, borderRadius: '8px 8px 2px 2px', position: 'relative'}}>
                                                         <div style={{position: 'absolute', top: '8px', left: '6px', width: '4px', height: '4px', background: iconColor, borderRadius: '50%'}} />
-                                                        {/* Red notification badge */}
+                                                        {}
                                                         {route.name === 'Notifications' && unreadNotificationCount > 0 && (
                                                             <div style={{
                                                                 position: 'absolute',
@@ -350,7 +349,7 @@ const Layout = ({ children }) => {
                                                     e.target.style.background = 'rgba(34, 197, 94, 0.1)';
                                                     e.target.style.color = '#22c55e';
                                                 }
-                                                // Change icon color on hover (only if not active)
+                                                
                                                 if (!isActive) {
                                                     const iconElements = e.target.querySelectorAll('div');
                                                     iconElements.forEach(el => {
@@ -373,7 +372,7 @@ const Layout = ({ children }) => {
                                                 if (!isActive) {
                                                     e.target.style.background = 'transparent';
                                                     e.target.style.color = '#4b5563';
-                                                    // Reset icon color
+                                                    
                                                     const iconElements = e.target.querySelectorAll('div');
                                                     iconElements.forEach(el => {
                                                         if (el.style.background && el.style.background.includes('#22c55e')) {
@@ -394,12 +393,12 @@ const Layout = ({ children }) => {
                             </div>
                         </div>
                         
-                        {/* User Info and Actions */}
+                        {}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <LanguageSwitcher />
                             {user && (
                                 <>
-                                    {/* User Profile Card */}
+                                    {}
                                     <div style={{
                                         display: 'flex',
                                         alignItems: 'center',
@@ -419,7 +418,7 @@ const Layout = ({ children }) => {
                                             justifyContent: 'center',
                                             position: 'relative'
                                         }}>
-                                            {/* User Icon */}
+                                            {}
                                             <div style={{
                                                 width: '12px',
                                                 height: '12px',
@@ -427,7 +426,7 @@ const Layout = ({ children }) => {
                                                 position: 'relative'
                                             }}>
                                                 {user.role === 'ADMIN' ? (
-                                                    // Crown icon
+                                                    
                                                     <div style={{
                                                         position: 'absolute',
                                                         top: '2px',
@@ -448,7 +447,7 @@ const Layout = ({ children }) => {
                                                         }} />
                                                     </div>
                                                 ) : user.role === 'DOCTOR' ? (
-                                                    // Medical cross icon
+                                                    
                                                     <>
                                                         <div style={{
                                                             position: 'absolute',
@@ -470,7 +469,7 @@ const Layout = ({ children }) => {
                                                         }} />
                                                     </>
                                                 ) : (
-                                                    // User icon
+                                                    
                                                     <>
                                                         <div style={{
                                                             position: 'absolute',
@@ -507,7 +506,7 @@ const Layout = ({ children }) => {
                                         </div>
                                     </div>
                                     
-                                    {/* Edit Profile Button */}
+                                    {}
                                     <button 
                                         onClick={() => navigate('/profile/edit')}
                                         style={{
@@ -533,13 +532,13 @@ const Layout = ({ children }) => {
                                             e.target.style.background = 'rgba(34, 197, 94, 0.1)';
                                         }}
                                     >
-                                        {/* User Profile Settings icon */}
+                                        {}
                                         <div style={{
                                             width: '14px',
                                             height: '14px',
                                             position: 'relative'
                                         }}>
-                                            {/* User head */}
+                                            {}
                                             <div style={{
                                                 position: 'absolute',
                                                 top: '1px',
@@ -549,7 +548,7 @@ const Layout = ({ children }) => {
                                                 background: '#16a34a',
                                                 borderRadius: '3px 3px 0 0'
                                             }} />
-                                            {/* User body */}
+                                            {}
                                             <div style={{
                                                 position: 'absolute',
                                                 top: '6px',
@@ -559,7 +558,7 @@ const Layout = ({ children }) => {
                                                 background: '#16a34a',
                                                 borderRadius: '0 0 5px 5px'
                                             }} />
-                                            {/* Settings gear overlay */}
+                                            {}
                                             <div style={{
                                                 position: 'absolute',
                                                 top: '9px',
@@ -582,7 +581,7 @@ const Layout = ({ children }) => {
                                         </div>
                                     </button>
                                     
-                                    {/* Logout Button */}
+                                    {}
                                     <button 
                                         onClick={handleLogout}
                                         style={{
@@ -608,7 +607,7 @@ const Layout = ({ children }) => {
                                             e.target.style.background = 'rgba(239, 68, 68, 0.1)';
                                         }}
                                     >
-                                        {/* Logout icon */}
+                                        {}
                                         <div style={{
                                             width: '14px',
                                             height: '14px',
@@ -652,7 +651,7 @@ const Layout = ({ children }) => {
                 </div>
             </nav>
 
-            {/* Enhanced Main Content */}
+            {}
             <main style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
@@ -674,7 +673,7 @@ const Layout = ({ children }) => {
                 </div>
             </main>
 
-            {/* Logout Confirmation Popup */}
+            {}
             {showLogoutConfirm && (
                 <div style={{
                     position: 'fixed',
@@ -713,7 +712,7 @@ const Layout = ({ children }) => {
                                 height: '24px',
                                 position: 'relative'
                             }}>
-                                {/* Logout icon in white */}
+                                {}
                                 <div style={{
                                     position: 'absolute',
                                     top: '4px',

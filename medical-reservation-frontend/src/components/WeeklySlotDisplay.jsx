@@ -39,8 +39,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                 setError(null);
 
                 const { startOfWeek, endOfWeek } = getCurrentWeekRange();
-                
-                // Set times to cover the full day
+
                 const startDateTime = new Date(startOfWeek);
                 startDateTime.setHours(0, 0, 0, 0);
                 
@@ -100,11 +99,11 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
 
     const getSlotStatusColor = (slot) => {
         switch (slot.status) {
-            case 'FREE': return '#10b981'; // green for available
-            case 'BOOKED': return '#f59e0b'; // orange for booked
-            case 'BLOCKED': return '#ef4444'; // red for blocked
-            case 'PAST': return '#9ca3af'; // gray for past slots (for doctor view only)
-            default: return '#ef4444'; // red for unavailable
+            case 'FREE': return '#10b981'; 
+            case 'BOOKED': return '#f59e0b'; 
+            case 'BLOCKED': return '#ef4444'; 
+            case 'PAST': return '#9ca3af'; 
+            default: return '#ef4444'; 
         }
     };
 

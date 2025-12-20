@@ -116,14 +116,14 @@ const AppointmentBookingModal = ({
     const formatSlotTime = (startTime, endTime) => {
         const start = new Date(startTime);
         const end = new Date(endTime);
-        return `${start.toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
+        return `${start.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: true 
-        })} - ${end.toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
+            hour12: false 
+        })} - ${end.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: true 
+            hour12: false 
         })}`;
     };
 

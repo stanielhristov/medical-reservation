@@ -1,6 +1,5 @@
 package com.reservation.medical_reservation.controller;
 
-
 import com.reservation.medical_reservation.model.dto.RegisterDTO;
 import com.reservation.medical_reservation.service.UserService;
 import org.springframework.http.ResponseEntity;

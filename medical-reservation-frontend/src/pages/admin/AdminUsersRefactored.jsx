@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../api/admin';
 import AdminHeader from '../../components/AdminHeader';
@@ -7,6 +8,7 @@ import UserTable from '../../components/UserTable';
 import ConfirmActionModal from '../../components/ConfirmActionModal';
 
 const AdminUsersRefactored = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -152,7 +154,7 @@ const AdminUsersRefactored = () => {
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 1.5rem'
                     }} />
-                    <p style={{ color: '#6b7280', margin: 0 }}>Loading users...</p>
+                    <p style={{ color: '#6b7280', margin: 0 }}>{t('loading.loadingUsers')}</p>
                 </div>
             </div>
         );
@@ -196,7 +198,7 @@ const AdminUsersRefactored = () => {
                         color: '#374151',
                         margin: '0 0 1rem'
                     }}>
-                        Error Loading Users
+                        {t('errors.errorLoadingUsers')}
                     </h3>
                     <p style={{ color: '#6b7280', margin: '0 0 2rem' }}>
                         {error}
@@ -215,7 +217,7 @@ const AdminUsersRefactored = () => {
                             transition: 'all 0.2s ease'
                         }}
                     >
-                        Retry
+                        {t('common.retry')}
                     </button>
                 </div>
             </div>
@@ -270,7 +272,7 @@ const AdminUsersRefactored = () => {
                     userCounts={getUserCounts()}
                 />
 
-                {/* Deactivation Types Information Panel */}
+                {}
                 <div style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -289,7 +291,7 @@ const AdminUsersRefactored = () => {
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        ℹ️ Deactivation Types Guide
+                        ℹ️ {t('admin.deactivationTypesGuide')}
                     </h3>
                     <div style={{
                         display: 'grid',
@@ -311,10 +313,10 @@ const AdminUsersRefactored = () => {
                                 alignItems: 'center',
                                 gap: '0.25rem'
                             }}>
-                                👤 Self-deactivated
+                                👤 {t('admin.selfDeactivated')}
                             </div>
                             <div style={{ color: '#374151', fontSize: '0.8rem' }}>
-                                User deactivated their own account. They can reactivate by logging in again.
+                                {t('admin.selfDeactivatedDescription')}
                             </div>
                         </div>
                         <div style={{
@@ -331,10 +333,10 @@ const AdminUsersRefactored = () => {
                                 alignItems: 'center',
                                 gap: '0.25rem'
                             }}>
-                                🛡️ Admin-deactivated
+                                🛡️ {t('admin.adminDeactivated')}
                             </div>
                             <div style={{ color: '#374151', fontSize: '0.8rem' }}>
-                                Account deactivated by an administrator. Only admins can reactivate these accounts.
+                                {t('admin.adminDeactivatedDescription')}
                             </div>
                         </div>
                     </div>

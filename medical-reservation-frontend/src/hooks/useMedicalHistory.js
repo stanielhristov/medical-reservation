@@ -61,10 +61,12 @@ export const useMedicalHistory = () => {
             ]);
             
             const transformedRecords = medicalHistoryResponse.map(record => {
-                const recordType = mapRecordTypeFromBackend(record.recordType || record.type);
+                const backendType = (record.recordType || record.type)?.toLowerCase() || 'consultation';
+                const recordType = mapRecordTypeFromBackend(backendType);
                 return {
                     id: record.id,
                     type: recordType,
+                    originalType: backendType,
                     title: record.title || record.diagnosis || 'Medical Record',
                     doctor: record.doctor?.fullName || record.doctorName || 'Unknown Doctor',
                     date: new Date(record.recordDate || record.createdAt),
@@ -84,11 +86,15 @@ export const useMedicalHistory = () => {
                 })
                 .map(appointment => {
                     const appointmentDate = new Date(appointment.appointmentTime || appointment.appointmentDate || appointment.date);
+                    const appointmentType = (appointment.serviceName || appointment.type || 'consultation')?.toLowerCase();
+                    const doctorGender = appointment.doctor?.gender || appointment.doctorGender;
                     return {
                         id: `appointment-${appointment.id}`,
                         type: 'visits',
+                        originalType: appointmentType,
                         title: appointment.serviceName || appointment.type || 'Doctor Visit',
                         doctor: appointment.doctor?.fullName || appointment.doctorName || 'Unknown Doctor',
+                        doctorGender: doctorGender,
                         date: appointmentDate,
                         summary: appointment.notes || appointment.reason || 'Doctor consultation',
                         details: `Appointment type: ${appointment.serviceName || appointment.type || 'Consultation'}\nDuration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,
@@ -139,9 +145,15 @@ export const useMedicalHistory = () => {
         }
     }, []);
 
-    const getTypeIcon = useCallback((type) => {
+    const getTypeIcon = useCallback((type, doctorGender) => {
         switch (type) {
-            case 'visits': return '🩺';
+            case 'visits': {
+                const gender = doctorGender?.toString()?.toUpperCase();
+                if (gender === 'FEMALE' || gender === 'F') {
+                    return '👩‍⚕️';
+                }
+                return '👨‍⚕️';
+            }
             case 'tests': return '🧪';
             case 'prescriptions': return '💊';
             case 'procedures': return '🏥';

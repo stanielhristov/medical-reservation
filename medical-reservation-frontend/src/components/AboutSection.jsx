@@ -15,7 +15,7 @@ const AboutSection = () => {
                 maxWidth: '1200px',
                 margin: '0 auto'
             }}>
-                {/* Section Header */}
+                {}
                 <div style={{
                     textAlign: 'center',
                     marginBottom: '4rem'
@@ -40,14 +40,14 @@ const AboutSection = () => {
                     </p>
                 </div>
 
-                {/* Main Content Grid */}
+                {}
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
                     gap: '3rem',
                     marginBottom: '4rem'
                 }}>
-                    {/* Mission Card */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',
@@ -92,7 +92,7 @@ const AboutSection = () => {
                         </p>
                     </div>
 
-                    {/* Key Features Card */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',
@@ -155,7 +155,7 @@ const AboutSection = () => {
                     </div>
                 </div>
 
-                {/* How It Works Section */}
+                {}
                 <div style={{
                     background: 'rgba(255, 255, 255, 0.8)',
                     backdropFilter: 'blur(20px)',

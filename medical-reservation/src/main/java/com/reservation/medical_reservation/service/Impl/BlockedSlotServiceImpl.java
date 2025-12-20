@@ -33,8 +33,7 @@ public class BlockedSlotServiceImpl implements BlockedSlotService {
     public BlockedSlotDTO createBlockedSlot(BlockedSlotDTO blockedSlotDTO) {
         DoctorEntity doctor = doctorRepository.findById(blockedSlotDTO.getDoctorId())
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
-        
-        // Validate that start time is before end time
+
         if (!blockedSlotDTO.getStartTime().isBefore(blockedSlotDTO.getEndTime())) {
             throw new IllegalArgumentException("Start time must be before end time");
         }
@@ -91,8 +90,7 @@ public class BlockedSlotServiceImpl implements BlockedSlotService {
     public BlockedSlotDTO updateBlockedSlot(Long blockedSlotId, BlockedSlotDTO blockedSlotDTO) {
         BlockedSlotEntity blockedSlot = blockedSlotRepository.findById(blockedSlotId)
                 .orElseThrow(() -> new IllegalArgumentException("Blocked slot not found"));
-        
-        // Validate that start time is before end time
+
         if (!blockedSlotDTO.getStartTime().isBefore(blockedSlotDTO.getEndTime())) {
             throw new IllegalArgumentException("Start time must be before end time");
         }

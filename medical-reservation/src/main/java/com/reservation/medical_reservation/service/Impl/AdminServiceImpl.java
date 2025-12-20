@@ -185,7 +185,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public DoctorRequestDTO approveDoctorRequest(Long requestId, Long adminId) {
-        // Fetch entities
+        
         DoctorRequestEntity request = doctorRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor request not found"));
 
@@ -242,7 +242,6 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Request has already been processed");
         }
 
-        // Get user ID to avoid potential lazy loading issues
         Long userId = request.getUser().getId();
 
         request.setStatus(DoctorRequestStatus.REJECTED);

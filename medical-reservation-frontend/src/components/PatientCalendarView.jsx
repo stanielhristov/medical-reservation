@@ -39,10 +39,10 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
 
     const formatTime = (dateTimeStr) => {
         const date = new Date(dateTimeStr);
-        return date.toLocaleTimeString('en-US', {
-            hour: 'numeric',
+        return date.toLocaleTimeString('en-GB', {
+            hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: false
         });
     };
 
@@ -149,7 +149,7 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
 
     const getMaxDate = () => {
         const maxDate = new Date();
-        maxDate.setDate(maxDate.getDate() + 30); // 30 days from now
+        maxDate.setDate(maxDate.getDate() + 30); 
         return maxDate.toISOString().split('T')[0];
     };
 
@@ -209,7 +209,7 @@ const PatientCalendarView = ({ doctorId, doctorName, onSlotSelect, selectedDate,
                 </p>
             </div>
 
-            {/* Legend */}
+            {}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-around',

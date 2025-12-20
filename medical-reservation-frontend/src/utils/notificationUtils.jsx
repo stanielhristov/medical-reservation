@@ -1,9 +1,11 @@
+import React from 'react';
+
 export const NOTIFICATION_CATEGORIES = [
-    { id: 'all', name: 'All Notifications', icon: '🔔', color: '#f97316' },
-    { id: 'appointments', name: 'Appointments', icon: '📅', color: '#3b82f6' },
-    { id: 'reminders', name: 'Reminders', icon: '⏰', color: '#10b981' },
-    { id: 'health', name: 'Health Updates', icon: '🏥', color: '#8b5cf6' },
-    { id: 'system', name: 'System', icon: '⚙️', color: '#6b7280' }
+    { id: 'all', name: 'All Notifications', icon: 'bell', color: '#22c55e' },
+    { id: 'appointments', name: 'Appointments', icon: 'calendar', color: '#22c55e' },
+    { id: 'reminders', name: 'Reminders', icon: 'clock', color: '#22c55e' },
+    { id: 'health', name: 'Health Updates', icon: 'heart', color: '#22c55e' },
+    { id: 'system', name: 'System', icon: 'settings', color: '#22c55e' }
 ];
 
 export const getPriorityColor = (priority) => {
@@ -20,8 +22,41 @@ export const getPriorityColor = (priority) => {
 };
 
 export const getCategoryIcon = (category) => {
-    const categoryObj = NOTIFICATION_CATEGORIES.find(cat => cat.id === category);
-    return categoryObj ? categoryObj.icon : '🔔';
+    const iconMap = {
+        'appointments': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+        ),
+        'reminders': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+            </svg>
+        ),
+        'health': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+        ),
+        'system': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        ),
+        'all': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+        )
+    };
+    
+    return iconMap[category] || iconMap['all'];
 };
 
 import i18n from '../i18n/config';
@@ -41,8 +76,7 @@ export const formatTimeAgo = (timestamp) => {
 
 export const translateNotificationTitle = (title) => {
     if (!title) return title;
-    
-    // Common notification titles that come from backend
+
     const titleMap = {
         'Appointment Requested': i18n.t('notifications.appointmentRequested'),
         'New Appointment Request': i18n.t('notifications.newAppointmentRequest'),
@@ -57,13 +91,11 @@ const parseAndFormatDate = (dateTimeString, currentLang) => {
     if (currentLang !== 'bg') return dateTimeString;
     
     try {
-        // Try to parse common English date formats
-        // Format: "Sunday, December 7, 2025 at 4:00 PM"
+
         const dateMatch = dateTimeString.match(/(\w+day), (\w+) (\d+), (\d+) at (\d+):(\d+) (AM|PM)/i);
         if (dateMatch) {
             const [, weekday, month, day, year, hour, minute, period] = dateMatch;
-            
-            // Convert month name to number
+
             const monthNames = {
                 'january': 0, 'february': 1, 'march': 2, 'april': 3,
                 'may': 4, 'june': 5, 'july': 6, 'august': 7,
@@ -71,25 +103,21 @@ const parseAndFormatDate = (dateTimeString, currentLang) => {
             };
             const monthNum = monthNames[month.toLowerCase()];
             if (monthNum === undefined) return dateTimeString;
-            
-            // Convert 12-hour to 24-hour
+
             let hour24 = parseInt(hour);
             if (period.toUpperCase() === 'PM' && hour24 !== 12) {
                 hour24 += 12;
             } else if (period.toUpperCase() === 'AM' && hour24 === 12) {
                 hour24 = 0;
             }
-            
-            // Create date object
+
             const date = new Date(parseInt(year), monthNum, parseInt(day), hour24, parseInt(minute));
-            
-            // Format in Bulgarian
+
             const bgWeekday = date.toLocaleDateString('bg-BG', { weekday: 'long' });
             const bgMonth = date.toLocaleDateString('bg-BG', { month: 'long' });
             const bgDay = date.getDate();
             const bgYear = date.getFullYear();
-            
-            // Format time in Bulgarian (24-hour format with period)
+
             const bgHours = date.getHours();
             const bgMinutes = date.getMinutes().toString().padStart(2, '0');
             const periodBg = bgHours < 12 ? 'сутринта' : bgHours < 18 ? 'следобед' : 'вечерта';
@@ -108,8 +136,7 @@ export const translateNotificationMessage = (message) => {
     if (!message) return message;
     
     const currentLang = i18n.language || 'en';
-    
-    // Pattern 1: "Your appointment request for [date] has been submitted and is pending confirmation."
+
     const appointmentRequestPattern = /Your appointment request for (.+?) has been submitted and is pending confirmation\.?/i;
     let match = message.match(appointmentRequestPattern);
     
@@ -117,8 +144,7 @@ export const translateNotificationMessage = (message) => {
         const dateTime = parseAndFormatDate(match[1].trim(), currentLang);
         return i18n.t('notifications.appointmentRequestedMessage', { dateTime });
     }
-    
-    // Pattern 2: "Your appointment has been confirmed for [date]"
+
     const appointmentConfirmedPattern = /Your appointment has been confirmed for (.+?)(\.|$)/i;
     match = message.match(appointmentConfirmedPattern);
     
@@ -128,9 +154,7 @@ export const translateNotificationMessage = (message) => {
         dateTime = parseAndFormatDate(dateTime, currentLang);
         return i18n.t('notifications.appointmentConfirmedMessage', { dateTime });
     }
-    
-    // Pattern 3: "You have a new appointment request from [patientName] for [dateTime]."
-    // Try multiple variations to catch different message formats
+
     const patterns = [
         /You have a new appointment request from (.+?) for (.+?)(\.|$)/i,
         /new appointment request from (.+?) for (.+?)(\.|$)/i,
@@ -144,14 +168,13 @@ export const translateNotificationMessage = (message) => {
         if (match && match[1] && match[2]) {
             const patientName = match[1].trim();
             let dateTime = match[2].trim();
-            // Remove trailing period if present
+            
             dateTime = dateTime.replace(/\.$/, '');
             dateTime = parseAndFormatDate(dateTime, currentLang);
             return i18n.t('notifications.newAppointmentRequestMessage', { patientName, dateTime });
         }
     }
-    
-    // Fallback: If message contains key phrases, try to extract manually
+
     if (message.toLowerCase().includes('new appointment request') && 
         message.toLowerCase().includes('from') && 
         message.toLowerCase().includes('for')) {
@@ -166,8 +189,7 @@ export const translateNotificationMessage = (message) => {
             return i18n.t('notifications.newAppointmentRequestMessage', { patientName, dateTime });
         }
     }
-    
-    // Fallback for appointment confirmed: If message contains "confirmed for"
+
     if (message.toLowerCase().includes('appointment') && 
         message.toLowerCase().includes('confirmed') && 
         message.toLowerCase().includes('for')) {

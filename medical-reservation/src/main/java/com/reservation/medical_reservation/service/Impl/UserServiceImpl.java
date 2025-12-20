@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
         this.notificationService = notificationService;
     }
 
-
     @Override
     @Transactional
     public void registerUser(RegisterDTO registerDTO) {
@@ -153,7 +152,6 @@ public class UserServiceImpl implements UserService {
         
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setAddress(userDTO.getAddress());
-        
 
         if (userDTO.getBloodType() != null) {
             user.setBloodType(userDTO.getBloodType());

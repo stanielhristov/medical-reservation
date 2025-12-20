@@ -1,6 +1,40 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatDate, onNavigation }) => {
+    const { t } = useTranslation();
+    
+    const getRoleTranslation = (role) => {
+        const roleUpper = role?.toUpperCase();
+        switch (roleUpper) {
+            case 'DOCTOR':
+                return t('doctors.title');
+            case 'PATIENT':
+            case 'USER':
+                return t('patients.title');
+            case 'ADMIN':
+                return t('admin.title');
+            default:
+                
+                const roleLower = role?.toLowerCase();
+                if (roleLower === 'doctor') return t('doctors.title');
+                if (roleLower === 'patient') return t('patients.title');
+                if (roleLower === 'admin') return t('admin.title');
+                return role;
+        }
+    };
+    
+    const getStatusTranslation = (status) => {
+        const statusLower = status?.toLowerCase();
+        switch (statusLower) {
+            case 'active':
+                return t('patients.active');
+            case 'inactive':
+                return t('profile.inactive');
+            default:
+                return status;
+        }
+    };
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -38,7 +72,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                     }}>
                         👥
                     </span>
-                    Recent Users
+                    {t('admin.recentUsers')}
                 </h2>
                 
                 <button
@@ -67,7 +101,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                         e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
                     }}
                 >
-                    View All Users
+                    {t('admin.viewAllUsers')}
                     <span>→</span>
                 </button>
             </div>
@@ -80,7 +114,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                 }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>👤</div>
                     <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>
-                        No recent users found
+                        {t('admin.noRecentUsersFound')}
                     </p>
                 </div>
             ) : (
@@ -90,7 +124,11 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                 }}>
                     {recentUsers.map(user => {
                         const roleColors = getRoleColor(user.role);
-                        const statusColors = getStatusColor(user.status);
+                        
+                        const isActive = user.isActive !== undefined ? user.isActive : (user.status?.toLowerCase() === 'active');
+                        const statusColors = isActive 
+                            ? { bg: 'rgba(34, 197, 94, 0.1)', color: '#16a34a', border: 'rgba(34, 197, 94, 0.2)' }
+                            : { bg: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', border: 'rgba(239, 68, 68, 0.2)' };
                         
                         return (
                             <div
@@ -158,7 +196,7 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                                                 color: '#9ca3af',
                                                 margin: 0
                                             }}>
-                                                Joined: {formatDate(user.createdAt)}
+                                                {t('admin.joined')} {formatDate(user.createdAt)}
                                             </p>
                                         </div>
                                     </div>
@@ -177,9 +215,11 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                                             fontSize: '0.75rem',
                                             fontWeight: '600',
                                             border: `1px solid ${roleColors.border}`,
-                                            textTransform: 'capitalize'
+                                            textTransform: 'capitalize',
+                                            minWidth: '70px',
+                                            textAlign: 'center'
                                         }}>
-                                            {user.role?.toLowerCase()}
+                                            {getRoleTranslation(user.role)}
                                         </div>
                                         
                                         <div style={{
@@ -190,9 +230,11 @@ const RecentUsersSection = ({ recentUsers, getRoleColor, getStatusColor, formatD
                                             fontSize: '0.75rem',
                                             fontWeight: '600',
                                             border: `1px solid ${statusColors.border}`,
-                                            textTransform: 'capitalize'
+                                            textTransform: 'capitalize',
+                                            minWidth: '70px',
+                                            textAlign: 'center'
                                         }}>
-                                            {user.status?.toLowerCase() || 'active'}
+                                            {isActive ? t('patients.active') : t('profile.inactive')}
                                         </div>
                                     </div>
                                 </div>

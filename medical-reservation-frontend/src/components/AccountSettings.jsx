@@ -37,7 +37,7 @@ const AccountSettings = () => {
                 display: 'grid',
                 gap: '2rem'
             }}>
-                {/* Account Status Section */}
+                {}
                 <div style={{
                     background: '#f8fafc',
                     borderRadius: '16px',
@@ -106,7 +106,7 @@ const AccountSettings = () => {
                     </div>
                 </div>
 
-                {/* Account Deactivation Section */}
+                {}
                 <div style={{
                     background: '#fefce8',
                     borderRadius: '16px',
@@ -211,7 +211,7 @@ const AccountSettings = () => {
                     </div>
                 </div>
 
-                {/* Privacy & Security Info */}
+                {}
                 <div style={{
                     background: '#f1f5f9',
                     borderRadius: '16px',

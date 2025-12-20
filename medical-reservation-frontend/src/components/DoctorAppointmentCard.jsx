@@ -33,8 +33,8 @@ const DoctorAppointmentCard = ({
             backdropFilter: 'blur(20px)',
             borderRadius: '20px',
             padding: '2rem',
-            boxShadow: '0 12px 30px rgba(59, 130, 246, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)',
-            border: '1px solid rgba(59, 130, 246, 0.15)',
+            boxShadow: '0 12px 30px rgba(34, 197, 94, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)',
+            border: '1px solid rgba(34, 197, 94, 0.15)',
             transition: 'all 0.3s ease',
             cursor: 'pointer',
             position: 'relative',
@@ -42,11 +42,11 @@ const DoctorAppointmentCard = ({
         }}
         onMouseEnter={e => {
             e.target.style.transform = 'translateY(-4px)';
-            e.target.style.boxShadow = '0 20px 40px rgba(59, 130, 246, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08)';
+            e.target.style.boxShadow = '0 20px 40px rgba(34, 197, 94, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08)';
         }}
         onMouseLeave={e => {
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 12px 30px rgba(59, 130, 246, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)';
+            e.target.style.boxShadow = '0 12px 30px rgba(34, 197, 94, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)';
         }}
         onClick={() => setSelectedAppointment(appointment)}
         >
@@ -76,7 +76,7 @@ const DoctorAppointmentCard = ({
                 left: '-20px',
                 width: '80px',
                 height: '80px',
-                background: 'rgba(59, 130, 246, 0.05)',
+                background: 'rgba(34, 197, 94, 0.05)',
                 borderRadius: '50%'
             }} />
 
@@ -162,7 +162,7 @@ const DoctorAppointmentCard = ({
                         </p>
                         <p style={{
                             fontSize: '1.1rem',
-                            color: '#3b82f6',
+                            color: '#22c55e',
                             margin: 0,
                             fontWeight: '700'
                         }}>
@@ -273,7 +273,10 @@ const DoctorAppointmentCard = ({
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <span>📧</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
                         <span>{appointment.patientEmail}</span>
                     </div>
                     <div style={{
@@ -281,7 +284,9 @@ const DoctorAppointmentCard = ({
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <span>📞</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
                         <span>{appointment.patientPhone}</span>
                     </div>
                 </div>
@@ -356,7 +361,7 @@ const DoctorAppointmentCard = ({
                             }}
                             style={{
                                 padding: '0.6rem 1.2rem',
-                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '10px',
@@ -364,15 +369,15 @@ const DoctorAppointmentCard = ({
                                 fontSize: '0.85rem',
                                 fontWeight: '600',
                                 transition: 'all 0.3s ease',
-                                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
                             }}
                             onMouseEnter={e => {
                                 e.target.style.transform = 'translateY(-2px)';
-                                e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+                                e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.4)';
                             }}
                             onMouseLeave={e => {
                                 e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                             }}
                         >
                             ✓ {t('appointments.markComplete')}

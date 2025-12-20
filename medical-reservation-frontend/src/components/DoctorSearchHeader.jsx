@@ -25,7 +25,12 @@ const DoctorSearchHeader = ({ onRefresh }) => {
                 justifyContent: 'center',
                 boxShadow: '0 16px 40px rgba(34, 197, 94, 0.3)'
             }}>
-                <span style={{ fontSize: '3rem', color: 'white' }}>👨‍⚕️</span>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M20 8v6"/>
+                    <path d="M23 11h-6"/>
+                </svg>
             </div>
             
             <h1 style={{
@@ -77,7 +82,11 @@ const DoctorSearchHeader = ({ onRefresh }) => {
                         e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                     }}
                 >
-                    <span>🔄</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M23 4v6h-6"/>
+                        <path d="M1 20v-6h6"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
                     {t('doctors.refreshDoctors')}
                 </button>
             )}

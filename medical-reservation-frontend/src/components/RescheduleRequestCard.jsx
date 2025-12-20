@@ -21,7 +21,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: i18n.language !== 'bg'
+            hour12: false
         });
     };
 
@@ -35,7 +35,7 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: i18n.language !== 'bg'
+            hour12: false
         });
     };
 
@@ -62,10 +62,9 @@ const RescheduleRequestCard = ({ request, doctorId, onUpdate }) => {
                 status, 
                 doctorResponse.trim() || null
             );
-            
-            // If the request was approved, trigger a schedule refresh
+
             if (status === 'APPROVED') {
-                // Trigger schedule refresh for the current doctor
+                
                 triggerScheduleRefresh(doctorId);
             }
             

@@ -30,15 +30,20 @@ const ScheduleHeader = () => {
                 <div style={{
                     width: '100px',
                     height: '100px',
-                    background: 'linear-gradient(135deg, #15803d 0%, #14532d 100%)',
+                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                     borderRadius: '20px',
                     margin: '0 auto 2rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 16px 40px rgba(21, 128, 61, 0.3)'
+                    boxShadow: '0 16px 40px rgba(34, 197, 94, 0.3)'
                 }}>
-                    <span style={{ fontSize: '3rem', color: 'white' }}>🗓️</span>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
                 </div>
                 
                 <h1 style={{

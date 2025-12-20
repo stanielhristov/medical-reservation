@@ -102,7 +102,7 @@ const CancelAppointmentModal = ({
                     </p>
                 </div>
 
-                {/* Appointment Details */}
+                {}
                 <div style={{
                     background: 'rgba(239, 68, 68, 0.05)',
                     border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -152,7 +152,7 @@ const CancelAppointmentModal = ({
                     </div>
                 </div>
 
-                {/* Cancellation Reason */}
+                {}
                 <div style={{ marginBottom: '2rem' }}>
                     <label style={{
                         display: 'block',
@@ -191,7 +191,7 @@ const CancelAppointmentModal = ({
                     />
                 </div>
 
-                {/* Warning Message */}
+                {}
                 <div style={{
                     background: 'rgba(251, 191, 36, 0.1)',
                     border: '1px solid rgba(251, 191, 36, 0.3)',
@@ -224,7 +224,7 @@ const CancelAppointmentModal = ({
                     </div>
                 </div>
 
-                {/* Action Buttons */}
+                {}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'flex-end',

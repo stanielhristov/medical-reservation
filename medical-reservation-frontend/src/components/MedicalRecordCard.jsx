@@ -7,6 +7,52 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
     const statusColors = getStatusColor(record.status);
     const typeColors = getRecordTypeColor(record.type);
 
+    const getRecordTypeDisplayName = (type, originalType) => {
+        const typeToCheck = (originalType || type)?.toLowerCase();
+        switch (typeToCheck) {
+            case 'consultation':
+                return t('medicalHistory.recordType.consultation');
+            case 'checkup':
+            case 'routine checkup':
+                return t('medicalHistory.recordType.checkup');
+            case 'followup':
+            case 'follow-up visit':
+            case 'followup visit':
+                return t('medicalHistory.recordType.followup');
+            case 'test':
+            case 'lab':
+            case 'lab_result':
+            case 'lab result':
+                return t('medicalHistory.recordType.test');
+            case 'procedure':
+            case 'medical procedure':
+                return t('medicalHistory.recordType.procedure');
+            case 'emergency':
+            case 'emergency visit':
+                return t('medicalHistory.recordType.emergency');
+            default:
+                return t(`medicalHistory.category.${type}`);
+        }
+    };
+
+    const getStatusTranslation = (status) => {
+        const statusLower = status?.toLowerCase();
+        switch (statusLower) {
+            case 'completed':
+                return t('appointments.completed');
+            case 'cancelled':
+                return t('appointments.cancelled');
+            case 'active':
+                return t('patients.active');
+            case 'pending':
+                return t('appointments.pending');
+            case 'confirmed':
+                return t('appointments.confirmed');
+            default:
+                return status;
+        }
+    };
+
     return (
         <div
             style={{
@@ -14,8 +60,8 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                 backdropFilter: 'blur(20px)',
                 borderRadius: '20px',
                 padding: '1.5rem',
-                boxShadow: '0 12px 30px rgba(16, 185, 129, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)',
-                border: '1px solid rgba(16, 185, 129, 0.15)',
+                boxShadow: '0 12px 30px rgba(34, 197, 94, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)',
+                border: '1px solid rgba(34, 197, 94, 0.15)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 position: 'relative',
@@ -23,11 +69,11 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
             }}
             onMouseEnter={e => {
                 e.target.style.transform = 'translateY(-4px)';
-                e.target.style.boxShadow = '0 20px 40px rgba(16, 185, 129, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08)';
+                e.target.style.boxShadow = '0 20px 40px rgba(34, 197, 94, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08)';
             }}
             onMouseLeave={e => {
                 e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 12px 30px rgba(16, 185, 129, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)';
+                e.target.style.boxShadow = '0 12px 30px rgba(34, 197, 94, 0.1), 0 6px 20px rgba(0, 0, 0, 0.05)';
             }}
             onClick={() => onRecordClick(record)}
         >
@@ -37,7 +83,7 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                 right: '-20px',
                 width: '80px',
                 height: '80px',
-                background: typeColors.secondary,
+                background: 'rgba(34, 197, 94, 0.1)',
                 borderRadius: '50%',
                 zIndex: 0
             }} />
@@ -53,15 +99,15 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                         <div style={{
                             width: '50px',
                             height: '50px',
-                            background: `linear-gradient(135deg, ${typeColors.primary} 0%, ${typeColors.primary}CC 100%)`,
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                             borderRadius: '12px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             fontSize: '1.5rem',
-                            boxShadow: `0 6px 15px ${typeColors.primary}40`
+                            boxShadow: '0 6px 15px rgba(34, 197, 94, 0.4)'
                         }}>
-                            {getTypeIcon(record.type)}
+                            {getTypeIcon(record.type, record.doctorGender)}
                         </div>
                         
                         <div>
@@ -95,7 +141,7 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                         border: `1px solid ${statusColors.border}`,
                         textTransform: 'capitalize'
                     }}>
-                        {record.status}
+                        {getStatusTranslation(record.status)}
                     </div>
                 </div>
 
@@ -119,7 +165,7 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Date
+                            {t('medicalHistory.date')}
                         </span>
                         <span style={{
                             fontSize: '0.9rem',
@@ -142,14 +188,14 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            Category
+                            {t('medicalHistory.category')}
                         </span>
                         <span style={{
                             fontSize: '0.9rem',
-                            color: typeColors.primary,
+                            color: '#22c55e',
                             fontWeight: '600'
                         }}>
-                            {t(`medicalHistory.category.${record.type}`)}
+                            {getRecordTypeDisplayName(record.type, record.originalType)}
                         </span>
                     </div>
                 </div>
@@ -176,11 +222,11 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
-                        color: typeColors.primary,
+                        color: '#22c55e',
                         fontSize: '0.85rem',
                         fontWeight: '600'
                     }}>
-                        <span>View Details</span>
+                        <span>{t('appointments.viewDetails')}</span>
                         <span style={{ fontSize: '0.7rem' }}>→</span>
                     </div>
                 </div>

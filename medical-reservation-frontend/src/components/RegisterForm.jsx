@@ -182,7 +182,7 @@ export default function RegisterForm() {
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            {/* Header with Language Switcher */}
+            {}
             <header style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',

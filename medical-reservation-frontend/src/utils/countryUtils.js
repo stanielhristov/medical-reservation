@@ -10,8 +10,7 @@ export const translateCountryName = (countryCode, countryName) => {
     
     const translationKey = `countries.${countryCode}`;
     const translated = i18n.t(translationKey);
-    
-    // If translation doesn't exist, return original name
+
     if (translated === translationKey) {
         return countryName;
     }

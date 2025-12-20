@@ -80,6 +80,14 @@ export const usePatientDoctors = (user) => {
     const [message, setMessage] = useState({ text: '', type: '' });
     const [bookingLoading, setBookingLoading] = useState(false);
 
+    const getDoctorImage = (doctor) => {
+        const gender = doctor.gender?.toString()?.toUpperCase();
+        if (gender === 'FEMALE' || gender === 'F') {
+            return "👩‍⚕️";
+        }
+        return "👨‍⚕️";
+    };
+
     const fetchDoctors = useCallback(async () => {
         try {
             setError(null);
@@ -106,9 +114,10 @@ export const usePatientDoctors = (user) => {
                         experience: doctor.experience || "N/A",
                         rating: ratingStats.averageRating || 0,
                         reviews: ratingStats.totalRatings || 0,
-                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
+                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : i18n.t('doctors.locationNotSpecified'),
                         nextAvailable: nextAvailable,
-                        image: "👨‍⚕️",
+                        image: getDoctorImage(doctor),
+                        gender: doctor.gender,
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
                         consultationFee: doctor.price ? `$${doctor.price}` : i18n.t('doctors.priceNotSet')
@@ -123,9 +132,10 @@ export const usePatientDoctors = (user) => {
                         experience: doctor.experience || "N/A",
                         rating: doctor.rating || 0,
                         reviews: doctor.totalRatings || 0,
-                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : "Location not specified",
+                        location: doctor.location && doctor.location.trim() !== '' ? doctor.location : i18n.t('doctors.locationNotSpecified'),
                         nextAvailable: nextAvailable,
-                        image: "👨‍⚕️",
+                        image: getDoctorImage(doctor),
+                        gender: doctor.gender,
                         about: doctor.bio || "Experienced healthcare professional",
                         education: doctor.education || "Licensed Medical Professional",
                         consultationFee: doctor.price ? `$${doctor.price}` : i18n.t('doctors.priceNotSet')
@@ -148,6 +158,12 @@ export const usePatientDoctors = (user) => {
         fetchDoctors();
         fetchSpecializations();
     }, [fetchDoctors]);
+
+    useEffect(() => {
+        if (!loading) {
+            fetchDoctors();
+        }
+    }, [i18nInstance.language]);
 
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -182,7 +198,7 @@ export const usePatientDoctors = (user) => {
             const availableSpecializations = await getAvailableSpecializations();
             const allEnglishSpecializations = ['All Specializations', ...availableSpecializations];
             setEnglishSpecializations(allEnglishSpecializations);
-            // Translate them for display
+            
             const translated = allEnglishSpecializations.map(spec => 
                 spec === 'All Specializations' 
                     ? i18n.t('specializations.allSpecializations') 
@@ -210,8 +226,7 @@ export const usePatientDoctors = (user) => {
             setSpecializations(translated);
         }
     }, []);
-    
-    // Update specializations when language changes
+
     useEffect(() => {
         if (englishSpecializations.length > 0) {
             const translated = englishSpecializations.map(spec => 
@@ -227,7 +242,7 @@ export const usePatientDoctors = (user) => {
         return doctors.filter(doctor => {
             const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
-            // selectedSpecialization contains the English value from the dropdown
+            
             const matchesSpecialization = !selectedSpecialization ||
                                          selectedSpecialization === '' ||
                                          doctor.specialization === selectedSpecialization;

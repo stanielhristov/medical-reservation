@@ -17,7 +17,7 @@ const EnhancedAppointmentBookingModal = ({
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState('');
     const [notes, setNotes] = useState('');
-    const [step, setStep] = useState(1); // 1: Select date/slot, 2: Enter details, 3: Confirm
+    const [step, setStep] = useState(1); 
 
     useEffect(() => {
         if (isOpen && !selectedDate) {
@@ -86,17 +86,16 @@ const EnhancedAppointmentBookingModal = ({
     };
 
     const formatSlotTime = (startTime, endTime) => {
-        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         const start = new Date(startTime);
         const end = new Date(endTime);
-        return `${start.toLocaleTimeString(locale, { 
-            hour: 'numeric', 
+        return `${start.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: i18n.language !== 'bg'
-        })} - ${end.toLocaleTimeString(locale, { 
-            hour: 'numeric', 
+            hour12: false
+        })} - ${end.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: i18n.language !== 'bg'
+            hour12: false
         })}`;
     };
 
@@ -137,7 +136,7 @@ const EnhancedAppointmentBookingModal = ({
                 display: 'flex',
                 flexDirection: 'column'
             }}>
-                {/* Header */}
+                {}
                 <div style={{
                     background: 'linear-gradient(135deg, #15803d 0%, #059669 100%)',
                     color: 'white',
@@ -175,7 +174,7 @@ const EnhancedAppointmentBookingModal = ({
                         </p>
                     </div>
                     
-                    {/* Progress indicator */}
+                    {}
                     <div style={{
                         display: 'flex',
                         gap: '0.5rem',
@@ -195,7 +194,7 @@ const EnhancedAppointmentBookingModal = ({
                     </div>
                 </div>
 
-                {/* Content */}
+                {}
                 <div style={{ flex: 1, overflow: 'auto' }}>
                     {step === 1 && (
                         <div style={{ padding: '2rem' }}>
@@ -226,7 +225,7 @@ const EnhancedAppointmentBookingModal = ({
                                 {t('appointments.step2')}
                             </h3>
 
-                            {/* Selected slot summary */}
+                            {}
                             <div style={{
                                 background: '#f0fdf4',
                                 border: '1px solid #bbf7d0',

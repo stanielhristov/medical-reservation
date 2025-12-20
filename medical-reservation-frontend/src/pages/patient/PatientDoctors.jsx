@@ -161,11 +161,21 @@ const PatientDoctors = () => {
                             color: '#6b7280'
                         }}>
                             <div style={{
-                                fontSize: '4rem',
-                                marginBottom: '1rem',
-                                opacity: 0.5
+                                width: '80px',
+                                height: '80px',
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                borderRadius: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 1rem'
                             }}>
-                                👨‍⚕️
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M20 8v6"/>
+                                    <path d="M23 11h-6"/>
+                                </svg>
                             </div>
                             <h3 style={{
                                 fontSize: '1.5rem',

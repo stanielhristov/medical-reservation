@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            {/* Background decoration */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '10%',
@@ -104,7 +104,7 @@ export default function ResetPasswordPage() {
                 border: '1px solid rgba(34, 197, 94, 0.1)',
                 boxSizing: 'border-box'
             }}>
-                {/* Header */}
+                {}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
                         width: '72px',
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                     </p>
                 </div>
 
-                {/* Error Message */}
+                {}
                 {error && (
                     <div style={{
                         background: 'rgba(248, 113, 113, 0.1)',
@@ -158,7 +158,7 @@ export default function ResetPasswordPage() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    {/* New Password Field */}
+                    {}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{
                             display: 'block',
@@ -229,7 +229,7 @@ export default function ResetPasswordPage() {
                         </div>
                     </div>
 
-                    {/* Confirm Password Field */}
+                    {}
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{
                             display: 'block',
@@ -300,7 +300,7 @@ export default function ResetPasswordPage() {
                         </div>
                     </div>
 
-                    {/* Submit Button */}
+                    {}
                     <button 
                         type="submit" 
                         disabled={loading || !token}
@@ -355,7 +355,7 @@ export default function ResetPasswordPage() {
                 </form>
             </div>
 
-            {/* Success Modal */}
+            {}
             {showSuccessModal && (
                 <div style={{
                     position: 'fixed',
@@ -381,7 +381,7 @@ export default function ResetPasswordPage() {
                         position: 'relative',
                         border: '1px solid rgba(34, 197, 94, 0.1)'
                     }}>
-                        {/* Success Icon */}
+                        {}
                         <div style={{
                             width: '80px',
                             height: '80px',

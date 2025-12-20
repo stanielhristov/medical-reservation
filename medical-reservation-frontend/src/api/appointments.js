@@ -1,5 +1,15 @@
 import api from './axios.js';
 
+const toLocalISOString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
 export const createAppointment = async (appointmentData) => {
     try {
         const response = await api.post('/appointments', appointmentData);
@@ -33,7 +43,7 @@ export const getNextPatientAppointment = async (patientId) => {
         return response.data;
     } catch (error) {
         if (error.response?.status === 204) {
-            return null; // No content - no next appointment
+            return null; 
         }
         throw new Error(error.response?.data || error.message);
     }
@@ -83,8 +93,8 @@ export const checkSlotAvailability = async (doctorId, startTime, endTime) => {
     try {
         const params = new URLSearchParams({
             doctorId,
-            startTime: startTime.toISOString(),
-            endTime: endTime.toISOString()
+            startTime: toLocalISOString(startTime),
+            endTime: toLocalISOString(endTime)
         });
         
         const response = await api.get(`/appointments/availability/check?${params}`);

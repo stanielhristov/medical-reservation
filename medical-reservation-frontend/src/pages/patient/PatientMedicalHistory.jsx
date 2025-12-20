@@ -58,7 +58,7 @@ const PatientMedicalHistory = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                <MedicalHistoryHeader onUploadClick={() => setShowUploadModal(true)} />
+                <MedicalHistoryHeader />
 
                 <MedicalRecordFilters
                     selectedCategory={selectedCategory}
@@ -239,7 +239,7 @@ const PatientMedicalHistory = () => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    📝 Summary
+                                    📝 {t('medicalHistory.summary')}
                                 </h4>
                                 <p style={{
                                     color: '#374151',
@@ -266,7 +266,7 @@ const PatientMedicalHistory = () => {
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}>
-                                    🔍 Detailed Information
+                                    🔍 {t('medicalHistory.detailedInformation')}
                                 </h4>
                                 <p style={{
                                     color: '#374151',
@@ -294,7 +294,7 @@ const PatientMedicalHistory = () => {
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        📎 Attachments ({selectedRecord.attachments.length})
+                                        📎 {t('medicalHistory.attachments')} ({selectedRecord.attachments.length})
                                     </h4>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                                         {selectedRecord.attachments.map((attachment, index) => (
@@ -354,7 +354,7 @@ const PatientMedicalHistory = () => {
                                         e.target.style.transform = 'translateY(0)';
                                     }}
                                 >
-                                    Close
+                                    {t('common.close')}
                                 </button>
                             </div>
                         </div>

@@ -1,6 +1,5 @@
 import i18n from '../i18n/config';
 
-// Mapping from English specialization names to translation keys
 const SPECIALIZATION_KEY_MAP = {
     'Anesthesiology': 'specializations.anesthesiology',
     'Cardiology': 'specializations.cardiology',
@@ -35,14 +34,9 @@ const SPECIALIZATION_KEY_MAP = {
     'Urology': 'specializations.urology',
     'Vascular Surgery': 'specializations.vascularSurgery',
     'All Specializations': 'specializations.allSpecializations',
-    'General Practice': 'specializations.familyMedicine' // Fallback for General Practice
+    'General Practice': 'specializations.familyMedicine' 
 };
 
-/**
- * Translates a specialization name to the current language
- * @param {string} specialization - The English specialization name
- * @returns {string} - The translated specialization name
- */
 export const translateSpecialization = (specialization) => {
     if (!specialization) return '';
     
@@ -50,16 +44,10 @@ export const translateSpecialization = (specialization) => {
     if (key) {
         return i18n.t(key);
     }
-    
-    // Fallback: return original if no translation found
+
     return specialization;
 };
 
-/**
- * Translates an array of specializations
- * @param {string[]} specializations - Array of English specialization names
- * @returns {string[]} - Array of translated specialization names
- */
 export const translateSpecializations = (specializations) => {
     if (!Array.isArray(specializations)) return [];
     

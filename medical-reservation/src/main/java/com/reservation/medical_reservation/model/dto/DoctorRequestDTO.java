@@ -29,8 +29,7 @@ public class DoctorRequestDTO {
     private String reviewedByName;
     private LocalDateTime reviewedAt;
     private LocalDateTime createdAt;
-    
-    // For request submission
+
     private Long userId;
     private String userName;
     private String userEmail;

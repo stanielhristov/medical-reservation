@@ -15,8 +15,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
             setError(null);
             
             await selfDeactivateAccount(user.id);
-            
-            // Automatically log out the user after deactivation
+
             setTimeout(() => {
                 logout();
             }, 2000);
@@ -53,7 +52,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
                 animation: 'modalSlideIn 0.3s ease-out'
             }}>
-                {/* Header */}
+                {}
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -92,7 +91,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {/* Content */}
+                {}
                 <div style={{ marginBottom: '2rem' }}>
                     <div style={{
                         backgroundColor: '#fef7f0',
@@ -174,7 +173,7 @@ const SelfDeactivateModal = ({ isOpen, onClose }) => {
                     )}
                 </div>
 
-                {/* Actions */}
+                {}
                 <div style={{
                     display: 'flex',
                     gap: '0.75rem',

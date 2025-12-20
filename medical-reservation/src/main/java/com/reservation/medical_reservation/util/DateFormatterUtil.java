@@ -6,13 +6,13 @@ import java.time.format.DateTimeFormatter;
 public class DateFormatterUtil {
     
     private static final DateTimeFormatter DATE_TIME_FORMATTER = 
-            DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' h:mm a");
+            DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm");
     
     private static final DateTimeFormatter DATE_FORMATTER = 
             DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
     
     private static final DateTimeFormatter TIME_FORMATTER = 
-            DateTimeFormatter.ofPattern("h:mm a");
+            DateTimeFormatter.ofPattern("HH:mm");
     
     public static String formatForNotification(LocalDateTime dateTime) {
         if (dateTime == null) {

@@ -40,7 +40,7 @@ const PatientAppointments = () => {
     };
 
     const handleRescheduleSuccess = () => {
-        // Refresh appointments after successful reschedule request
+        
         fetchAppointments();
         setSelectedAppointment(null);
         setShowRescheduleModal(false);
@@ -112,7 +112,7 @@ const PatientAppointments = () => {
                     appointments={appointments}
                 />
 
-                {/* Show pending reschedule requests */}
+                {}
                 <PatientRescheduleStatus />
 
                 <div style={{
@@ -166,9 +166,37 @@ const PatientAppointments = () => {
                             border: '1px solid rgba(0, 0, 0, 0.08)',
                             color: '#9ca3af'
                         }}>
-                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-                                {selectedTab === 'upcoming' ? '📅' : 
-                                 selectedTab === 'past' ? '📋' : '❌'}
+                            <div style={{ 
+                                width: '80px',
+                                height: '80px',
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                borderRadius: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 1rem'
+                            }}>
+                                {selectedTab === 'upcoming' ? (
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+                                ) : selectedTab === 'past' ? (
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                        <line x1="9" y1="12" x2="15" y2="12"/>
+                                        <line x1="9" y1="16" x2="15" y2="16"/>
+                                    </svg>
+                                ) : (
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                )}
                             </div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: '600', margin: '0 0 0.5rem 0' }}>
                                 {t(`appointments.no${selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)}Appointments`)}
@@ -196,7 +224,7 @@ const PatientAppointments = () => {
                     )}
                 </section>
 
-                {/* Cancel Appointment Confirmation Modal */}
+                {}
                 <CancelAppointmentModal
                     isOpen={showCancelModal}
                     onClose={handleCloseCancelModal}
@@ -205,7 +233,7 @@ const PatientAppointments = () => {
                     loading={cancelLoading}
                 />
 
-                {/* Reschedule Appointment Modal */}
+                {}
                 <RescheduleModal
                     isOpen={showRescheduleModal}
                     onClose={() => setShowRescheduleModal(false)}

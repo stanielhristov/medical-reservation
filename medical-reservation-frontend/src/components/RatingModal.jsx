@@ -102,7 +102,7 @@ const RatingModal = ({
                     </button>
                 </div>
 
-                {/* Doctor Info */}
+                {}
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -137,7 +137,7 @@ const RatingModal = ({
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* Rating Selection */}
+                    {}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{
                             display: 'block',
@@ -182,7 +182,7 @@ const RatingModal = ({
                         )}
                     </div>
 
-                    {/* Comment */}
+                    {}
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{
                             display: 'block',
@@ -222,7 +222,7 @@ const RatingModal = ({
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    {}
                     <div style={{
                         display: 'flex',
                         gap: '1rem',

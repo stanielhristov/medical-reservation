@@ -37,8 +37,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         return saved ? parseInt(saved, 10) : 30;
     });
 
-   
-
     const daysOfWeek = [
         { key: 'MONDAY', label: t('schedule.monday') },
         { key: 'TUESDAY', label: t('schedule.tuesday') },
@@ -65,7 +63,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
     useEffect(() => {
         localStorage.setItem('weeklyAvailabilitySlotDuration', globalSlotDuration.toString());
     }, [globalSlotDuration]);
-
 
     const getTodayDefaultStartTime = () => {
         const now = new Date();
@@ -123,7 +120,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
         });
     }, [availabilities, selectedWeekOffset, globalSlotDuration]);
 
-
     const performDayToggle = (dayKey, willBeEnabled) => {
         manualChangesRef.current.add(dayKey);
         
@@ -168,7 +164,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
             };
         });
     };
-
 
     const handleTimeChange = (dayKey, field, value) => {
         if (field === 'slotDuration') {
@@ -644,7 +639,7 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                     <button
                         onClick={() => {
                             setSelectedWeekOffset(Math.max(0, selectedWeekOffset - 1));
-                            manualChangesRef.current.clear(); // Clear manual changes when changing weeks
+                            manualChangesRef.current.clear(); 
                         }}
                         disabled={selectedWeekOffset === 0}
                         style={{
@@ -1019,7 +1014,6 @@ const WeeklyAvailabilityManager = ({ doctorId, onClose, onSave }) => {
                 message={confirmationPopup.message}
                 type={confirmationPopup.type}
             />
-
 
             <style jsx>{`
                 @keyframes spin {

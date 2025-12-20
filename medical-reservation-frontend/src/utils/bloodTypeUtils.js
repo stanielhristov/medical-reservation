@@ -1,27 +1,16 @@
-/**
- * Utility functions for blood type formatting
- */
+
 import i18n from '../i18n/config';
 
-/**
- * Converts blood type enum format to display format
- * @param {string} bloodType - Blood type in enum format (e.g., "B_NEGATIVE", "A_POSITIVE")
- * @returns {string} Blood type in display format (e.g., "B-", "A+")
- */
 export const formatBloodType = (bloodType) => {
     if (!bloodType) {
         return i18n.t('common.notProvided');
     }
-    
-    // Convert enum format to display format
+
     return bloodType
         .replace('_POSITIVE', '+')
         .replace('_NEGATIVE', '-');
 };
 
-/**
- * Blood type enum to display mapping
- */
 export const BLOOD_TYPE_DISPLAY_MAP = {
     'A_POSITIVE': 'A+',
     'A_NEGATIVE': 'A-',
@@ -33,11 +22,6 @@ export const BLOOD_TYPE_DISPLAY_MAP = {
     'O_NEGATIVE': 'O-'
 };
 
-/**
- * Get display name for blood type using mapping (more reliable than string replacement)
- * @param {string} bloodType - Blood type in enum format
- * @returns {string} Blood type in display format
- */
 export const getBloodTypeDisplay = (bloodType) => {
     if (!bloodType) {
         return i18n.t('common.notProvided');

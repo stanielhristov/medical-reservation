@@ -52,11 +52,14 @@ const AdminDashboard = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '1.5rem',
                     color: 'white',
                     boxShadow: '0 8px 20px rgba(239, 68, 68, 0.3)'
                 }}>
-                    ⚠️
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
                 </div>
                 <h2 style={{
                     fontSize: '1.5rem',
@@ -129,7 +132,7 @@ const AdminDashboard = () => {
                     onNavigation={handleNavigation}
                 />
 
-                {/* Quick Actions Section */}
+                {}
                 <div style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -146,11 +149,22 @@ const AdminDashboard = () => {
                         margin: '0 0 1.5rem',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem'
+                        gap: '0.75rem'
                         }}>
                         <span style={{
-                            fontSize: '1.2rem'
-                        }}>⚡</span>
+                            width: '36px',
+                            height: '36px',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
+                        }}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                        </span>
                         {t('admin.quickActions')}
                     </h2>
                     <div style={{
@@ -161,30 +175,38 @@ const AdminDashboard = () => {
                         <button
                             onClick={() => handleNavigation('/admin/comments')}
                             style={{
-                                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '16px',
                                 padding: '1.5rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                boxShadow: '0 8px 20px rgba(245, 158, 11, 0.3)',
+                                boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)',
                                 textAlign: 'left'
                             }}
                             onMouseEnter={e => {
                                 e.target.style.transform = 'translateY(-4px)';
-                                e.target.style.boxShadow = '0 12px 30px rgba(245, 158, 11, 0.4)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(34, 197, 94, 0.4)';
                             }}
                             onMouseLeave={e => {
                                 e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 8px 20px rgba(245, 158, 11, 0.3)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(34, 197, 94, 0.3)';
                             }}
                         >
                             <div style={{
-                                fontSize: '1.5rem',
-                                marginBottom: '0.5rem'
+                                width: '40px',
+                                height: '40px',
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: '0.75rem'
                             }}>
-                                💬
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
                             </div>
                             <div style={{
                                 fontSize: '1rem',
@@ -204,30 +226,41 @@ const AdminDashboard = () => {
                         <button
                             onClick={() => handleNavigation('/admin/users')}
                             style={{
-                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '16px',
                                 padding: '1.5rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)',
+                                boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)',
                                 textAlign: 'left'
                             }}
                             onMouseEnter={e => {
                                 e.target.style.transform = 'translateY(-4px)';
-                                e.target.style.boxShadow = '0 12px 30px rgba(16, 185, 129, 0.4)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(34, 197, 94, 0.4)';
                             }}
                             onMouseLeave={e => {
                                 e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.3)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(34, 197, 94, 0.3)';
                             }}
                         >
                             <div style={{
-                                fontSize: '1.5rem',
-                                marginBottom: '0.5rem'
+                                width: '40px',
+                                height: '40px',
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: '0.75rem'
                             }}>
-                                👥
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
                             </div>
                             <div style={{
                                 fontSize: '1rem',
@@ -247,30 +280,41 @@ const AdminDashboard = () => {
                         <button
                             onClick={() => handleNavigation('/admin/doctors')}
                             style={{
-                                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '16px',
                                 padding: '1.5rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)',
+                                boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)',
                                 textAlign: 'left'
                             }}
                             onMouseEnter={e => {
                                 e.target.style.transform = 'translateY(-4px)';
-                                e.target.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+                                e.target.style.boxShadow = '0 12px 30px rgba(34, 197, 94, 0.4)';
                             }}
                             onMouseLeave={e => {
                                 e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.3)';
+                                e.target.style.boxShadow = '0 8px 20px rgba(34, 197, 94, 0.3)';
                             }}
                         >
                             <div style={{
-                                fontSize: '1.5rem',
-                                marginBottom: '0.5rem'
+                                width: '40px',
+                                height: '40px',
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: '0.75rem'
                             }}>
-                                👩‍⚕️
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M20 8v6"/>
+                                    <path d="M23 11h-6"/>
+                                </svg>
                             </div>
                             <div style={{
                                 fontSize: '1rem',

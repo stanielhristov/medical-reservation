@@ -53,16 +53,48 @@ export const useDoctorPatients = () => {
                         height: patient.height,
                         weight: patient.weight,
                         bmi: patient.bmi,
-                        medicalRecords: medicalHistory.map(record => ({
-                            id: record.id,
-                            date: new Date(record.recordDate || record.createdAt),
-                            type: record.recordType?.toLowerCase() || 'consultation',
-                            title: record.title || record.diagnosis || 'Medical Record',
-                            description: record.notes || record.description || 'No description available',
-                            diagnosis: record.diagnosis || 'No diagnosis',
-                            treatment: record.treatment || 'No treatment specified',
-                            prescription: record.prescription || 'No prescription'
-                        }))
+                        medicalRecords: medicalHistory.map(record => {
+                            const mapBackendTypeToCategory = (backendType) => {
+                                switch (backendType?.toLowerCase()) {
+                                    case 'consultation':
+                                    case 'checkup':
+                                    case 'followup':
+                                    case 'visit':
+                                        return 'visits';
+                                    case 'lab_result':
+                                    case 'test':
+                                    case 'lab':
+                                        return 'tests';
+                                    case 'procedure':
+                                    case 'emergency':
+                                    case 'surgery':
+                                        return 'procedures';
+                                    case 'prescription':
+                                    case 'medication':
+                                        return 'prescriptions';
+                                    case 'vaccination':
+                                    case 'vaccine':
+                                        return 'vaccines';
+                                    case 'document':
+                                        return 'documents';
+                                    default:
+                                        return 'visits';
+                                }
+                            };
+                            
+                            const backendType = record.recordType?.toLowerCase() || 'consultation';
+                            return {
+                                id: record.id,
+                                date: new Date(record.recordDate || record.createdAt),
+                                type: mapBackendTypeToCategory(backendType),
+                                originalType: backendType,
+                                title: record.title || record.diagnosis || 'Medical Record',
+                                description: record.description || record.notes || 'No description available',
+                                diagnosis: record.diagnosis || 'No diagnosis',
+                                treatment: record.treatment || 'No treatment specified',
+                                prescription: record.medications || record.prescription || 'No prescription'
+                            };
+                        })
                     };
                 } catch (recordError) {
                     console.warn(`Failed to load medical history for patient ${patient.id}:`, recordError);
@@ -128,7 +160,7 @@ export const useDoctorPatients = () => {
             case 'recent':
                 filtered = filtered.filter(patient => 
                     patient.lastVisit && 
-                    (now - patient.lastVisit) <= 30 * 24 * 60 * 60 * 1000 // Last 30 days
+                    (now - patient.lastVisit) <= 30 * 24 * 60 * 60 * 1000 
                 );
                 break;
             case 'chronic':
@@ -195,18 +227,50 @@ export const useDoctorPatients = () => {
             
             if (selectedPatient && selectedPatient.id === recordData.patientId) {
                 const updatedMedicalHistory = await getPatientMedicalHistory(recordData.patientId);
+                const mapBackendTypeToCategory = (backendType) => {
+                    switch (backendType?.toLowerCase()) {
+                        case 'consultation':
+                        case 'checkup':
+                        case 'followup':
+                        case 'visit':
+                            return 'visits';
+                        case 'lab_result':
+                        case 'test':
+                        case 'lab':
+                            return 'tests';
+                        case 'procedure':
+                        case 'emergency':
+                        case 'surgery':
+                            return 'procedures';
+                        case 'prescription':
+                        case 'medication':
+                            return 'prescriptions';
+                        case 'vaccination':
+                        case 'vaccine':
+                            return 'vaccines';
+                        case 'document':
+                            return 'documents';
+                        default:
+                            return 'visits';
+                    }
+                };
+                
                 setSelectedPatient(prev => ({
                     ...prev,
-                    medicalRecords: updatedMedicalHistory.map(record => ({
-                        id: record.id,
-                        date: new Date(record.recordDate || record.createdAt),
-                        type: record.recordType?.toLowerCase() || 'consultation',
-                        title: record.title || record.diagnosis || 'Medical Record',
-                        description: record.notes || record.description || 'No description available',
-                        diagnosis: record.diagnosis || 'No diagnosis',
-                        treatment: record.treatment || 'No treatment specified',
-                        prescription: record.prescription || 'No prescription'
-                    }))
+                    medicalRecords: updatedMedicalHistory.map(record => {
+                        const backendType = record.recordType?.toLowerCase() || 'consultation';
+                        return {
+                            id: record.id,
+                            date: new Date(record.recordDate || record.createdAt),
+                            type: mapBackendTypeToCategory(backendType),
+                            originalType: backendType,
+                            title: record.title || record.diagnosis || 'Medical Record',
+                            description: record.description || record.notes || 'No description available',
+                            diagnosis: record.diagnosis || 'No diagnosis',
+                            treatment: record.treatment || 'No treatment specified',
+                            prescription: record.medications || record.prescription || 'No prescription'
+                        };
+                    })
                 }));
             }
         } catch (error) {
@@ -216,10 +280,10 @@ export const useDoctorPatients = () => {
     }, [user?.id, fetchPatients, selectedPatient]);
 
     const filters = [
-        { id: 'all', name: t('patients.allPatients'), icon: '👥', color: '#059669' },
-        { id: 'recent', name: t('patients.recentVisits'), icon: '⏰', color: '#3b82f6' },
-        { id: 'chronic', name: t('patients.chronicConditions'), icon: '🏥', color: '#dc2626' },
-        { id: 'followup', name: t('patients.followupRequired'), icon: '📋', color: '#f59e0b' }
+        { id: 'all', name: t('patients.allPatients'), icon: 'users', color: '#22c55e' },
+        { id: 'recent', name: t('patients.recentVisits'), icon: 'clock', color: '#22c55e' },
+        { id: 'chronic', name: t('patients.chronicConditions'), icon: 'hospital', color: '#22c55e' },
+        { id: 'followup', name: t('patients.followupRequired'), icon: 'clipboard', color: '#22c55e' }
     ];
 
     return {

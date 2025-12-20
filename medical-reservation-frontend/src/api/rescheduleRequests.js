@@ -18,12 +18,26 @@ const handleApiError = (error) => {
     return error.message || 'An unexpected error occurred';
 };
 
+const toLocalISOString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
 export const createRescheduleRequest = async (appointmentId, requestedDateTime, requestedEndTime, patientReason = null) => {
     try {
+        
+        const localStartTime = toLocalISOString(requestedDateTime);
+        const localEndTime = toLocalISOString(requestedEndTime);
+        
         console.log('API call parameters:', {
             appointmentId,
-            requestedDateTime: requestedDateTime.toISOString(),
-            requestedEndTime: requestedEndTime.toISOString(),
+            requestedDateTime: localStartTime,
+            requestedEndTime: localEndTime,
             patientReason
         });
         
@@ -32,8 +46,8 @@ export const createRescheduleRequest = async (appointmentId, requestedDateTime, 
         
         const params = new URLSearchParams({
             appointmentId: appointmentId.toString(),
-            requestedDateTime: requestedDateTime.toISOString(),
-            requestedEndTime: requestedEndTime.toISOString()
+            requestedDateTime: localStartTime,
+            requestedEndTime: localEndTime
         });
         
         if (patientReason) {

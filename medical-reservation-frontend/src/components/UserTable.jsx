@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+
 const UserTable = ({ users, onUserAction, loading }) => {
+    const { t, i18n } = useTranslation();
+
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString(i18n.language === 'bg' ? 'bg-BG' : 'en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -55,7 +59,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     animation: 'spin 1s linear infinite',
                     margin: '0 auto 1.5rem'
                 }} />
-                <p style={{ color: '#6b7280', margin: 0 }}>Loading users...</p>
+                <p style={{ color: '#6b7280', margin: 0 }}>{t('loading.loadingUsers')}</p>
             </div>
         );
     }
@@ -82,7 +86,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     margin: '0 auto 1.5rem',
                     fontSize: '2rem'
                                 }}>
-                                    Users
+                                    👥
                                 </div>
                 <h3 style={{
                     fontSize: '1.5rem',
@@ -90,14 +94,14 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     color: '#374151',
                     margin: '0 0 1rem'
                 }}>
-                    No Users Found
+                    {t('adminUsers.noUsersFound')}
                 </h3>
                 <p style={{
                     color: '#6b7280',
                     margin: 0,
                     fontSize: '1rem'
                 }}>
-                    No users match the current filter criteria.
+                    {t('adminUsers.noUsersMatchFilter')}
                 </p>
             </div>
         );
@@ -126,7 +130,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                     alignItems: 'center',
                     gap: '0.5rem'
                 }}>
-                    Users ({users.length})
+                    {t('adminUsers.users')} ({users.length})
                 </h3>
             </div>
 
@@ -147,7 +151,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                User
+                                {t('adminUsers.user')}
                             </th>
                             <th style={{
                                 padding: '1rem',
@@ -156,7 +160,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                Role
+                                {t('adminUsers.role')}
                             </th>
                             <th style={{
                                 padding: '1rem',
@@ -165,7 +169,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                Status
+                                {t('common.status')}
                             </th>
                             <th style={{
                                 padding: '1rem',
@@ -174,7 +178,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                Joined
+                                {t('adminUsers.joined')}
                             </th>
                             <th style={{
                                 padding: '1rem',
@@ -183,7 +187,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                 color: '#374151',
                                 fontSize: '0.9rem'
                             }}>
-                                Actions
+                                {t('common.actions')}
                             </th>
                         </tr>
                     </thead>
@@ -228,7 +232,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                     color: '#374151',
                                                     fontSize: '0.9rem'
                                                 }}>
-                                                    {user.fullName || 'Unknown User'}
+                                                    {user.fullName || t('adminUsers.unknownUser')}
                                                 </div>
                                                 <div style={{
                                                     color: '#6b7280',
@@ -260,12 +264,12 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                             alignItems: 'center',
                                             gap: '0.25rem'
                                         }}>
-                                            {user.role || 'Unknown'}
+                                            {user.role ? t(`adminUsers.role${user.role}`) : t('adminUsers.unknown')}
                                         </span>
                                     </td>
                                     
                                     <td style={{ padding: '1rem' }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'flex-start' }}>
                                             <span style={{
                                                 padding: '0.375rem 0.75rem',
                                                 borderRadius: '20px',
@@ -275,9 +279,10 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                 color: user.isActive ? '#22c55e' : '#6b7280',
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
-                                                gap: '0.25rem'
+                                                gap: '0.25rem',
+                                                width: 'fit-content'
                                             }}>
-                                                {user.isActive ? 'Active' : 'Inactive'}
+                                                {user.isActive ? t('adminUsers.active') : t('adminUsers.inactive')}
                                             </span>
                                             {!user.isActive && user.deactivationType && (
                                                 <span style={{
@@ -297,8 +302,8 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                     width: 'fit-content'
                                                 }}>
                                                     {user.deactivationType === 'SELF_DEACTIVATED' 
-                                                        ? '👤 Self-deactivated' 
-                                                        : '🛡️ Admin-deactivated'}
+                                                        ? `👤 ${t('admin.selfDeactivated')}` 
+                                                        : `🛡️ ${t('admin.adminDeactivated')}`}
                                                 </span>
                                             )}
                                         </div>
@@ -330,7 +335,9 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                         color: '#dc2626',
                                                         fontSize: '0.75rem',
                                                         fontWeight: '500',
-                                                        transition: 'all 0.2s ease'
+                                                        transition: 'all 0.2s ease',
+                                                        minWidth: '85px',
+                                                        textAlign: 'center'
                                                     }}
                                                     onMouseEnter={e => {
                                                         e.target.style.background = 'rgba(239, 68, 68, 0.15)';
@@ -339,7 +346,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                         e.target.style.background = 'rgba(239, 68, 68, 0.1)';
                                                     }}
                                                 >
-                                                    Deactivate
+                                                    {t('admin.deactivate')}
                                                 </button>
                                             ) : (
                                                 <button
@@ -353,7 +360,9 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                         color: '#16a34a',
                                                         fontSize: '0.75rem',
                                                         fontWeight: '500',
-                                                        transition: 'all 0.2s ease'
+                                                        transition: 'all 0.2s ease',
+                                                        minWidth: '85px',
+                                                        textAlign: 'center'
                                                     }}
                                                     onMouseEnter={e => {
                                                         e.target.style.background = 'rgba(34, 197, 94, 0.15)';
@@ -362,7 +371,7 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                         e.target.style.background = 'rgba(34, 197, 94, 0.1)';
                                                     }}
                                                 >
-                                                    Activate
+                                                    {t('admin.activate')}
                                                 </button>
                                             )}
                                             
@@ -372,11 +381,14 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                     background: 'rgba(239, 68, 68, 0.1)',
                                                     border: '1px solid rgba(239, 68, 68, 0.2)',
                                                     borderRadius: '6px',
-                                                    padding: '0.375rem 0.5rem',
+                                                    padding: '0.375rem 0.75rem',
                                                     cursor: 'pointer',
                                                     color: '#dc2626',
-                                                    fontSize: '0.8rem',
-                                                    transition: 'all 0.2s ease'
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.2s ease',
+                                                    minWidth: '85px',
+                                                    textAlign: 'center'
                                                 }}
                                                 onMouseEnter={e => {
                                                     e.target.style.background = 'rgba(239, 68, 68, 0.15)';
@@ -384,9 +396,9 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                 onMouseLeave={e => {
                                                     e.target.style.background = 'rgba(239, 68, 68, 0.1)';
                                                 }}
-                                                title="Delete User"
+                                                title={t('admin.deleteUser')}
                                             >
-                                                Delete
+                                                {t('common.delete')}
                                             </button>
                                         </div>
                                     </td>

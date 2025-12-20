@@ -33,7 +33,7 @@ export const getNextPatientAppointment = async (patientId) => {
         return response.data;
     } catch (error) {
         if (error.response?.status === 204) {
-            return null; // No content - no next appointment
+            return null; 
         }
         throw new Error(error.response?.data || error.message);
     }

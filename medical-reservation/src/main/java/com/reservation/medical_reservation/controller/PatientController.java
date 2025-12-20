@@ -102,24 +102,20 @@ public class PatientController {
     @GetMapping("/{patientId}/dashboard")
     public ResponseEntity<Map<String, Object>> getPatientDashboard(@PathVariable Long patientId) {
         Map<String, Object> dashboard = new HashMap<>();
-        
-        // Next appointment
+
         AppointmentDTO nextAppointment = appointmentService.getNextAppointmentByPatient(patientId);
         dashboard.put("nextAppointment", nextAppointment);
-        
-        // Recent appointments (completed)
+
         List<AppointmentDTO> recentAppointments = appointmentService.getPatientAppointments(patientId)
                 .stream()
                 .filter(apt -> apt.getStatus() == AppointmentStatus.COMPLETED)
                 .limit(5)
                 .toList();
         dashboard.put("recentAppointments", recentAppointments);
-        
-        // Today's appointments
+
         List<AppointmentDTO> todayAppointments = appointmentService.getPatientAppointmentsForToday(patientId);
         dashboard.put("todayAppointments", todayAppointments);
-        
-        // Statistics
+
         Map<String, Object> stats = new HashMap<>();
         stats.put("completedAppointments", appointmentService.countPatientAppointmentsByStatus(patientId, AppointmentStatus.COMPLETED));
         stats.put("upcomingAppointments", appointmentService.getUpcomingAppointmentsByPatient(patientId).size());

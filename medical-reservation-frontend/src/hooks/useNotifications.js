@@ -45,7 +45,6 @@ export const useNotifications = () => {
         }
     };
 
-    // Helper function to map backend types to frontend categories
     const mapCategoryFromBackend = (backendType) => {
         switch (backendType?.toLowerCase()) {
             case 'appointment_reminder':

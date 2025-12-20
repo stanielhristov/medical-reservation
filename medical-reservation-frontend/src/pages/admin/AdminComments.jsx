@@ -13,8 +13,7 @@ const AdminComments = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [pageSize] = useState(10);
-    
-    // Delete confirmation modal state
+
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState(null);
     const [actionLoading, setActionLoading] = useState(false);
@@ -49,11 +48,9 @@ const AdminComments = () => {
             setSuccess(t('admin.commentDeletedSuccessfully'));
             setShowDeleteModal(false);
             setCommentToDelete(null);
-            
-            // Refresh the current page
+
             await fetchComments(currentPage);
-            
-            // If the current page is now empty and it's not the first page, go to the previous page
+
             if (comments.length === 1 && currentPage > 0) {
                 await fetchComments(currentPage - 1);
             }
@@ -112,7 +109,6 @@ const AdminComments = () => {
         fetchComments();
     }, []);
 
-    // Auto-hide success message after 3 seconds
     useEffect(() => {
         if (success) {
             const timer = setTimeout(() => setSuccess(''), 3000);
@@ -120,7 +116,6 @@ const AdminComments = () => {
         }
     }, [success]);
 
-    // Auto-hide error message after 5 seconds
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => setError(''), 5000);
@@ -200,7 +195,7 @@ const AdminComments = () => {
                         color: '#374151',
                         margin: '0 0 1rem'
                     }}>
-                        Error Loading Comments
+                        {t('admin.errorLoadingComments')}
                     </h3>
                     <p style={{ color: '#6b7280', margin: '0 0 2rem' }}>
                         {error}
@@ -219,7 +214,7 @@ const AdminComments = () => {
                             transition: 'all 0.2s ease'
                         }}
                     >
-                        Retry
+                        {t('admin.retry')}
                     </button>
                 </div>
             </div>
@@ -233,7 +228,7 @@ const AdminComments = () => {
             position: 'relative',
             overflow: 'hidden'
         }}>
-            {/* Background decorations */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '8%',
@@ -267,7 +262,7 @@ const AdminComments = () => {
                 zIndex: 0
             }} />
 
-            {/* Main Content */}
+            {}
             <main style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
@@ -275,7 +270,7 @@ const AdminComments = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                {/* Enhanced Welcome Section */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -288,7 +283,7 @@ const AdminComments = () => {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
-                    {/* Background pattern */}
+                    {}
                     <div style={{
                         position: 'absolute',
                         top: '-50%',
@@ -304,23 +299,20 @@ const AdminComments = () => {
                         <div style={{
                             width: '120px',
                             height: '120px',
-                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                             borderRadius: '24px',
                             margin: '0 auto 2.5rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            boxShadow: '0 16px 40px rgba(245, 158, 11, 0.3)',
-                            border: '3px solid #b45309',
-                            position: 'relative'
+                            boxShadow: '0 16px 40px rgba(16, 185, 129, 0.3)',
+                            border: '3px solid #047857'
                         }}>
-                            {/* Comment Icon */}
-                            <div style={{
-                                fontSize: '3rem',
-                                color: 'white'
-                            }}>
-                                💬
-                            </div>
+                            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                <path d="M8 10h8"/>
+                                <path d="M8 14h4"/>
+                            </svg>
                         </div>
                         
                         <h1 style={{
@@ -347,7 +339,7 @@ const AdminComments = () => {
                             {t('admin.commentsManagementDescription', { total: totalElements })}
                         </p>
 
-                        {/* Quick Stats */}
+                        {}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -361,41 +353,61 @@ const AdminComments = () => {
                                 borderRadius: '16px',
                                 border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#22c55e', fontSize: '2rem', marginBottom: '0.5rem' }}>📝</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                        <path d="M8 10h8"/>
+                                        <path d="M8 14h4"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {totalElements}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Total Comments</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.totalComments')}</div>
                             </div>
                             <div style={{
-                                background: 'rgba(251, 191, 36, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(251, 191, 36, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#f59e0b', fontSize: '2rem', marginBottom: '0.5rem' }}>⭐</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="3" width="7" height="7"/>
+                                        <rect x="14" y="3" width="7" height="7"/>
+                                        <rect x="14" y="14" width="7" height="7"/>
+                                        <rect x="3" y="14" width="7" height="7"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {totalPages}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Pages</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.pages')}</div>
                             </div>
                             <div style={{
-                                background: 'rgba(139, 92, 246, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(139, 92, 246, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#8b5cf6', fontSize: '2rem', marginBottom: '0.5rem' }}>📊</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {comments.length}
                                 </div>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Current Page</div>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('admin.currentPage')}</div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Messages */}
+                {}
                 {error && (
                     <div style={{
                         background: 'rgba(254, 242, 242, 0.95)',
@@ -430,7 +442,7 @@ const AdminComments = () => {
                     </div>
                 )}
 
-                {/* Comments List */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -453,14 +465,17 @@ const AdminComments = () => {
                         <span style={{
                             width: '48px',
                             height: '48px',
-                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                             borderRadius: '12px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: 'white',
-                            fontSize: '1.5rem'
-                        }}>💬</span>
+                            color: 'white'
+                        }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </span>
                         {t('admin.userCommentsRatings')}
                     </h3>
                     
@@ -471,96 +486,109 @@ const AdminComments = () => {
                         {comments.length > 0 ? (
                             comments.map((comment) => (
                                 <div key={comment.id} style={{
-                                    display: 'flex',
+                                    display: 'grid',
+                                    gridTemplateColumns: '50px 180px 1fr 160px 100px',
                                     alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: '1rem',
+                                    gap: '1.5rem',
                                     padding: '1.5rem',
-                                    background: 'rgba(245, 158, 11, 0.05)',
+                                    background: 'rgba(34, 197, 94, 0.05)',
                                     borderRadius: '12px',
-                                    border: '1px solid rgba(245, 158, 11, 0.1)',
+                                    border: '1px solid rgba(34, 197, 94, 0.1)',
                                     transition: 'all 0.3s ease'
                                 }}
                                 onMouseEnter={e => {
-                                    e.currentTarget.style.background = 'rgba(245, 158, 11, 0.08)';
+                                    e.currentTarget.style.background = 'rgba(34, 197, 94, 0.08)';
                                     e.currentTarget.style.transform = 'translateY(-1px)';
                                 }}
                                 onMouseLeave={e => {
-                                    e.currentTarget.style.background = 'rgba(245, 158, 11, 0.05)';
+                                    e.currentTarget.style.background = 'rgba(34, 197, 94, 0.05)';
                                     e.currentTarget.style.transform = 'translateY(0)';
                                 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-                                        <div style={{
-                                            width: '50px',
-                                            height: '50px',
-                                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                                            borderRadius: '12px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontWeight: '700',
-                                            fontSize: '1.2rem'
+                                    {}
+                                    <div style={{
+                                        width: '50px',
+                                        height: '50px',
+                                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                                        borderRadius: '12px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: 'white',
+                                        fontWeight: '700',
+                                        fontSize: '1.2rem',
+                                        flexShrink: 0
+                                    }}>
+                                        {comment.userFullName?.charAt(0) || '?'}
+                                    </div>
+                                    
+                                    {}
+                                    <div>
+                                        <div style={{ 
+                                            color: '#374151', 
+                                            fontWeight: '700', 
+                                            fontSize: '1rem',
+                                            marginBottom: '0.25rem',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
                                         }}>
-                                            {comment.userFullName?.charAt(0) || '?'}
+                                            {comment.userFullName || t('common.anonymousUser')}
                                         </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ 
-                                                color: '#374151', 
-                                                fontWeight: '700', 
-                                                fontSize: '1.1rem',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {comment.userFullName || t('common.anonymousUser')}
-                                            </div>
-                                            <div style={{ 
-                                                color: '#6b7280', 
-                                                fontSize: '0.9rem',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                <span style={{
-                                                    fontSize: '1rem',
-                                                    fontWeight: 'bold',
-                                                    color: comment.rating >= 4 ? '#16a34a' : 
-                                                           comment.rating >= 3 ? '#d97706' : '#dc2626'
-                                                }}>
-                                                    {comment.rating}
-                                                </span>
-                                                <span style={{ color: '#f59e0b', marginLeft: '0.5rem' }}>
-                                                    {'★'.repeat(comment.rating)}{'☆'.repeat(5 - comment.rating)}
-                                                </span>
-                                            </div>
-                                            <div style={{ 
-                                                color: '#6b7280', 
-                                                fontSize: '0.85rem',
-                                                maxWidth: '400px'
-                                            }}>
-                                                {comment.comment ? truncateText(comment.comment, 80) : t('admin.noCommentProvided')}
-                                            </div>
-                                        </div>
-                                        <div style={{ textAlign: 'center', minWidth: '120px' }}>
+                                        <div style={{ 
+                                            color: '#6b7280', 
+                                            fontSize: '0.9rem'
+                                        }}>
                                             <span style={{
-                                                display: 'inline-block',
-                                                padding: '0.5rem 1rem',
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600',
-                                                borderRadius: '8px',
-                                                background: 'rgba(139, 92, 246, 0.1)',
-                                                color: '#7c3aed',
-                                                border: '1px solid rgba(139, 92, 246, 0.2)'
+                                                fontSize: '1rem',
+                                                fontWeight: 'bold',
+                                                color: comment.rating >= 4 ? '#16a34a' : 
+                                                       comment.rating >= 3 ? '#d97706' : '#dc2626'
                                             }}>
-                                                ID: {comment.id}
+                                                {comment.rating}
                                             </span>
-                                            <div style={{ 
-                                                color: '#6b7280', 
-                                                fontSize: '0.8rem',
-                                                marginTop: '0.5rem'
-                                            }}>
-                                                {formatDate(comment.createdAt)}
-                                            </div>
+                                            <span style={{ color: '#f59e0b', marginLeft: '0.5rem' }}>
+                                                {'★'.repeat(comment.rating)}{'☆'.repeat(5 - comment.rating)}
+                                            </span>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    
+                                    {}
+                                    <div style={{ 
+                                        color: '#6b7280', 
+                                        fontSize: '0.9rem',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap'
+                                    }}>
+                                        {comment.comment ? truncateText(comment.comment, 60) : t('admin.noCommentProvided')}
+                                    </div>
+                                    
+                                    {}
+                                    <div style={{ textAlign: 'center' }}>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            padding: '0.4rem 0.75rem',
+                                            fontSize: '0.8rem',
+                                            fontWeight: '600',
+                                            borderRadius: '8px',
+                                            background: 'rgba(34, 197, 94, 0.1)',
+                                            color: '#16a34a',
+                                            border: '1px solid rgba(34, 197, 94, 0.2)'
+                                        }}>
+                                            ID: {comment.id}
+                                        </span>
+                                        <div style={{ 
+                                            color: '#6b7280', 
+                                            fontSize: '0.75rem',
+                                            marginTop: '0.4rem',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            {formatDate(comment.createdAt)}
+                                        </div>
+                                    </div>
+                                    
+                                    {}
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                                         <button
                                             onClick={() => openDeleteModal(comment)}
                                             disabled={actionLoading}
@@ -568,14 +596,15 @@ const AdminComments = () => {
                                                 background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                                                 color: 'white',
                                                 border: 'none',
-                                                padding: '0.75rem 1.5rem',
+                                                padding: '0.6rem 1rem',
                                                 borderRadius: '8px',
                                                 cursor: actionLoading ? 'not-allowed' : 'pointer',
                                                 fontWeight: '600',
-                                                fontSize: '0.9rem',
+                                                fontSize: '0.85rem',
                                                 transition: 'all 0.3s ease',
                                                 boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)',
-                                                opacity: actionLoading ? 0.5 : 1
+                                                opacity: actionLoading ? 0.5 : 1,
+                                                whiteSpace: 'nowrap'
                                             }}
                                             onMouseEnter={e => {
                                                 if (!actionLoading) {
@@ -590,7 +619,7 @@ const AdminComments = () => {
                                                 }
                                             }}
                                         >
-                                            🗑️ {t('common.delete')}
+                                            {t('common.delete')}
                                         </button>
                                     </div>
                                 </div>
@@ -612,14 +641,16 @@ const AdminComments = () => {
                                     justifyContent: 'center',
                                     margin: '0 auto 1rem'
                                 }}>
-                                    <span style={{ fontSize: '1.5rem' }}>💬</span>
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
                                 </div>
                                 {t('admin.noCommentsFound')}
                             </div>
                         )}
                     </div>
 
-                    {/* Enhanced Pagination */}
+                    {}
                     {totalPages > 1 && (
                         <div style={{
                             display: 'flex',
@@ -628,9 +659,9 @@ const AdminComments = () => {
                             gap: '1rem',
                             marginTop: '2rem',
                             padding: '1.5rem',
-                            background: 'rgba(245, 158, 11, 0.05)',
+                            background: 'rgba(34, 197, 94, 0.05)',
                             borderRadius: '16px',
-                            border: '1px solid rgba(245, 158, 11, 0.1)'
+                            border: '1px solid rgba(34, 197, 94, 0.1)'
                         }}>
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
@@ -672,7 +703,7 @@ const AdminComments = () => {
                                 padding: '0.75rem 1.5rem',
                                 background: 'rgba(255, 255, 255, 0.8)',
                                 borderRadius: '8px',
-                                border: '1px solid rgba(245, 158, 11, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
                                 {t('common.page')} {currentPage + 1} {t('common.of')} {totalPages}
                             </span>
@@ -714,7 +745,7 @@ const AdminComments = () => {
                 </section>
             </main>
 
-            {/* Delete Confirmation Modal */}
+            {}
             <GenericConfirmModal
                 isOpen={showDeleteModal}
                 onClose={closeDeleteModal}

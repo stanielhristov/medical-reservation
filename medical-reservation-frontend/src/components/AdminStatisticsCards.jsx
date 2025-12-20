@@ -1,6 +1,38 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+const UsersIcon = () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+);
+
+const PatientsIcon = () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+);
+
+const DoctorsIcon = () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>
+        <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>
+        <circle cx="20" cy="10" r="2"/>
+    </svg>
+);
+
+const CalendarIcon = () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+);
+
 const AdminStatisticsCards = ({ statistics, onNavigation }) => {
     const { t } = useTranslation();
     
@@ -8,37 +40,37 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
         {
             title: t('admin.totalUsers'),
             value: statistics.totalUsers,
-            icon: '👥',
-            color: '#10b981',
-            bgColor: 'rgba(16, 185, 129, 0.1)',
-            borderColor: 'rgba(16, 185, 129, 0.2)',
+            icon: <UsersIcon />,
+            color: '#22c55e',
+            bgColor: 'rgba(34, 197, 94, 0.1)',
+            borderColor: 'rgba(34, 197, 94, 0.2)',
             path: '/admin/users'
         },
         {
             title: t('patients.title'),
             value: statistics.totalPatients,
-            icon: '🏥',
-            color: '#3b82f6',
-            bgColor: 'rgba(59, 130, 246, 0.1)',
-            borderColor: 'rgba(59, 130, 246, 0.2)',
+            icon: <PatientsIcon />,
+            color: '#22c55e',
+            bgColor: 'rgba(34, 197, 94, 0.1)',
+            borderColor: 'rgba(34, 197, 94, 0.2)',
             path: '/admin/users?filter=patient'
         },
         {
             title: t('doctors.title'),
             value: statistics.totalDoctors,
-            icon: '👩‍⚕️',
-            color: '#8b5cf6',
-            bgColor: 'rgba(139, 92, 246, 0.1)',
-            borderColor: 'rgba(139, 92, 246, 0.2)',
+            icon: <DoctorsIcon />,
+            color: '#22c55e',
+            bgColor: 'rgba(34, 197, 94, 0.1)',
+            borderColor: 'rgba(34, 197, 94, 0.2)',
             path: '/admin/doctors'
         },
         {
             title: t('appointments.title'),
             value: statistics.totalAppointments,
-            icon: '📅',
-            color: '#f59e0b',
-            bgColor: 'rgba(245, 158, 11, 0.1)',
-            borderColor: 'rgba(245, 158, 11, 0.2)',
+            icon: <CalendarIcon />,
+            color: '#22c55e',
+            bgColor: 'rgba(34, 197, 94, 0.1)',
+            borderColor: 'rgba(34, 197, 94, 0.2)',
             path: '/admin/appointments'
         }
     ];
@@ -88,9 +120,6 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
                     
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
                             marginBottom: '1.5rem'
                         }}>
                             <div style={{
@@ -105,18 +134,6 @@ const AdminStatisticsCards = ({ statistics, onNavigation }) => {
                                 boxShadow: `0 8px 20px ${card.color}40`
                             }}>
                                 {card.icon}
-                            </div>
-                            
-                            <div style={{
-                                background: card.bgColor,
-                                color: card.color,
-                                padding: '0.5rem 1rem',
-                                borderRadius: '50px',
-                                fontSize: '0.8rem',
-                                fontWeight: '600',
-                                border: `1px solid ${card.borderColor}`
-                            }}>
-                                {t('common.liveData')}
                             </div>
                         </div>
                         

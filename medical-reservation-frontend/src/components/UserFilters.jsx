@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const UserFilters = ({ 
     searchTerm, 
     onSearchChange, 
@@ -7,17 +9,19 @@ const UserFilters = ({
     onStatusFilterChange,
     userCounts = {} 
 }) => {
+    const { t } = useTranslation();
+
     const roleOptions = [
-        { value: 'all', label: 'All Roles', count: userCounts.all || 0 },
-        { value: 'USER', label: 'Patients', count: userCounts.USER || 0 },
-        { value: 'DOCTOR', label: 'Doctors', count: userCounts.DOCTOR || 0 },
-        { value: 'ADMIN', label: 'Admins', count: userCounts.ADMIN || 0 }
+        { value: 'all', label: t('adminUsers.allRoles'), count: userCounts.all || 0 },
+        { value: 'USER', label: t('adminUsers.patients'), count: userCounts.USER || 0 },
+        { value: 'DOCTOR', label: t('adminUsers.doctors'), count: userCounts.DOCTOR || 0 },
+        { value: 'ADMIN', label: t('adminUsers.admins'), count: userCounts.ADMIN || 0 }
     ];
 
     const statusOptions = [
-        { value: 'all', label: 'All Status', count: userCounts.all || 0 },
-        { value: 'active', label: 'Active', count: userCounts.active || 0 },
-        { value: 'inactive', label: 'Inactive', count: userCounts.inactive || 0 }
+        { value: 'all', label: t('adminUsers.allStatus'), count: userCounts.all || 0 },
+        { value: 'active', label: t('adminUsers.active'), count: userCounts.active || 0 },
+        { value: 'inactive', label: t('adminUsers.inactive'), count: userCounts.inactive || 0 }
     ];
 
     return (
@@ -44,12 +48,12 @@ const UserFilters = ({
                         color: '#374151',
                         fontSize: '0.9rem'
                     }}>
-                        Search Users
+                        {t('adminUsers.searchUsers')}
                     </label>
                     <div style={{ position: 'relative' }}>
                         <input
                             type="text"
-                            placeholder="Search by name, email, or phone..."
+                            placeholder={t('adminUsers.searchPlaceholder')}
                             value={searchTerm}
                             onChange={(e) => onSearchChange(e.target.value)}
                             style={{
@@ -78,7 +82,7 @@ const UserFilters = ({
                             color: '#6b7280',
                             fontSize: '1rem'
                         }}>
-                            Search
+                            🔍
                         </span>
                     </div>
                 </div>
@@ -91,7 +95,7 @@ const UserFilters = ({
                         color: '#374151',
                         fontSize: '0.9rem'
                     }}>
-                        Filter by Role
+                        {t('adminUsers.filterByRole')}
                     </label>
                     <select
                         value={roleFilter}
@@ -130,7 +134,7 @@ const UserFilters = ({
                         color: '#374151',
                         fontSize: '0.9rem'
                     }}>
-                        Filter by Status
+                        {t('adminUsers.filterByStatus')}
                     </label>
                     <select
                         value={statusFilter}
@@ -218,7 +222,7 @@ const UserFilters = ({
                     color: '#6b7280',
                     fontWeight: '500'
                 }}>
-                    Total Users: {userCounts.all || 0}
+                    {t('adminUsers.totalUsers')}: {userCounts.all || 0}
                 </div>
             </div>
         </div>

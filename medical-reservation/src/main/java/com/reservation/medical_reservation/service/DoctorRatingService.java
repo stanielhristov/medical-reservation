@@ -21,8 +21,7 @@ public interface DoctorRatingService {
     DoctorRatingDTO getUserRatingForDoctor(Long doctorId, Long userId);
     
     List<DoctorRatingDTO> getUserRatings(Long userId);
-    
-    // Admin methods
+
     Page<DoctorRatingDTO> getAllRatings(Pageable pageable);
     
     void adminDeleteRating(Long ratingId);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getPriorityColor, getCategoryIcon, formatTimeAgo, translateNotificationTitle, translateNotificationMessage } from '../utils/notificationUtils';
+import { getPriorityColor, getCategoryIcon, formatTimeAgo, translateNotificationTitle, translateNotificationMessage } from '../utils/notificationUtils.jsx';
 
 const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails }) => {
     const { t } = useTranslation();
@@ -48,7 +48,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                 <div style={{
                     width: '60px',
                     height: '60px',
-                    background: `linear-gradient(135deg, ${priorityStyle.color}20 0%, ${priorityStyle.color}10 100%)`,
+                    background: 'white',
                     borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
@@ -76,32 +76,13 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                             {translateNotificationTitle(notification.title)}
                         </h3>
                         
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem'
+                        <span style={{
+                            fontSize: '0.85rem',
+                            color: '#9ca3af',
+                            fontWeight: '500'
                         }}>
-                            <div style={{
-                                background: priorityStyle.bg,
-                                color: priorityStyle.color,
-                                padding: '0.25rem 0.75rem',
-                                borderRadius: '8px',
-                                fontSize: '0.75rem',
-                                fontWeight: '600',
-                                textTransform: 'uppercase',
-                                border: `1px solid ${priorityStyle.border}`
-                            }}>
-                                {t(`notifications.priority.${notification.priority?.toLowerCase() || 'medium'}`)}
-                            </div>
-                            
-                            <span style={{
-                                fontSize: '0.85rem',
-                                color: '#9ca3af',
-                                fontWeight: '500'
-                            }}>
-                                {formatTimeAgo(notification.timestamp)}
-                            </span>
-                        </div>
+                            {formatTimeAgo(notification.timestamp)}
+                        </span>
                     </div>
                     
                     <p style={{
@@ -169,7 +150,7 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                             }}
                             style={{
                                 background: 'rgba(239, 68, 68, 0.1)',
-                                color: '#dc2626',
+                                color: '#ef4444',
                                 border: '1px solid rgba(239, 68, 68, 0.2)',
                                 borderRadius: '12px',
                                 padding: '0.75rem',
@@ -182,7 +163,12 @@ const NotificationCard = ({ notification, onMarkAsRead, onDelete, onViewDetails 
                             }}
                             title={t('notifications.deleteNotification')}
                         >
-                            🗑️
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3,6 5,6 21,6"/>
+                                <path d="M19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
                         </button>
                     </div>
                 </div>

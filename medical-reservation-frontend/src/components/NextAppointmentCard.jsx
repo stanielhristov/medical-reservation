@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateSpecialization } from '../utils/specializationUtils';
-import { formatPatientDateTime, getRelativeTimeUntil, translateAppointmentType } from '../utils/appointmentUtils';
+import { formatPatientDateTime, translateAppointmentType } from '../utils/appointmentUtils';
 
 const NextAppointmentCard = ({ appointment, onViewDetails }) => {
     const { t } = useTranslation();
@@ -148,24 +148,14 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            background: 'rgba(59, 130, 246, 0.1)',
-                            color: '#2563eb',
+                            background: 'rgba(34, 197, 94, 0.1)',
+                            color: '#16a34a',
                             padding: '0.5rem 1rem',
                             borderRadius: '12px',
                             fontSize: '0.9rem',
                             fontWeight: '600'
                         }}>
                             📅 {formatPatientDateTime(new Date(appointment.date))}
-                        </div>
-                        <div style={{
-                            background: 'rgba(245, 158, 11, 0.1)',
-                            color: '#d97706',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '12px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600'
-                        }}>
-                            {getRelativeTimeUntil(new Date(appointment.date))}
                         </div>
                     </div>
                 </div>

@@ -23,8 +23,7 @@ export const useDoctorDashboard = (user) => {
             }
 
             const dashboardData = await getDoctorDashboard(doctorProfile.id);
-            
-            // Transform appointments to ensure consistent structure
+
             const transformAppointment = (appointment) => ({
                 ...appointment,
                 appointmentDate: appointment.appointmentTime || appointment.appointmentDate || appointment.date,

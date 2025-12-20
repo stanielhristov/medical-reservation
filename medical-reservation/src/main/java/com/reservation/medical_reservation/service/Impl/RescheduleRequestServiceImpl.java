@@ -275,7 +275,6 @@ public class RescheduleRequestServiceImpl implements RescheduleRequestService {
         
         reserveNewScheduleSlot(doctor, newStartTime, newEndTime);
     }
-    
 
     private void freeOriginalScheduleSlot(DoctorEntity doctor, 
                                          LocalDateTime startTime, 
@@ -326,7 +325,6 @@ public class RescheduleRequestServiceImpl implements RescheduleRequestService {
                 slotFound = true;
                 break; 
             }
-           
 
             else if (isTimeOverlapping(slot.getStartTime(), slot.getEndTime(), startTime, endTime) && slot.isAvailable()) {
                 slot.setAvailable(false);

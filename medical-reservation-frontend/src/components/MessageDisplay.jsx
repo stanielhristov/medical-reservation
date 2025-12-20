@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MessageDisplay = ({ message, type, onClose }) => {
-    // Handle both old and new prop structures
+    
     const messageText = typeof message === 'string' ? message : message?.text;
     const messageType = type || message?.type;
 

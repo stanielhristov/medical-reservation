@@ -1,5 +1,15 @@
 import api from './axios.js';
 
+const toLocalISOString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
 export const getDoctorSchedule = async (doctorId) => {
     try {
         const response = await api.get(`/schedules/doctor/${doctorId}`);
@@ -13,8 +23,8 @@ export const getAvailableSlots = async (doctorId, startDate, endDate) => {
     try {
         const response = await api.get(`/schedules/available/${doctorId}`, {
             params: {
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString()
+                startDate: toLocalISOString(startDate),
+                endDate: toLocalISOString(endDate)
             }
         });
         return response.data;

@@ -38,7 +38,7 @@ export const markNotificationAsRead = async (notificationId) => {
 
 export const markAllNotificationsAsRead = async (userId) => {
     try {
-        // Since PatientController doesn't have mark-all-read, we'll use NotificationController
+        
         await api.patch(`/notifications/user/${userId}/mark-all-read`);
         return true;
     } catch (error) {

@@ -32,7 +32,7 @@ const AdminWelcomeSection = () => {
                 <div style={{
                     width: '120px',
                     height: '120px',
-                    background: '#10b981',
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                     borderRadius: '24px',
                     margin: '0 auto 2.5rem',
                     display: 'flex',
@@ -117,7 +117,7 @@ const AdminWelcomeSection = () => {
                     color: 'white',
                     padding: '0.75rem 2rem',
                     borderRadius: '50px',
-                    margin: '0 auto 2rem',
+                    margin: '0 auto',
                     fontSize: '1.1rem',
                     fontWeight: '700',
                     boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
@@ -125,74 +125,11 @@ const AdminWelcomeSection = () => {
                     alignItems: 'center',
                     gap: '0.75rem'
                 }}>
-                    <span style={{ fontSize: '1.2rem' }}>🔐</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
                     {t('admin.administrativeAccess')}
-                </div>
-                
-                <p style={{
-                    fontSize: '1.2rem',
-                    color: '#6b7280',
-                    margin: '0 0 2.5rem',
-                    maxWidth: '600px',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    lineHeight: '1.6',
-                    fontWeight: '500'
-                }}>
-                    {t('admin.welcomeMessage')}
-                </p>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                    gap: '1rem',
-                    maxWidth: '600px',
-                    margin: '0 auto'
-                }}>
-                    <div style={{
-                        background: 'rgba(16, 185, 129, 0.1)',
-                        borderRadius: '16px',
-                        padding: '1rem',
-                        border: '1px solid rgba(16, 185, 129, 0.2)',
-                        color: '#047857',
-                        fontWeight: '600',
-                        fontSize: '0.9rem'
-                    }}>
-                        ⚡ {t('admin.realTimeMonitoring')}
-                    </div>
-                    <div style={{
-                        background: 'rgba(16, 185, 129, 0.1)',
-                        borderRadius: '16px',
-                        padding: '1rem',
-                        border: '1px solid rgba(16, 185, 129, 0.2)',
-                        color: '#047857',
-                        fontWeight: '600',
-                        fontSize: '0.9rem'
-                    }}>
-                        👥 {t('admin.userManagement')}
-                    </div>
-                    <div style={{
-                        background: 'rgba(16, 185, 129, 0.1)',
-                        borderRadius: '16px',
-                        padding: '1rem',
-                        border: '1px solid rgba(16, 185, 129, 0.2)',
-                        color: '#047857',
-                        fontWeight: '600',
-                        fontSize: '0.9rem'
-                    }}>
-                        📊 {t('admin.analytics')}
-                    </div>
-                    <div style={{
-                        background: 'rgba(16, 185, 129, 0.1)',
-                        borderRadius: '16px',
-                        padding: '1rem',
-                        border: '1px solid rgba(16, 185, 129, 0.2)',
-                        color: '#047857',
-                        fontWeight: '600',
-                        fontSize: '0.9rem'
-                    }}>
-                        🔒 {t('admin.security')}
-                    </div>
                 </div>
             </div>
         </section>

@@ -56,7 +56,6 @@ public class UserEntity extends BaseEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private PatientProfileEntity patientProfile;
 
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -122,5 +121,4 @@ public class UserEntity extends BaseEntity {
         patientProfile.setBloodType(bloodType);
     }
 }
-
 

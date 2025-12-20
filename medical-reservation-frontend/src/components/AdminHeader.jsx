@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 const AdminHeader = () => {
+    const { t } = useTranslation();
+
     return (
         <div style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -45,7 +49,7 @@ const AdminHeader = () => {
                     margin: '0 0 1rem',
                     letterSpacing: '-0.025em'
                 }}>
-                    User Management
+                    {t('adminUsers.title')}
                 </h1>
                 
                 <p style={{
@@ -57,7 +61,7 @@ const AdminHeader = () => {
                     marginRight: 'auto',
                     lineHeight: '1.6'
                 }}>
-                    Manage user accounts, roles, and permissions for the medical reservation system
+                    {t('adminUsers.description')}
                 </p>
             </div>
         </div>

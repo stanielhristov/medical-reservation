@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            {/* Background decoration */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '10%',
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
                 border: '1px solid rgba(34, 197, 94, 0.1)',
                 boxSizing: 'border-box'
             }}>
-                {/* Header */}
+                {}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
                         width: '72px',
@@ -111,7 +111,7 @@ export default function ForgotPasswordPage() {
                     </p>
                 </div>
 
-                {/* Success Message */}
+                {}
                 {message && (
                     <div style={{
                         background: 'rgba(34, 197, 94, 0.1)',
@@ -130,7 +130,7 @@ export default function ForgotPasswordPage() {
                     </div>
                 )}
 
-                {/* Error Message */}
+                {}
                 {error && (
                     <div style={{
                         background: 'rgba(248, 113, 113, 0.1)',
@@ -150,7 +150,7 @@ export default function ForgotPasswordPage() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    {/* Email Field */}
+                    {}
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{
                             display: 'block',
@@ -190,7 +190,7 @@ export default function ForgotPasswordPage() {
                         </div>
                     </div>
 
-                    {/* Submit Button */}
+                    {}
                     <button 
                         type="submit" 
                         disabled={loading}
@@ -244,7 +244,7 @@ export default function ForgotPasswordPage() {
                         )}
                     </button>
 
-                    {/* Back to Login Link */}
+                    {}
                     <div style={{ textAlign: 'center' }}>
                         <Link 
                             to="/login"

@@ -7,6 +7,7 @@ import PatientCard from '../../components/PatientCard';
 import PatientDetails from '../../components/PatientDetails';
 import MedicalRecordModal from '../../components/MedicalRecordModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { deleteMedicalHistory } from '../../api/medicalHistory';
 
 const DoctorPatientsRefactored = () => {
     const { t } = useTranslation();
@@ -39,6 +40,23 @@ const DoctorPatientsRefactored = () => {
         };
     };
 
+    const handleDeleteRecord = async (recordId) => {
+        try {
+            await deleteMedicalHistory(recordId);
+            
+            if (selectedPatient) {
+                setSelectedPatient(prev => ({
+                    ...prev,
+                    medicalRecords: prev.medicalRecords.filter(record => record.id !== recordId)
+                }));
+            }
+            
+            refetchPatients();
+        } catch (error) {
+            console.error('Failed to delete medical record:', error);
+        }
+    };
+
     if (loading) {
         return <LoadingSpinner message={t('loading.loadingPatients')} />;
     }
@@ -61,7 +79,13 @@ const DoctorPatientsRefactored = () => {
                     padding: '2rem',
                     maxWidth: '500px'
                 }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+                    <div style={{ marginBottom: '1rem' }}>
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
                     <h3 style={{ color: '#dc2626', margin: '0 0 1rem' }}>{t('errors.unableToLoadPatients')}</h3>
                     <p style={{ color: '#6b7280', margin: '0 0 1.5rem' }}>{error}</p>
                     <button
@@ -107,22 +131,27 @@ const DoctorPatientsRefactored = () => {
                             borderRadius: '32px',
                             padding: '3rem',
                             marginBottom: '3rem',
-                            boxShadow: '0 32px 64px rgba(5, 150, 105, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
-                            border: '1px solid rgba(5, 150, 105, 0.15)',
+                            boxShadow: '0 32px 64px rgba(34, 197, 94, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
+                            border: '1px solid rgba(34, 197, 94, 0.15)',
                             textAlign: 'center'
                         }}>
                             <div style={{
                                 width: '100px',
                                 height: '100px',
-                                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 borderRadius: '25px',
                                 margin: '0 auto 2rem',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                boxShadow: '0 20px 40px rgba(5, 150, 105, 0.3)'
+                                boxShadow: '0 20px 40px rgba(34, 197, 94, 0.3)'
                             }}>
-                                <span style={{ fontSize: '3rem', color: 'white' }}>👥</span>
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
                             </div>
                             
                             <h1 style={{
@@ -169,7 +198,7 @@ const DoctorPatientsRefactored = () => {
                     <div style={{
                         animation: 'fadeIn 0.3s ease-in-out'
                     }}>
-                        {/* Back Navigation Header */}
+                        {}
                         <div style={{
                             background: 'rgba(255, 255, 255, 0.98)',
                             backdropFilter: 'blur(20px)',
@@ -183,7 +212,7 @@ const DoctorPatientsRefactored = () => {
                             <button
                                 onClick={() => setSelectedPatient(null)}
                                 style={{
-                                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '12px',
@@ -192,18 +221,18 @@ const DoctorPatientsRefactored = () => {
                                     fontWeight: '600',
                                     fontSize: '0.9rem',
                                     transition: 'all 0.2s ease',
-                                    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                                    boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '0.5rem'
                                 }}
                                 onMouseEnter={e => {
                                     e.target.style.transform = 'translateY(-2px)';
-                                    e.target.style.boxShadow = '0 6px 20px rgba(5, 150, 105, 0.4)';
+                                    e.target.style.boxShadow = '0 6px 20px rgba(34, 197, 94, 0.4)';
                                 }}
                                 onMouseLeave={e => {
                                     e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                                 }}
                             >
                                 ← {t('patients.backToPatients')}
@@ -219,11 +248,12 @@ const DoctorPatientsRefactored = () => {
                             </h1>
                         </div>
 
-                        {/* Full Page Patient Details */}
+                        {}
                         <PatientDetails
                             patient={selectedPatient}
                             onAddRecord={() => setShowAddRecord(true)}
                             onClose={() => setSelectedPatient(null)}
+                            onDeleteRecord={handleDeleteRecord}
                         />
                     </div>
                 )}

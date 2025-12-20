@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { translateSpecialization } from '../utils/specializationUtils';
 
 const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNavigation }) => {
+    const { t } = useTranslation();
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
@@ -38,7 +40,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                     }}>
                         ⏳
                     </span>
-                    Pending Doctor Requests
+                    {t('admin.pendingDoctorRequests')}
                     {pendingDoctorRequests.length > 0 && (
                         <span style={{
                             background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
@@ -80,7 +82,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                         e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
                     }}
                 >
-                    Manage Doctors
+                    {t('admin.manageDoctors')}
                     <span>→</span>
                 </button>
             </div>
@@ -93,10 +95,10 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                 }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>✅</div>
                     <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>
-                        No pending doctor requests
+                        {t('admin.noPendingDoctorRequests')}
                     </p>
                     <p style={{ fontSize: '0.9rem', margin: '0.5rem 0 0', opacity: 0.8 }}>
-                        All doctor applications have been processed
+                        {t('admin.allDoctorApplicationsProcessed')}
                     </p>
                 </div>
             ) : (
@@ -172,7 +174,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                                             color: '#9ca3af'
                                         }}>
                                             <span>📧 {request.email}</span>
-                                            <span>📅 Applied: {formatDate(request.createdAt)}</span>
+                                            <span>📅 {t('admin.applied')} {formatDate(request.createdAt)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +197,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                                         alignItems: 'center',
                                         gap: '0.5rem'
                                     }}>
-                                        ⏳ Pending Review
+                                        ⏳ {t('admin.pendingReview')}
                                     </div>
                                     
                                     {request.licenseNumber && (
@@ -204,7 +206,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                                             color: '#6b7280',
                                             textAlign: 'right'
                                         }}>
-                                            License: {request.licenseNumber}
+                                            {t('admin.license')} {request.licenseNumber}
                                         </div>
                                     )}
                                 </div>
@@ -224,7 +226,7 @@ const PendingDoctorRequestsSection = ({ pendingDoctorRequests, formatDate, onNav
                                         margin: 0,
                                         lineHeight: '1.5'
                                     }}>
-                                        <strong>Bio:</strong> {request.bio}
+                                        <strong>{t('admin.bio')}</strong> {request.bio}
                                     </p>
                                 </div>
                             )}

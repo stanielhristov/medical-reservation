@@ -31,9 +31,8 @@ public class RegisterDTO {
 
     private LocalDate dateOfBirth;
     private String address;
-    private String emergencyPhone; // Only for doctors
-    
-    // Doctor-specific fields
+    private String emergencyPhone; 
+
     private String specialization;
     private String bio;
     private String licenseNumber;

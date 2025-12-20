@@ -8,7 +8,7 @@ const ConfirmationPopup = ({ isOpen, onClose, title, message, type = 'success', 
         if (isOpen && autoClose && type === 'success') {
             const timer = setTimeout(() => {
                 onClose();
-            }, 3000); // Auto close success messages after 3 seconds
+            }, 3000); 
 
             return () => clearTimeout(timer);
         }
@@ -86,7 +86,7 @@ const ConfirmationPopup = ({ isOpen, onClose, title, message, type = 'success', 
                 animation: 'slideUp 0.3s ease-out',
                 border: `3px solid ${getBorderColor()}`
             }}>
-                {/* Header with icon and close button */}
+                {}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -126,7 +126,7 @@ const ConfirmationPopup = ({ isOpen, onClose, title, message, type = 'success', 
                     </button>
                 </div>
 
-                {/* Content */}
+                {}
                 <div style={{ textAlign: 'center' }}>
                     <h3 style={{
                         margin: '0 0 1rem 0',

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const ConfirmActionModal = ({ 
     isOpen, 
     onClose, 
@@ -6,39 +8,43 @@ const ConfirmActionModal = ({
     actionType = '', 
     loading = false 
 }) => {
+    const { t } = useTranslation();
+
     if (!isOpen || !user) return null;
+
+    const userName = user.fullName || user.email;
 
     const getActionConfig = (action) => {
         switch (action) {
             case 'activate':
                 return {
-                    title: 'Activate User Account',
-                    message: `Are you sure you want to activate ${user.fullName || user.email}'s account?`,
-                    confirmText: 'Activate',
+                    title: t('adminUsers.activateUserAccount'),
+                    message: t('adminUsers.confirmActivate', { name: userName }),
+                    confirmText: t('admin.activate'),
                     confirmColor: '#16a34a',
                     icon: '✅'
                 };
             case 'deactivate':
                 return {
-                    title: 'Deactivate User Account',
-                    message: `Are you sure you want to deactivate ${user.fullName || user.email}'s account? They will not be able to log in.`,
-                    confirmText: 'Deactivate',
+                    title: t('adminUsers.deactivateUserAccount'),
+                    message: t('adminUsers.confirmDeactivate', { name: userName }),
+                    confirmText: t('admin.deactivate'),
                     confirmColor: '#dc2626',
                     icon: '⏸️'
                 };
             case 'delete':
                 return {
-                    title: 'Delete User Account',
-                    message: `Are you sure you want to permanently delete ${user.fullName || user.email}'s account? This action cannot be undone.`,
-                    confirmText: 'Delete',
+                    title: t('adminUsers.deleteUserAccount'),
+                    message: t('adminUsers.confirmDelete', { name: userName }),
+                    confirmText: t('common.delete'),
                     confirmColor: '#dc2626',
                     icon: '🗑️'
                 };
             default:
                 return {
-                    title: 'Confirm Action',
-                    message: 'Are you sure you want to perform this action?',
-                    confirmText: 'Confirm',
+                    title: t('adminUsers.confirmAction'),
+                    message: t('adminUsers.confirmActionMessage'),
+                    confirmText: t('common.confirm'),
                     confirmColor: '#059669',
                     icon: '❓'
                 };
@@ -170,7 +176,7 @@ const ConfirmActionModal = ({
                                     color: '#374151',
                                     fontSize: '0.9rem'
                                 }}>
-                                    {user.fullName || 'Unknown User'}
+                                                {user.fullName || t('adminUsers.unknownUser')}
                                 </div>
                                 <div style={{
                                     color: '#6b7280',
@@ -195,7 +201,7 @@ const ConfirmActionModal = ({
                                               user.role === 'DOCTOR' ? '#8b5cf6' :
                                               '#3b82f6'
                                     }}>
-                                        {user.role || 'Unknown'}
+                                        {user.role ? t(`adminUsers.role${user.role}`) : t('adminUsers.unknown')}
                                     </span>
                                     <span style={{
                                         padding: '0.125rem 0.5rem',
@@ -205,7 +211,7 @@ const ConfirmActionModal = ({
                                         background: user.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(107, 114, 128, 0.1)',
                                         color: user.isActive ? '#22c55e' : '#6b7280'
                                     }}>
-                                        {user.isActive ? 'Active' : 'Inactive'}
+                                        {user.isActive ? t('adminUsers.active') : t('adminUsers.inactive')}
                                     </span>
                                 </div>
                             </div>
@@ -244,7 +250,7 @@ const ConfirmActionModal = ({
                                 }
                             }}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         
                         <button
@@ -293,7 +299,7 @@ const ConfirmActionModal = ({
                                     animation: 'spin 1s linear infinite'
                                 }} />
                             )}
-                            {loading ? 'Processing...' : config.confirmText}
+                            {loading ? t('admin.processing') : config.confirmText}
                         </button>
                     </div>
                 </div>

@@ -339,7 +339,6 @@ export const useProfile = (user) => {
                 gender: personalData.gender?.trim() || null
             };
 
-            // Remove any fields with null values to avoid sending them
             Object.keys(updateData).forEach(key => {
                 if (updateData[key] === null || updateData[key] === '') {
                     delete updateData[key];
@@ -349,8 +348,7 @@ export const useProfile = (user) => {
             await updateUserProfile(user.id, updateData);
             
             setOriginalPersonalData(personalData);
-            
-            // Also update the profile data to keep it in sync
+
             const updatedProfileData = {
                 ...profileData,
                 emergencyContact: personalData.emergencyContact || null,

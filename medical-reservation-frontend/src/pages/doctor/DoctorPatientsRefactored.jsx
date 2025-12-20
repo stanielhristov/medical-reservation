@@ -7,6 +7,7 @@ import PatientCard from '../../components/PatientCard';
 import PatientDetails from '../../components/PatientDetails';
 import MedicalRecordModal from '../../components/MedicalRecordModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { deleteMedicalHistory } from '../../api/medicalHistory';
 
 const DoctorPatientsRefactored = () => {
     const { t } = useTranslation();
@@ -37,6 +38,23 @@ const DoctorPatientsRefactored = () => {
             chronic: patients.filter(p => p.conditions && p.conditions.length > 0).length,
             followup: patients.filter(p => p.nextAppointment && p.nextAppointment > now).length
         };
+    };
+
+    const handleDeleteRecord = async (recordId) => {
+        try {
+            await deleteMedicalHistory(recordId);
+            
+            if (selectedPatient) {
+                setSelectedPatient(prev => ({
+                    ...prev,
+                    medicalRecords: prev.medicalRecords.filter(record => record.id !== recordId)
+                }));
+            }
+            
+            refetchPatients();
+        } catch (error) {
+            console.error('Failed to delete medical record:', error);
+        }
     };
 
     if (loading) {
@@ -172,6 +190,7 @@ const DoctorPatientsRefactored = () => {
                                 patient={selectedPatient}
                                 onAddRecord={() => setShowAddRecord(true)}
                                 onClose={() => setSelectedPatient(null)}
+                                onDeleteRecord={handleDeleteRecord}
                             />
                         </div>
                     )}

@@ -70,7 +70,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
                     const slots = await getAvailableSlots(appointment.doctorId, startDate, endDate);
                     const availableSlots = slots.filter(slot => 
                         slot.available && 
-                        // Exclude the current appointment slot
+                        
                         !(new Date(slot.startTime).getTime() === new Date(appointment.date).getTime())
                     );
                     
@@ -127,7 +127,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
             const slots = await getAvailableSlots(appointment.doctorId, startDate, endDate);
             setAvailableSlots(slots.filter(slot => 
                 slot.available && 
-                // Exclude the current appointment slot
+                
                 !(new Date(slot.startTime).getTime() === new Date(appointment.date).getTime())
             ));
         } catch (error) {
@@ -190,7 +190,7 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     const handleClose = () => {
         if (!loading) {
             onClose();
-            // Reset form
+            
             setSelectedDate('');
             setSelectedSlot(null);
             setReason('');
@@ -236,18 +236,16 @@ const RescheduleModal = ({ isOpen, onClose, appointment, onSuccess }) => {
     };
 
     const formatSlotTime = (startTime, endTime) => {
-        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
-        const hour12 = i18n.language !== 'bg';
         const start = new Date(startTime);
         const end = new Date(endTime);
-        return `${start.toLocaleTimeString(locale, { 
-            hour: 'numeric', 
+        return `${start.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: hour12
-        })} - ${end.toLocaleTimeString(locale, { 
-            hour: 'numeric', 
+            hour12: false
+        })} - ${end.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
             minute: '2-digit',
-            hour12: hour12
+            hour12: false
         })}`;
     };
 

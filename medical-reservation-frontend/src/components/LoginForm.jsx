@@ -53,7 +53,7 @@ export default function LoginForm() {
             overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            {/* Header with Language Switcher */}
+            {}
             <header style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
@@ -128,7 +128,7 @@ export default function LoginForm() {
                 position: 'relative',
                 boxSizing: 'border-box'
             }}>
-            {/* Minimalistic background decoration */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '10%',
@@ -165,7 +165,7 @@ export default function LoginForm() {
                 border: '1px solid rgba(34, 197, 94, 0.1)',
                 boxSizing: 'border-box'
             }}>
-                {/* Header */}
+                {}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
                         width: '72px',
@@ -199,7 +199,7 @@ export default function LoginForm() {
                     </p>
                 </div>
 
-                {/* Error Message */}
+                {}
                 {error && (
                     <div style={{
                         background: 'rgba(248, 113, 113, 0.1)',
@@ -219,7 +219,7 @@ export default function LoginForm() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    {/* Email Field */}
+                    {}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{
                             display: 'block',
@@ -263,7 +263,7 @@ export default function LoginForm() {
                         </div>
                     </div>
 
-                    {/* Password Field */}
+                    {}
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{
                             display: 'block',
@@ -334,7 +334,7 @@ export default function LoginForm() {
                         </div>
                     </div>
 
-                    {/* Forgot Password Link */}
+                    {}
                     <div style={{ 
                         textAlign: 'right', 
                         marginBottom: '1.5rem' 
@@ -361,7 +361,7 @@ export default function LoginForm() {
                         </a>
                     </div>
 
-                    {/* Submit Button */}
+                    {}
                     <button 
                         type="submit" 
                         disabled={loading}
@@ -415,14 +415,14 @@ export default function LoginForm() {
                     </button>
                 </form>
 
-                {/* Enhanced Footer */}
+                {}
                 <div style={{ 
                     marginTop: '2.5rem',
                     paddingTop: '2.5rem',
                     borderTop: '1px solid rgba(34, 197, 94, 0.15)',
                     position: 'relative'
                 }}>
-                    {/* Background decoration */}
+                    {}
                     <div style={{
                         position: 'absolute',
                         top: '-10px',
@@ -436,7 +436,7 @@ export default function LoginForm() {
                     }} />
 
                     <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                        {/* Icon and heading */}
+                        {}
                         <div style={{
                             width: '56px',
                             height: '56px',
@@ -480,7 +480,7 @@ export default function LoginForm() {
                             {t('auth.joinThousands')}
                         </p>
 
-                        {/* Enhanced Create Account Button */}
+                        {}
                         <a 
                             href="/register" 
                             style={{

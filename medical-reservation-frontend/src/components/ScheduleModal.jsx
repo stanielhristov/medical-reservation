@@ -24,7 +24,6 @@ const ScheduleModal = ({
         const startTime = formData.get('startTime');
         const endTime = formData.get('endTime');
 
-        // Validate that start time is not in the past
         const now = new Date();
         const startDateTime = new Date(startTime);
         

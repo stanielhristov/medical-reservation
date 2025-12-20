@@ -2,6 +2,35 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateSpecialization } from '../utils/specializationUtils';
 
+const SearchIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }}>
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+);
+
+const HospitalIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }}>
+        <path d="M3 21h18"/>
+        <path d="M9 8h1"/>
+        <path d="M9 12h1"/>
+        <path d="M9 16h1"/>
+        <path d="M14 8h1"/>
+        <path d="M14 12h1"/>
+        <path d="M14 16h1"/>
+        <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>
+    </svg>
+);
+
+const DoctorIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }}>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M20 8v6"/>
+        <path d="M23 11h-6"/>
+    </svg>
+);
+
 const DoctorSearchFilters = ({ 
     searchTerm, 
     setSearchTerm, 
@@ -36,7 +65,7 @@ const DoctorSearchFilters = ({
                         fontWeight: '600',
                         fontSize: '1rem'
                     }}>
-                        🔍 {t('doctors.searchDoctors')}
+                        <SearchIcon /> {t('doctors.searchDoctors')}
                     </label>
                     <input
                         type="text"
@@ -71,7 +100,7 @@ const DoctorSearchFilters = ({
                         fontWeight: '600',
                         fontSize: '1rem'
                     }}>
-                        🏥 {t('doctors.specialization')}
+                        <HospitalIcon /> {t('doctors.specialization')}
                     </label>
                     <select
                         value={selectedSpecialization}
@@ -96,7 +125,7 @@ const DoctorSearchFilters = ({
                         }}
                     >
                         {specializations.map((translatedSpec, index) => {
-                            // Use English value for option value (for filtering), translated text for display
+                            
                             const englishSpec = englishSpecializations && englishSpecializations[index] !== undefined
                                 ? englishSpecializations[index]
                                 : (index === 0 ? 'All Specializations' : translatedSpec);
@@ -129,7 +158,7 @@ const DoctorSearchFilters = ({
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <span>👨‍⚕️</span>
+                        <DoctorIcon />
                         <span>{doctorCount} {doctorCount === 1 ? t('doctors.doctor') : t('doctors.doctors')} {t('doctors.found')}</span>
                     </div>
                 </div>

@@ -25,7 +25,7 @@ const MedicalProfileForm = ({
                 marginBottom: '2rem'
             }}>
 
-                {/* Blood Type */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -79,7 +79,7 @@ const MedicalProfileForm = ({
                     </select>
                 </div>
 
-                {/* Height */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -121,7 +121,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* Weight */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -163,7 +163,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* BMI (read-only, calculated) */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -193,14 +193,14 @@ const MedicalProfileForm = ({
                 </div>
             </div>
 
-            {/* Text areas for medical history */}
+            {}
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr',
                 gap: '1.5rem',
                 marginBottom: '2rem'
             }}>
-                {/* Chronic Conditions */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -242,7 +242,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* Allergies */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -284,7 +284,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* Current Medications */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -326,7 +326,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* Past Surgeries */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',
@@ -368,7 +368,7 @@ const MedicalProfileForm = ({
                     />
                 </div>
 
-                {/* Family Medical History */}
+                {}
                 <div style={{ position: 'relative' }}>
                     <label style={{
                         display: 'block',

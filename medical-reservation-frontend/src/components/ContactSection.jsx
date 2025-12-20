@@ -36,7 +36,7 @@ const ContactSection = () => {
                 maxWidth: '1200px',
                 margin: '0 auto'
             }}>
-                {/* Section Header */}
+                {}
                 <div style={{
                     textAlign: 'center',
                     marginBottom: '4rem'
@@ -66,7 +66,7 @@ const ContactSection = () => {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
                     gap: '3rem'
                 }}>
-                    {/* Contact Information */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',
@@ -85,7 +85,7 @@ const ContactSection = () => {
                         </h3>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            {/* Email Support */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -118,7 +118,7 @@ const ContactSection = () => {
                                 </div>
                             </div>
 
-                            {/* Phone Support */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -151,7 +151,7 @@ const ContactSection = () => {
                                 </div>
                             </div>
 
-                            {/* Emergency Notice */}
+                            {}
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                                 <div style={{
                                     width: '50px',
@@ -185,7 +185,7 @@ const ContactSection = () => {
                             </div>
                         </div>
 
-                        {/* FAQ Section */}
+                        {}
                         <div style={{
                             marginTop: '2.5rem',
                             padding: '1.5rem',
@@ -214,7 +214,7 @@ const ContactSection = () => {
                         </div>
                     </div>
 
-                    {/* Contact Form */}
+                    {}
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.8)',
                         backdropFilter: 'blur(20px)',

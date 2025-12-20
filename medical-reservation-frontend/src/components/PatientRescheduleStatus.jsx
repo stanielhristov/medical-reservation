@@ -33,27 +33,25 @@ const PatientRescheduleStatus = () => {
 
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
+        return date.toLocaleString('en-GB', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: false
         });
     };
 
     const formatRequestedDateTime = (dateString) => {
         const date = new Date(dateString);
-        // Add 3 hours to correct timezone display issue for requested times only
-        const correctedDate = new Date(date.getTime() + (3 * 60 * 60 * 1000));
-        return correctedDate.toLocaleString('en-US', {
+        return date.toLocaleString('en-GB', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: false
         });
     };
 

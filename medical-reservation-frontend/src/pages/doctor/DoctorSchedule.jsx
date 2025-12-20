@@ -75,7 +75,6 @@ const DoctorScheduleRefactored = () => {
         setShowAddModal(true);
     };
 
-
     const handleSaveSchedule = async (scheduleData) => {
         try {
             {

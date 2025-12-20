@@ -12,7 +12,6 @@ const ProtectedRoute = ({
   const isAuthenticated = !!user;
   const location = useLocation();
 
-  // Show loading spinner while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
@@ -24,19 +23,17 @@ const ProtectedRoute = ({
     );
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to={fallbackPath} state={{ from: location }} replace />;
   }
 
-  // Check role-based access if roles are specified
   if (requiredRole || requiredRoles.length > 0) {
     const hasRequiredRole = requiredRole 
       ? hasRole(requiredRole)
       : requiredRoles.some(role => hasRole(role));
 
     if (!hasRequiredRole) {
-      // Redirect based on user's actual role
+      
       if (hasRole('ADMIN')) {
         return <Navigate to="/admin/dashboard" replace />;
       } else if (hasRole('DOCTOR')) {

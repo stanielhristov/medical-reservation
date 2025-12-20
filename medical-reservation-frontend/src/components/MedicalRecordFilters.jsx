@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { categories } from '../utils/medicalHistoryUtils';
 
 const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecords }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const getCategoryCount = (categoryId) => {
         if (categoryId === 'all') return medicalRecords.length;
         return medicalRecords.filter(record => record.type === categoryId).length;
     };
+
+    const categoryLabels = useMemo(() => {
+        const labels = {};
+        categories.forEach(category => {
+            const key = `medicalHistory.category.${category.id}`;
+            
+            if (i18n.exists(key)) {
+                labels[category.id] = i18n.t(key);
+            } else {
+                
+                labels[category.id] = category.name;
+            }
+        });
+        return labels;
+    }, [i18n, i18n.language]);
 
     return (
         <section style={{
@@ -84,7 +99,7 @@ const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecor
                         >
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <span style={{ fontSize: '1.2rem' }}>{category.icon}</span>
-                                <span>{t(`medicalHistory.category.${category.id}`)}</span>
+                                <span>{categoryLabels[category.id] || category.name}</span>
                             </div>
                             <span style={{
                                 background: isSelected 

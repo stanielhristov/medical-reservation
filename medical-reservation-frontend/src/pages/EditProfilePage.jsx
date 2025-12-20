@@ -79,7 +79,6 @@ const EditProfilePage = () => {
         }
     };
 
-
     const handleMedicalInfoSubmit = async (e) => {
         e.preventDefault();
         try {

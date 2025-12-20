@@ -42,7 +42,7 @@ function App() {
             <AuthProvider>
                 <Router>
                 <Routes>
-                    {/* Public Routes */}
+                    {}
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
@@ -52,21 +52,21 @@ function App() {
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
                     
-                    {/* Authenticated Home Route */}
+                    {}
                     <Route path="/home" element={
                         <ProtectedRoute requiredRoles={['USER', 'DOCTOR', 'ADMIN']}>
                             <HomePage />
                         </ProtectedRoute>
                     } />
 
-                    {/* Profile Routes */}
+                    {}
                     <Route path="/profile/edit" element={
                         <ProtectedRoute requiredRoles={['USER', 'DOCTOR', 'ADMIN']}>
                             <Layout><EditProfilePage /></Layout>
                         </ProtectedRoute>
                     } />
 
-                    {/* Patient Routes */}
+                    {}
                     <Route path="/patient/dashboard" element={
                         <ProtectedRoute requiredRoles={['USER']}>
                             <Layout><PatientDashboard /></Layout>
@@ -93,7 +93,7 @@ function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Doctor Routes */}
+                    {}
                     <Route path="/doctor/dashboard" element={
                         <ProtectedRoute requiredRoles={['DOCTOR']}>
                             <Layout><DoctorDashboard /></Layout>
@@ -125,7 +125,7 @@ function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Admin Routes */}
+                    {}
                     <Route path="/admin/dashboard" element={
                         <ProtectedRoute requiredRoles={['ADMIN']}>
                             <Layout><AdminDashboard /></Layout>
@@ -152,7 +152,7 @@ function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Catch all route */}
+                    {}
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
                 </Router>

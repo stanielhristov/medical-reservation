@@ -3,19 +3,18 @@ import i18n from '../i18n/config';
 export const getViews = () => {
     const currentLang = i18n.language || 'en';
     return [
-        { id: 'today', name: currentLang === 'bg' ? 'Днешен график' : "Today's Schedule", icon: '📅', color: '#3b82f6' },
-        { id: 'upcoming', name: currentLang === 'bg' ? 'Предстоящи' : 'Upcoming', icon: '⏰', color: '#10b981' },
-        { id: 'pending', name: currentLang === 'bg' ? 'В очакване на одобрение' : 'Pending Approval', icon: '⏳', color: '#f59e0b' },
-        { id: 'completed', name: currentLang === 'bg' ? 'Завършени' : 'Completed', icon: '✅', color: '#6b7280' }
+        { id: 'today', name: currentLang === 'bg' ? 'Днешен график' : "Today's Schedule", icon: 'calendar', color: '#22c55e' },
+        { id: 'upcoming', name: currentLang === 'bg' ? 'Предстоящи' : 'Upcoming', icon: 'clock', color: '#22c55e' },
+        { id: 'pending', name: currentLang === 'bg' ? 'В очакване на одобрение' : 'Pending Approval', icon: 'hourglass', color: '#22c55e' },
+        { id: 'completed', name: currentLang === 'bg' ? 'Завършени' : 'Completed', icon: 'check', color: '#22c55e' }
     ];
 };
 
-// Keep the old export for backward compatibility, but it will use English
 export const views = [
-    { id: 'today', name: "Today's Schedule", icon: '📅', color: '#3b82f6' },
-    { id: 'upcoming', name: 'Upcoming', icon: '⏰', color: '#10b981' },
-    { id: 'pending', name: 'Pending Approval', icon: '⏳', color: '#f59e0b' },
-    { id: 'completed', name: 'Completed', icon: '✅', color: '#6b7280' }
+    { id: 'today', name: "Today's Schedule", icon: 'calendar', color: '#22c55e' },
+    { id: 'upcoming', name: 'Upcoming', icon: 'clock', color: '#22c55e' },
+    { id: 'pending', name: 'Pending Approval', icon: 'hourglass', color: '#22c55e' },
+    { id: 'completed', name: 'Completed', icon: 'check', color: '#22c55e' }
 ];
 
 export const getAppointmentTypeIcon = (type) => {

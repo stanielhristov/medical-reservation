@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
                 const currentTime = Date.now() / 1000;
                 
                 if (decodedToken.exp > currentTime) {
-                    // Token is still valid
+                    
                     const parsedUser = JSON.parse(userData);
                     setUser({
                         ...parsedUser,
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
                     
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 } else {
-                    // Token expired
+                    
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                 }
@@ -60,15 +60,12 @@ export const AuthProvider = ({ children }) => {
                 fullName,
                 role
             };
-            
-            // Store token and user data
+
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData));
-            
-            // Set axios default header
+
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            
-            // Set user state
+
             setUser({
                 ...userData,
                 token
@@ -99,13 +96,13 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            // Call backend logout endpoint
+            
             await logoutAPI();
         } catch (error) {
             console.error('Backend logout failed:', error);
-            // Continue with local logout even if backend call fails
+            
         } finally {
-            // Always clear local state regardless of backend response
+            
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             delete axios.defaults.headers.common['Authorization'];

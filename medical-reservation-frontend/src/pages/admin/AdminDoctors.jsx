@@ -15,7 +15,7 @@ const AdminDoctors = () => {
     const [actionLoading, setActionLoading] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState('approve'); // 'approve' or 'reject'
+    const [modalType, setModalType] = useState('approve'); 
 
     useEffect(() => {
         loadDoctorRequests();
@@ -28,7 +28,7 @@ const AdminDoctors = () => {
             setDoctorRequests(response.data);
         } catch (err) {
             console.error('Error loading doctor requests:', err);
-            setError('Failed to load doctor requests');
+            setError(t('admin.failedToLoadDoctorRequests'));
         } finally {
             setLoading(false);
         }
@@ -43,7 +43,7 @@ const AdminDoctors = () => {
             setSelectedRequest(null);
         } catch (err) {
             console.error('Error approving request:', err);
-            alert('Failed to approve request. Please try again.');
+            alert(t('admin.failedToApproveRequest'));
         } finally {
             setActionLoading(false);
         }
@@ -58,7 +58,7 @@ const AdminDoctors = () => {
             setSelectedRequest(null);
         } catch (err) {
             console.error('Error rejecting request:', err);
-            alert('Failed to reject request. Please try again.');
+            alert(t('admin.failedToRejectRequest'));
         } finally {
             setActionLoading(false);
         }
@@ -124,7 +124,7 @@ const AdminDoctors = () => {
                         animation: 'spin 1s linear infinite',
                         margin: '0 auto 1.5rem'
                     }} />
-                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>Loading doctor requests...</p>
+                    <p style={{ color: '#6b7280', margin: 0, fontSize: '1rem', fontWeight: '500' }}>{t('admin.loadingDoctorRequests')}</p>
                 </div>
             </div>
         );
@@ -163,7 +163,7 @@ const AdminDoctors = () => {
                         e.target.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.25)';
                     }}
                 >
-                    Retry
+                    {t('admin.retry')}
                 </button>
             </div>
         );
@@ -173,7 +173,7 @@ const AdminDoctors = () => {
         <div style={{
             position: 'relative'
         }}>
-            {/* Enhanced background decorations */}
+            {}
             <div style={{
                 position: 'absolute',
                 top: '8%',
@@ -207,13 +207,13 @@ const AdminDoctors = () => {
                 zIndex: 0
             }} />
 
-            {/* Main Content */}
+            {}
             <main style={{
                 padding: '2.5rem 0',
                 position: 'relative',
                 zIndex: 1
             }}>
-                {/* Enhanced Welcome Section */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -226,7 +226,7 @@ const AdminDoctors = () => {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
-                    {/* Background pattern */}
+                    {}
                     <div style={{
                         position: 'absolute',
                         top: '-50%',
@@ -242,84 +242,21 @@ const AdminDoctors = () => {
                         <div style={{
                             width: '120px',
                             height: '120px',
-                            background: '#10b981',
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                             borderRadius: '24px',
                             margin: '0 auto 2.5rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             boxShadow: '0 16px 40px rgba(16, 185, 129, 0.3)',
-                            border: '3px solid #047857',
-                            position: 'relative'
+                            border: '3px solid #047857'
                         }}>
-                            {/* Doctor Stethoscope Icon */}
-                            <div style={{
-                                width: '60px',
-                                height: '60px',
-                                position: 'relative',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '8px',
-                                    left: '25px',
-                                    width: '10px',
-                                    height: '10px',
-                                    background: 'white',
-                                    borderRadius: '50%',
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                                }} />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '12px',
-                                    left: '12px',
-                                    width: '2px',
-                                    height: '20px',
-                                    background: 'white',
-                                    borderRadius: '1px',
-                                    transform: 'rotate(-30deg)'
-                                }} />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '12px',
-                                    left: '36px',
-                                    width: '2px',
-                                    height: '20px',
-                                    background: 'white',
-                                    borderRadius: '1px',
-                                    transform: 'rotate(30deg)'
-                                }} />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '30px',
-                                    left: '8px',
-                                    width: '6px',
-                                    height: '12px',
-                                    background: 'white',
-                                    borderRadius: '3px 3px 0 0'
-                                }} />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '30px',
-                                    left: '38px',
-                                    width: '6px',
-                                    height: '12px',
-                                    background: 'white',
-                                    borderRadius: '3px 3px 0 0'
-                                }} />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '40px',
-                                    left: '20px',
-                                    width: '12px',
-                                    height: '8px',
-                                    background: 'rgba(220, 252, 231, 0.9)',
-                                    borderRadius: '6px',
-                                    border: '2px solid white'
-                                }} />
-                            </div>
+                            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
                         </div>
                         
                         <h1 style={{
@@ -346,7 +283,7 @@ const AdminDoctors = () => {
                             {t('admin.doctorManagementDescription', { total: doctorRequests.length })}
                         </p>
 
-                        {/* Quick Stats */}
+                        {}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -355,12 +292,17 @@ const AdminDoctors = () => {
                             margin: '0 auto'
                         }}>
                             <div style={{
-                                background: 'rgba(251, 191, 36, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(251, 191, 36, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#f59e0b', fontSize: '2rem', marginBottom: '0.5rem' }}>⏱️</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'PENDING').length}
                                 </div>
@@ -372,19 +314,30 @@ const AdminDoctors = () => {
                                 borderRadius: '16px',
                                 border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#22c55e', fontSize: '2rem', marginBottom: '0.5rem' }}>✅</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'APPROVED').length}
                                 </div>
                                 <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{t('reschedule.approved')}</div>
                             </div>
                             <div style={{
-                                background: 'rgba(239, 68, 68, 0.1)',
+                                background: 'rgba(34, 197, 94, 0.1)',
                                 padding: '1.5rem',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(239, 68, 68, 0.2)'
+                                border: '1px solid rgba(34, 197, 94, 0.2)'
                             }}>
-                                <div style={{ color: '#ef4444', fontSize: '2rem', marginBottom: '0.5rem' }}>❌</div>
+                                <div style={{ color: '#22c55e', marginBottom: '0.5rem' }}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
                                 <div style={{ color: '#374151', fontWeight: '700', fontSize: '1.5rem' }}>
                                     {doctorRequests.filter(req => req.status === 'REJECTED').length}
                                 </div>
@@ -394,7 +347,7 @@ const AdminDoctors = () => {
                     </div>
                 </section>
 
-                {/* Doctor Requests Table */}
+                {}
                 <section style={{
                     background: 'rgba(255, 255, 255, 0.98)',
                     backdropFilter: 'blur(20px)',
@@ -422,10 +375,16 @@ const AdminDoctors = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: 'white',
-                            fontSize: '1.5rem'
-                        }}>🩺</span>
-                        Doctor Registration Requests
+                            color: 'white'
+                        }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </span>
+                        {t('admin.doctorRegistrationRequests')}
                     </h3>
                     
                     <div style={{
@@ -475,7 +434,7 @@ const AdminDoctors = () => {
                                                 fontSize: '1.1rem',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                {request.userName || 'No name'}
+                                                {request.userName || t('admin.noName')}
                                             </div>
                                             <div style={{ 
                                                 color: '#6b7280', 
@@ -488,7 +447,7 @@ const AdminDoctors = () => {
                                                 color: '#6b7280', 
                                                 fontSize: '0.85rem'
                                             }}>
-                                                License: {request.licenseNumber}
+                                                {t('admin.license')} {request.licenseNumber}
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'center', minWidth: '120px' }}>
@@ -498,6 +457,8 @@ const AdminDoctors = () => {
                                                 fontSize: '0.8rem',
                                                 fontWeight: '600',
                                                 borderRadius: '8px',
+                                                minWidth: '90px',
+                                                textAlign: 'center',
                                                 background: request.status === 'PENDING' 
                                                     ? 'rgba(251, 191, 36, 0.1)' 
                                                     : request.status === 'APPROVED'
@@ -514,7 +475,11 @@ const AdminDoctors = () => {
                                                     ? 'rgba(34, 197, 94, 0.2)'
                                                     : 'rgba(239, 68, 68, 0.2)'}`
                                             }}>
-                                                {request.status}
+                                                {request.status === 'PENDING' 
+                                                    ? t('reschedule.pending')
+                                                    : request.status === 'APPROVED'
+                                                    ? t('reschedule.approved')
+                                                    : t('reschedule.rejected')}
                                             </span>
                                             <div style={{ 
                                                 color: '#6b7280', 
@@ -557,7 +522,7 @@ const AdminDoctors = () => {
                                                         }
                                                     }}
                                                 >
-                                                    ✅ Approve
+                                                    ✅ {t('admin.approve')}
                                                 </button>
                                                 <button
                                                     onClick={() => openModal(request, 'reject')}
@@ -588,19 +553,9 @@ const AdminDoctors = () => {
                                                         }
                                                     }}
                                                 >
-                                                    ❌ Reject
+                                                    ❌ {t('admin.reject')}
                                                 </button>
                                             </>
-                                        )}
-                                        {request.status !== 'PENDING' && (
-                                            <span style={{
-                                                color: '#6b7280',
-                                                fontSize: '0.9rem',
-                                                fontWeight: '500',
-                                                padding: '0.75rem 1.5rem'
-                                            }}>
-                                                {request.status === 'APPROVED' ? `✅ ${t('reschedule.approved')}` : `❌ ${t('reschedule.rejected')}`}
-                                            </span>
                                         )}
                                     </div>
                                 </div>
@@ -622,15 +577,20 @@ const AdminDoctors = () => {
                                     justifyContent: 'center',
                                     margin: '0 auto 1rem'
                                 }}>
-                                    <span style={{ fontSize: '1.5rem' }}>🏥</span>
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <line x1="19" y1="8" x2="19" y2="14"/>
+                                        <line x1="22" y1="11" x2="16" y2="11"/>
+                                    </svg>
                                 </div>
-                                No doctor requests found.
+                                {t('admin.noDoctorRequestsFound')}
                             </div>
                         )}
                     </div>
                 </section>
 
-            {/* Confirmation Modal */}
+            {}
             {showModal && selectedRequest && (
                 <div style={{
                     position: 'fixed',
@@ -682,7 +642,7 @@ const AdminDoctors = () => {
                             color: '#374151',
                             margin: '0 0 1rem'
                         }}>
-                            {modalType === 'approve' ? 'Approve Doctor' : 'Reject Doctor'}
+                            {modalType === 'approve' ? t('admin.approveDoctor') : t('admin.rejectDoctor')}
                         </h3>
                         
                         <p style={{
@@ -690,7 +650,7 @@ const AdminDoctors = () => {
                             margin: '0 0 1rem',
                             lineHeight: '1.6'
                         }}>
-                            Are you sure you want to <strong>{modalType}</strong> the registration request for:
+                            {t('admin.confirmApproveReject', { action: modalType === 'approve' ? t('admin.approve') : t('admin.reject') })}
                         </p>
                         
                         <div style={{
@@ -739,7 +699,7 @@ const AdminDoctors = () => {
                                     e.target.style.background = 'rgba(107, 114, 128, 0.1)';
                                 }}
                             >
-                                Cancel
+                                {t('admin.cancel')}
                             </button>
                             
                             <button
@@ -784,7 +744,7 @@ const AdminDoctors = () => {
                                     }
                                 }}
                             >
-                                {actionLoading ? 'Processing...' : `Yes, ${modalType === 'approve' ? 'Approve' : 'Reject'}`}
+                                {actionLoading ? t('admin.processing') : (modalType === 'approve' ? t('admin.yesApprove') : t('admin.yesReject'))}
                             </button>
                         </div>
                     </div>

@@ -1,9 +1,9 @@
 import i18n from '../i18n/config';
 
 export const APPOINTMENT_TABS = [
-    { id: 'upcoming', name: 'Upcoming', icon: '📅', color: '#3b82f6' },
-    { id: 'past', name: 'Past', icon: '📋', color: '#6b7280' },
-    { id: 'cancelled', name: 'Cancelled', icon: '❌', color: '#ef4444' }
+    { id: 'upcoming', name: 'Upcoming', color: '#22c55e' },
+    { id: 'past', name: 'Past', color: '#22c55e' },
+    { id: 'cancelled', name: 'Cancelled', color: '#22c55e' }
 ];
 
 export const translateAppointmentType = (type) => {
@@ -45,8 +45,7 @@ export const formatDoctorScheduleDateTime = (dateTime) => {
     
     const currentLang = i18n.language || 'en';
     const locale = currentLang === 'bg' ? 'bg-BG' : 'en-US';
-    
-    // Format date with day name and full date
+
     if (currentLang === 'bg') {
         const weekday = date.toLocaleDateString('bg-BG', { weekday: 'long' });
         const day = date.getDate();
@@ -87,20 +86,10 @@ export const formatPatientDateTime = (dateTime) => {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const appointmentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    let timeString;
-    if (currentLang === 'bg') {
-        const hours = date.getHours();
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const period = hours < 12 ? 'сутринта' : hours < 18 ? 'следобед' : 'вечерта';
-        timeString = `${hours}:${minutes} ${period}`;
-    } else {
-        timeString = date.toLocaleTimeString(locale, {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
+
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
     
     if (appointmentDate.getTime() === today.getTime()) {
         const todayText = currentLang === 'bg' ? 'Днес' : 'Today';

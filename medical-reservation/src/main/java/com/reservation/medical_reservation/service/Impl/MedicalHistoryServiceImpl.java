@@ -42,25 +42,21 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     @Override
     public MedicalHistoryDTO createMedicalHistory(MedicalHistoryDTO medicalHistoryDTO) {
         MedicalHistoryEntity entity = new MedicalHistoryEntity();
-        
-        // Set patient
+
         UserEntity patient = userRepository.findById(medicalHistoryDTO.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found with id: " + medicalHistoryDTO.getPatientId()));
         entity.setPatient(patient);
-        
-        // Set doctor
+
         DoctorEntity doctor = doctorRepository.findById(medicalHistoryDTO.getDoctorId())
                 .orElseThrow(() -> new RuntimeException("Doctor not found with id: " + medicalHistoryDTO.getDoctorId()));
         entity.setDoctor(doctor);
-        
-        // Set appointment if provided
+
         if (medicalHistoryDTO.getAppointmentId() != null) {
             AppointmentEntity appointment = appointmentRepository.findById(medicalHistoryDTO.getAppointmentId())
                     .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + medicalHistoryDTO.getAppointmentId()));
             entity.setAppointment(appointment);
         }
-        
-        // Set other fields
+
         entity.setTitle(medicalHistoryDTO.getTitle());
         entity.setDescription(medicalHistoryDTO.getDescription());
         entity.setDiagnosis(medicalHistoryDTO.getDiagnosis());
@@ -105,8 +101,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     public MedicalHistoryDTO updateMedicalHistory(Long id, MedicalHistoryDTO medicalHistoryDTO) {
         MedicalHistoryEntity entity = medicalHistoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical history not found with id: " + id));
-        
-        // Update fields
+
         entity.setTitle(medicalHistoryDTO.getTitle());
         entity.setDescription(medicalHistoryDTO.getDescription());
         entity.setDiagnosis(medicalHistoryDTO.getDiagnosis());
@@ -128,8 +123,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
     private MedicalHistoryDTO convertToDTO(MedicalHistoryEntity entity) {
         MedicalHistoryDTO dto = modelMapper.map(entity, MedicalHistoryDTO.class);
-        
-        // Set additional fields
+
         dto.setPatientId(entity.getPatient().getId());
         dto.setPatientName(entity.getPatient().getFullName());
         dto.setDoctorId(entity.getDoctor().getId());

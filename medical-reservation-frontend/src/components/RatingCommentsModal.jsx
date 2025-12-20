@@ -98,7 +98,7 @@ const RatingCommentsModal = ({
                     </button>
                 </div>
 
-                {/* Doctor Info */}
+                {}
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -145,7 +145,7 @@ const RatingCommentsModal = ({
                     </div>
                 </div>
 
-                {/* Ratings Content */}
+                {}
                 {loading ? (
                     <div style={{
                         display: 'flex',
