@@ -22,6 +22,7 @@ public class MedicalHistoryDTO {
     private String diagnosis;
     private String treatment;
     private String medications;
+    private String recordType;
     private String attachmentUrl;
     private LocalDateTime createdAt;
 }

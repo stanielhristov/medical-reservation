@@ -14,7 +14,7 @@ const DateOfBirthInput = ({ value, onChange, disabled, error }) => {
                 color: '#374151',
                 fontSize: '0.9rem'
             }}>
-                📅 {t('auth.dateOfBirth')} <span style={{ color: '#dc2626' }}>*</span>
+                {t('auth.dateOfBirth')} <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
                 <input

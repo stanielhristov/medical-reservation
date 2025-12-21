@@ -16,32 +16,30 @@ export const useMedicalHistory = () => {
         switch (backendType?.toLowerCase()) {
             case 'consultation':
             case 'visit':
+                return 'consultation';
             case 'checkup':
             case 'routine checkup':
+                return 'checkup';
             case 'followup':
             case 'follow-up visit':
-                return 'visits';
+                return 'followup';
             case 'lab_result':
             case 'lab':
             case 'test':
             case 'test/lab results':
-                return 'tests';
+                return 'test';
             case 'prescription':
             case 'medication':
-                return 'prescriptions';
+                return 'prescription';
             case 'procedure':
             case 'medical procedure':
             case 'surgery':
+                return 'procedure';
             case 'emergency':
             case 'emergency visit':
-                return 'procedures';
-            case 'vaccination':
-            case 'vaccine':
-                return 'vaccines';
-            case 'document':
-                return 'documents';
+                return 'emergency';
             default:
-                return 'visits';
+                return 'consultation';
         }
     }, []);
 
@@ -72,6 +70,12 @@ export const useMedicalHistory = () => {
                     date: new Date(record.recordDate || record.createdAt),
                     summary: record.description || record.notes || 'No summary available',
                     details: record.treatment || record.medications || record.notes || 'No details available',
+                    // Include original fields for the view modal
+                    description: record.description || '',
+                    diagnosis: record.diagnosis || '',
+                    treatment: record.treatment || '',
+                    prescription: record.medications || '',
+                    medications: record.medications || '',
                     attachments: [],
                     category: recordType,
                     status: record.status?.toLowerCase() || 'completed',
@@ -88,18 +92,25 @@ export const useMedicalHistory = () => {
                     const appointmentDate = new Date(appointment.appointmentTime || appointment.appointmentDate || appointment.date);
                     const appointmentType = (appointment.serviceName || appointment.type || 'consultation')?.toLowerCase();
                     const doctorGender = appointment.doctor?.gender || appointment.doctorGender;
+                    const appointmentDescription = appointment.notes || appointment.reason || 'Doctor consultation';
                     return {
                         id: `appointment-${appointment.id}`,
-                        type: 'visits',
+                        type: 'consultation',
                         originalType: appointmentType,
                         title: appointment.serviceName || appointment.type || 'Doctor Visit',
                         doctor: appointment.doctor?.fullName || appointment.doctorName || 'Unknown Doctor',
                         doctorGender: doctorGender,
                         date: appointmentDate,
-                        summary: appointment.notes || appointment.reason || 'Doctor consultation',
+                        summary: appointmentDescription,
                         details: `Appointment type: ${appointment.serviceName || appointment.type || 'Consultation'}\nDuration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,
+                        // Include fields for the view modal
+                        description: appointmentDescription,
+                        diagnosis: '',
+                        treatment: `Duration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,
+                        prescription: '',
+                        medications: '',
                         attachments: [],
-                        category: 'visits',
+                        category: 'consultation',
                         status: appointment.status?.toLowerCase() || 'completed',
                         isAppointment: true,
                         appointmentId: appointment.id,
@@ -147,18 +158,25 @@ export const useMedicalHistory = () => {
 
     const getTypeIcon = useCallback((type, doctorGender) => {
         switch (type) {
-            case 'visits': {
+            case 'visits':
+            case 'consultation': {
                 const gender = doctorGender?.toString()?.toUpperCase();
                 if (gender === 'FEMALE' || gender === 'F') {
                     return '👩‍⚕️';
                 }
                 return '👨‍⚕️';
             }
-            case 'tests': return '🧪';
-            case 'prescriptions': return '💊';
-            case 'procedures': return '🏥';
+            case 'tests':
+            case 'test': return '🧪';
+            case 'prescriptions':
+            case 'prescription': return '💊';
+            case 'procedures':
+            case 'procedure': return '🏥';
             case 'vaccines': return '💉';
             case 'documents': return '📄';
+            case 'checkup': return '🔍';
+            case 'emergency': return '🚨';
+            case 'followup': return '📋';
             default: return '📋';
         }
     }, []);

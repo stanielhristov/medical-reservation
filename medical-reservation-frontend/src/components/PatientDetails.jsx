@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { getBloodTypeDisplay } from '../utils/bloodTypeUtils';
 import { formatDoctorScheduleDateTime } from '../utils/appointmentUtils';
+import MedicalRecordViewModal from './MedicalRecordViewModal';
 
 const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
     const { t, i18n } = useTranslation();
     const [deleteConfirmation, setDeleteConfirmation] = useState({ isOpen: false, record: null });
+    const [selectedRecord, setSelectedRecord] = useState(null);
 
     if (!patient) return null;
 
@@ -40,13 +42,8 @@ const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
     };
 
     const getRecordTypeIcon = (type) => {
-        switch (type) {
-            case 'consultation': return '💬';
-            case 'test': return '🧪';
-            case 'procedure': return '⚕️';
-            case 'checkup': return '🔍';
-            default: return '📋';
-        }
+        // Returns null - icons removed for cleaner look
+        return null;
     };
 
     const getCategoryType = (type) => {
@@ -100,6 +97,9 @@ const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
             case 'emergency':
             case 'emergency visit':
                 return t('medicalHistory.recordType.emergency');
+            case 'prescription':
+            case 'prescriptions':
+                return t('medicalHistory.recordType.prescription');
             default:
                 return t(`medicalHistory.category.${getCategoryType(type)}`);
         }
@@ -644,177 +644,96 @@ const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
                         gap: '1rem'
                     }}>
                         {patient.medicalRecords.map((record) => (
-                            <div key={record.id} style={{
-                                background: '#f9fafb',
-                                borderRadius: '12px',
-                                padding: '1.5rem',
-                                border: `1px solid ${getRecordTypeColor(record.type)}20`
-                            }}>
-                                <div style={{
+                            <div 
+                                key={record.id} 
+                                onClick={() => setSelectedRecord(record)}
+                                style={{
+                                    background: '#f9fafb',
+                                    borderRadius: '12px',
+                                    padding: '1rem 1.25rem',
+                                    border: `1px solid ${getRecordTypeColor(record.type)}20`,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
                                     display: 'flex',
                                     justifyContent: 'space-between',
-                                    alignItems: 'flex-start',
-                                    marginBottom: '1rem'
+                                    alignItems: 'center'
+                                }}
+                                onMouseEnter={e => {
+                                    e.currentTarget.style.background = '#f3f4f6';
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+                                }}
+                                onMouseLeave={e => {
+                                    e.currentTarget.style.background = '#f9fafb';
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                }}
+                            >
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.75rem',
+                                    flex: 1
                                 }}>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.75rem'
-                                    }}>
-                                        <span style={{
-                                            width: '40px',
-                                            height: '40px',
-                                            background: `${getRecordTypeColor(record.type)}20`,
-                                            borderRadius: '10px',
+                                    <span style={{
+                                        width: '10px',
+                                        height: '10px',
+                                        background: getRecordTypeColor(record.type),
+                                        borderRadius: '50%',
+                                        flexShrink: 0
+                                    }} />
+                                    <div style={{ flex: 1 }}>
+                                        <h4 style={{
+                                            fontSize: '0.95rem',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            margin: '0 0 0.2rem'
+                                        }}>
+                                            {record.title}
+                                        </h4>
+                                        <div style={{
+                                            fontSize: '0.8rem',
+                                            color: '#6b7280'
+                                        }}>
+                                            {formatDate(record.date)} • {getRecordTypeDisplayName(record.type, record.originalType)}
+                                        </div>
+                                    </div>
+                                </div>
+                                {onDeleteRecord && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setDeleteConfirmation({ isOpen: true, record });
+                                        }}
+                                        style={{
+                                            background: 'rgba(239, 68, 68, 0.1)',
+                                            color: '#dc2626',
+                                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                                            borderRadius: '8px',
+                                            padding: '0.5rem',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            fontSize: '1.2rem'
-                                        }}>
-                                            {getRecordTypeIcon(record.type)}
-                                        </span>
-                                        <div>
-                                            <h4 style={{
-                                                fontSize: '1rem',
-                                                fontWeight: '600',
-                                                color: '#374151',
-                                                margin: '0 0 0.25rem'
-                                            }}>
-                                                {record.title}
-                                            </h4>
-                                            <div style={{
-                                                fontSize: '0.8rem',
-                                                color: '#6b7280'
-                                            }}>
-                                                {formatDate(record.date)} • {getRecordTypeDisplayName(record.type, record.originalType)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {onDeleteRecord && (
-                                        <button
-                                            onClick={() => setDeleteConfirmation({ isOpen: true, record })}
-                                            style={{
-                                                background: 'rgba(239, 68, 68, 0.1)',
-                                                color: '#dc2626',
-                                                border: '1px solid rgba(239, 68, 68, 0.2)',
-                                                borderRadius: '8px',
-                                                padding: '0.5rem',
-                                                cursor: 'pointer',
-                                                transition: 'all 0.2s ease',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center'
-                                            }}
-                                            onMouseEnter={e => {
-                                                e.target.style.background = 'rgba(239, 68, 68, 0.2)';
-                                            }}
-                                            onMouseLeave={e => {
-                                                e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                                            }}
-                                            title={t('medicalHistory.deleteRecord')}
-                                        >
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <polyline points="3,6 5,6 21,6"/>
-                                                <path d="M19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"/>
-                                                <line x1="10" y1="11" x2="10" y2="17"/>
-                                                <line x1="14" y1="11" x2="14" y2="17"/>
-                                            </svg>
-                                        </button>
-                                    )}
-                                </div>
-
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                                    gap: '1rem'
-                                }}>
-                                    {record.description && (
-                                        <div>
-                                            <div style={{
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {t('patients.description')}
-                                            </div>
-                                            <div style={{
-                                                fontSize: '0.9rem',
-                                                color: '#374151'
-                                            }}>
-                                                {record.description}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {record.diagnosis && (
-                                        <div>
-                                            <div style={{
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {t('patients.diagnosis')}
-                                            </div>
-                                            <div style={{
-                                                fontSize: '0.9rem',
-                                                color: '#374151'
-                                            }}>
-                                                {record.diagnosis}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {record.treatment && (
-                                        <div>
-                                            <div style={{
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {t('patients.treatment')}
-                                            </div>
-                                            <div style={{
-                                                fontSize: '0.9rem',
-                                                color: '#374151'
-                                            }}>
-                                                {record.treatment}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {record.prescription && record.prescription !== 'None' && (
-                                        <div>
-                                            <div style={{
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {t('patients.prescription')}
-                                            </div>
-                                            <div style={{
-                                                fontSize: '0.9rem',
-                                                color: '#374151',
-                                                background: 'rgba(34, 197, 94, 0.1)',
-                                                padding: '0.5rem',
-                                                borderRadius: '6px',
-                                                border: '1px solid rgba(34, 197, 94, 0.2)',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.5rem'
-                                            }}>
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/>
-                                                    <path d="m8.5 8.5 7 7"/>
-                                                </svg>
-                                                {record.prescription}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                            flexShrink: 0
+                                        }}
+                                        onMouseEnter={e => {
+                                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                                        }}
+                                        onMouseLeave={e => {
+                                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                                        }}
+                                        title={t('medicalHistory.deleteRecord')}
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="3,6 5,6 21,6"/>
+                                            <path d="M19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"/>
+                                            <line x1="10" y1="11" x2="10" y2="17"/>
+                                            <line x1="14" y1="11" x2="14" y2="17"/>
+                                        </svg>
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -971,6 +890,12 @@ const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
                 </div>,
                 document.body
             )}
+
+            <MedicalRecordViewModal
+                isOpen={!!selectedRecord}
+                onClose={() => setSelectedRecord(null)}
+                record={selectedRecord}
+            />
         </div>
     );
 };

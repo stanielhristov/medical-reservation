@@ -9,6 +9,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "close": "Close",
+    "viewDetails": "View",
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
@@ -47,6 +48,23 @@
     "retry": "Retry",
     "selected": "Selected",
     "selectedCountry": "Selected country"
+  },
+  "countrySelector": {
+    "title": "Select Country",
+    "subtitle": "Choose your country from the list below",
+    "searchPlaceholder": "Search countries by name, code, or phone...",
+    "popular": "Popular",
+    "europe": "Europe",
+    "northAmerica": "North America",
+    "southAmerica": "South America",
+    "asia": "Asia",
+    "africa": "Africa",
+    "oceania": "Oceania",
+    "noResults": "No countries found",
+    "tryDifferentSearch": "Try a different search term",
+    "countriesFound": "countries found",
+    "countriesInRegion": "countries in this region",
+    "clickToChange": "Click to change country"
   },
   "errors": {
     "unableToLoadDoctors": "Unable to Load Doctors",
@@ -556,12 +574,13 @@
     "filterByCategory": "Filter by Category",
     "category": {
       "all": "All Records",
-      "visits": "Doctor Visits",
-      "tests": "Lab Tests",
-      "prescriptions": "Prescriptions",
-      "procedures": "Procedures",
-      "vaccines": "Vaccinations",
-      "documents": "Documents"
+      "consultation": "Consultation",
+      "test": "Test/Lab Results",
+      "procedure": "Medical Procedure",
+      "checkup": "Routine Checkup",
+      "emergency": "Emergency Visit",
+      "followup": "Follow-up Visit",
+      "prescription": "Prescription"
     },
     "recordType": {
       "consultation": "Consultation",
@@ -569,19 +588,23 @@
       "followup": "Follow-up Visit",
       "test": "Lab Test",
       "procedure": "Medical Procedure",
-      "emergency": "Emergency Visit"
+      "emergency": "Emergency Visit",
+      "prescription": "Prescription"
     },
     "addRecord": "Add Record",
     "editRecord": "Edit Record",
     "deleteRecord": "Delete Record",
     "recordDetails": "Record Details",
     "date": "Date",
-    "category": "Category",
+    "categoryLabel": "Category",
     "diagnosis": "Diagnosis",
     "treatment": "Treatment",
     "medications": "Medications",
     "noRecords": "No medical records found",
     "noRecordsFound": "No records found",
+    "showing": "Showing",
+    "record": "record",
+    "records": "records",
     "noRecordsYet": "You don't have any medical records yet. Upload your first record to get started.",
     "noRecordsInCategory": "No records found in the selected category. Try selecting a different category or upload new records.",
     "confirmDelete": "Are you sure you want to delete this record?",
@@ -589,6 +612,64 @@
     "summary": "Summary",
     "detailedInformation": "Detailed Information",
     "attachments": "Attachments"
+  },
+  "medicalRecord": {
+    "addTitle": "Add Medical Record",
+    "createFor": "Create a new medical record for {{name}}",
+    "recordType": "Record Type",
+    "selectType": "Select type...",
+    "title": "Title",
+    "titlePlaceholder": "Enter record title",
+    "types": {
+      "consultation": "Consultation",
+      "test": "Test/Lab Results",
+      "procedure": "Medical Procedure",
+      "checkup": "Routine Checkup",
+      "emergency": "Emergency Visit",
+      "followup": "Follow-up Visit",
+      "prescription": "Prescription"
+    },
+    "prescription": {
+      "reason": "Reason for Prescription",
+      "reasonPlaceholder": "Describe the condition or symptoms requiring medication",
+      "diagnosis": "Diagnosis",
+      "diagnosisPlaceholder": "Enter the diagnosis for which medication is prescribed",
+      "details": "Prescription Details",
+      "detailsPlaceholder": "Enter medication name, dosage, frequency, and duration",
+      "instructions": "Instructions & Warnings",
+      "instructionsPlaceholder": "Special instructions, side effects to watch for, or warnings (optional)"
+    },
+    "test": {
+      "description": "Test Description",
+      "descriptionPlaceholder": "Describe the test performed and patient symptoms",
+      "results": "Test Results",
+      "resultsPlaceholder": "Enter test results, values, and reference ranges",
+      "interpretation": "Interpretation",
+      "interpretationPlaceholder": "Interpret the test results and clinical significance"
+    },
+    "procedure": {
+      "description": "Procedure Description",
+      "descriptionPlaceholder": "Describe the procedure performed or emergency situation",
+      "findings": "Findings/Outcome",
+      "findingsPlaceholder": "Enter findings, complications, or outcome of the procedure",
+      "postCare": "Post-Procedure Care",
+      "postCarePlaceholder": "Describe post-procedure care, follow-up instructions, or recovery plan",
+      "medications": "Medications/Prescription",
+      "medicationsPlaceholder": "Enter any medications or prescriptions (optional)"
+    },
+    "default": {
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the medical visit, symptoms, or consultation",
+      "diagnosis": "Diagnosis",
+      "diagnosisPlaceholder": "Enter the medical diagnosis",
+      "treatment": "Treatment Plan",
+      "treatmentPlaceholder": "Describe the treatment plan or recommendations",
+      "prescription": "Prescription",
+      "prescriptionPlaceholder": "Enter prescription details (optional)"
+    },
+    "save": "Save Medical Record",
+    "saving": "Saving...",
+    "cancel": "Cancel"
   },
   "notifications": {
     "title": "Notifications",

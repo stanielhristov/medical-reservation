@@ -6,6 +6,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import MedicalHistoryHeader from '../../components/MedicalHistoryHeader';
 import MedicalRecordFilters from '../../components/MedicalRecordFilters';
 import MedicalRecordCard from '../../components/MedicalRecordCard';
+import MedicalRecordViewModal from '../../components/MedicalRecordViewModal';
 
 const PatientMedicalHistory = () => {
     const { t } = useTranslation();
@@ -110,11 +111,11 @@ const PatientMedicalHistory = () => {
                         </div>
                     ) : (
                         <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-                            gap: '1.5rem'
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1rem'
                         }}>
-                            {filteredRecords.map(record => (
+                            {filteredRecords.map((record) => (
                                 <MedicalRecordCard
                                     key={record.id}
                                     record={record}
@@ -128,238 +129,11 @@ const PatientMedicalHistory = () => {
                     )}
                 </section>
 
-                {selectedRecord && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0, 0, 0, 0.6)',
-                        backdropFilter: 'blur(5px)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000,
-                        padding: '2rem'
-                    }} onClick={() => setSelectedRecord(null)}>
-                        <div style={{
-                            background: 'white',
-                            borderRadius: '24px',
-                            padding: '2.5rem',
-                            maxWidth: '800px',
-                            width: '100%',
-                            maxHeight: '90vh',
-                            overflow: 'auto',
-                            boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-                            position: 'relative',
-                            animation: 'fadeInUp 0.3s ease-out',
-                            border: '1px solid rgba(16, 185, 129, 0.2)'
-                        }} onClick={e => e.stopPropagation()}>
-                            <button
-                                onClick={() => setSelectedRecord(null)}
-                                style={{
-                                    position: 'absolute',
-                                    top: '1.5rem',
-                                    right: '1.5rem',
-                                    background: 'none',
-                                    border: 'none',
-                                    fontSize: '1.5rem',
-                                    cursor: 'pointer',
-                                    color: '#9ca3af',
-                                    padding: '0.5rem',
-                                    borderRadius: '8px',
-                                    transition: 'all 0.3s ease'
-                                }}
-                                onMouseEnter={e => {
-                                    e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                                    e.target.style.color = '#ef4444';
-                                }}
-                                onMouseLeave={e => {
-                                    e.target.style.background = 'none';
-                                    e.target.style.color = '#9ca3af';
-                                }}
-                            >
-                                ✕
-                            </button>
-
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1.5rem',
-                                marginBottom: '2rem',
-                                paddingRight: '3rem'
-                            }}>
-                                <div style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                    borderRadius: '20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '2.5rem',
-                                    boxShadow: '0 12px 25px rgba(16, 185, 129, 0.3)'
-                                }}>
-                                    {getTypeIcon(selectedRecord.type)}
-                                </div>
-                                <div>
-                                    <h2 style={{
-                                        fontSize: '2rem',
-                                        fontWeight: '700',
-                                        color: '#374151',
-                                        margin: '0 0 0.5rem'
-                                    }}>
-                                        {selectedRecord.title}
-                                    </h2>
-                                    <p style={{
-                                        fontSize: '1.1rem',
-                                        color: '#6b7280',
-                                        margin: 0,
-                                        fontWeight: '500'
-                                    }}>
-                                        {selectedRecord.doctor} • {formatDate(selectedRecord.date)}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div style={{
-                                background: 'rgba(220, 252, 231, 0.7)',
-                                borderRadius: '16px',
-                                padding: '1.5rem',
-                                marginBottom: '1.5rem',
-                                border: '1px solid rgba(16, 185, 129, 0.3)'
-                            }}>
-                                <h4 style={{
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    color: '#374151',
-                                    margin: '0 0 1rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
-                                }}>
-                                    📝 {t('medicalHistory.summary')}
-                                </h4>
-                                <p style={{
-                                    color: '#374151',
-                                    margin: 0,
-                                    lineHeight: '1.5'
-                                }}>
-                                    {selectedRecord.summary}
-                                </p>
-                            </div>
-
-                            <div style={{
-                                background: 'rgba(243, 244, 246, 0.7)',
-                                borderRadius: '16px',
-                                padding: '1.5rem',
-                                marginBottom: '1.5rem',
-                                border: '1px solid rgba(209, 213, 219, 0.5)'
-                            }}>
-                                <h4 style={{
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    color: '#374151',
-                                    margin: '0 0 1rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
-                                }}>
-                                    🔍 {t('medicalHistory.detailedInformation')}
-                                </h4>
-                                <p style={{
-                                    color: '#374151',
-                                    margin: 0,
-                                    lineHeight: '1.6'
-                                }}>
-                                    {selectedRecord.details}
-                                </p>
-                            </div>
-
-                            {selectedRecord.attachments && selectedRecord.attachments.length > 0 && (
-                                <div style={{
-                                    background: 'rgba(254, 249, 195, 0.7)',
-                                    borderRadius: '16px',
-                                    padding: '1.5rem',
-                                    marginBottom: '1.5rem',
-                                    border: '1px solid rgba(251, 191, 36, 0.3)'
-                                }}>
-                                    <h4 style={{
-                                        fontSize: '1.1rem',
-                                        fontWeight: '600',
-                                        color: '#374151',
-                                        margin: '0 0 1rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem'
-                                    }}>
-                                        📎 {t('medicalHistory.attachments')} ({selectedRecord.attachments.length})
-                                    </h4>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                                        {selectedRecord.attachments.map((attachment, index) => (
-                                            <span
-                                                key={index}
-                                                style={{
-                                                    background: 'rgba(251, 191, 36, 0.2)',
-                                                    color: '#92400e',
-                                                    padding: '0.5rem 1rem',
-                                                    borderRadius: '12px',
-                                                    fontSize: '0.9rem',
-                                                    fontWeight: '600',
-                                                    border: '1px solid rgba(251, 191, 36, 0.3)',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.3s ease'
-                                                }}
-                                                onMouseEnter={e => {
-                                                    e.target.style.background = 'rgba(251, 191, 36, 0.3)';
-                                                }}
-                                                onMouseLeave={e => {
-                                                    e.target.style.background = 'rgba(251, 191, 36, 0.2)';
-                                                }}
-                                            >
-                                                📄 {attachment}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'flex-end',
-                                gap: '1rem',
-                                paddingTop: '1rem',
-                                borderTop: '1px solid rgba(229, 231, 235, 0.8)'
-                            }}>
-                                <button
-                                    onClick={() => setSelectedRecord(null)}
-                                    style={{
-                                        padding: '0.8rem 1.5rem',
-                                        background: 'rgba(107, 114, 128, 0.1)',
-                                        color: '#374151',
-                                        border: '2px solid rgba(107, 114, 128, 0.2)',
-                                        borderRadius: '12px',
-                                        cursor: 'pointer',
-                                        fontSize: '1rem',
-                                        fontWeight: '600',
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                    onMouseEnter={e => {
-                                        e.target.style.background = 'rgba(107, 114, 128, 0.2)';
-                                        e.target.style.transform = 'translateY(-2px)';
-                                    }}
-                                    onMouseLeave={e => {
-                                        e.target.style.background = 'rgba(107, 114, 128, 0.1)';
-                                        e.target.style.transform = 'translateY(0)';
-                                    }}
-                                >
-                                    {t('common.close')}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <MedicalRecordViewModal
+                    isOpen={!!selectedRecord}
+                    onClose={() => setSelectedRecord(null)}
+                    record={selectedRecord}
+                />
 
                 {showUploadModal && (
                     <div style={{

@@ -1,123 +1,130 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { categories } from '../utils/medicalHistoryUtils';
 
 const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecords }) => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
+    
     const getCategoryCount = (categoryId) => {
         if (categoryId === 'all') return medicalRecords.length;
         return medicalRecords.filter(record => record.type === categoryId).length;
     };
 
-    const categoryLabels = useMemo(() => {
-        const labels = {};
-        categories.forEach(category => {
-            const key = `medicalHistory.category.${category.id}`;
-            
-            if (i18n.exists(key)) {
-                labels[category.id] = i18n.t(key);
-            } else {
-                
-                labels[category.id] = category.name;
-            }
-        });
-        return labels;
-    }, [i18n, i18n.language]);
+    const getCategoryLabel = (categoryId) => {
+        // Try the direct translation first
+        const translatedLabel = t(`medicalHistory.category.${categoryId}`);
+        
+        // If the translation returns the key itself, use the fallback from categories
+        if (translatedLabel.includes('medicalHistory.category')) {
+            const category = categories.find(c => c.id === categoryId);
+            return category?.name || categoryId;
+        }
+        
+        return translatedLabel;
+    };
+
+    const selectedLabel = getCategoryLabel(selectedCategory);
+    const selectedCount = getCategoryCount(selectedCategory);
 
     return (
         <section style={{
             background: 'rgba(255, 255, 255, 0.98)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '2rem',
+            borderRadius: '16px',
+            padding: '1.5rem',
             marginBottom: '2rem',
-            boxShadow: '0 20px 40px rgba(34, 197, 94, 0.12), 0 16px 32px rgba(0, 0, 0, 0.06)',
+            boxShadow: '0 10px 30px rgba(34, 197, 94, 0.1), 0 8px 20px rgba(0, 0, 0, 0.04)',
             border: '1px solid rgba(34, 197, 94, 0.15)'
         }}>
-            <h3 style={{
-                fontSize: '1.3rem',
-                fontWeight: '700',
-                color: '#374151',
-                margin: '0 0 1.5rem',
+            <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
-            }}>
-                <span>🏷️</span>
-                {t('medicalHistory.filterByCategory')}
-            </h3>
-            
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
                 gap: '1rem'
             }}>
-                {categories.map(category => {
-                    const count = getCategoryCount(category.id);
-                    const isSelected = selectedCategory === category.id;
-                    
-                    return (
-                        <button
-                            key={category.id}
-                            onClick={() => onCategoryChange(category.id)}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem'
+                }}>
+                    <label style={{
+                        fontSize: '0.95rem',
+                        fontWeight: '600',
+                        color: '#374151'
+                    }}>
+                        {t('medicalHistory.filterByCategory')}
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                        <select
+                            value={selectedCategory}
+                            onChange={(e) => onCategoryChange(e.target.value)}
                             style={{
-                                padding: '1rem 1.5rem',
-                                background: isSelected 
-                                    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                                    : 'rgba(255, 255, 255, 0.8)',
-                                color: isSelected ? 'white' : '#374151',
-                                border: isSelected 
-                                    ? 'none' 
-                                    : '2px solid rgba(16, 185, 129, 0.2)',
-                                borderRadius: '16px',
+                                appearance: 'none',
+                                padding: '0.75rem 2.5rem 0.75rem 1rem',
+                                fontSize: '0.95rem',
+                                fontWeight: '500',
+                                color: '#374151',
+                                background: 'white',
+                                border: '2px solid rgba(5, 150, 105, 0.2)',
+                                borderRadius: '10px',
                                 cursor: 'pointer',
-                                fontWeight: '600',
-                                fontSize: '0.9rem',
-                                transition: 'all 0.3s ease',
-                                boxShadow: isSelected 
-                                    ? '0 8px 25px rgba(16, 185, 129, 0.3)'
-                                    : '0 4px 12px rgba(16, 185, 129, 0.1)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                gap: '0.75rem'
+                                outline: 'none',
+                                minWidth: '200px',
+                                transition: 'all 0.2s ease'
                             }}
-                            onMouseEnter={e => {
-                                if (!isSelected) {
-                                    e.target.style.background = 'rgba(16, 185, 129, 0.1)';
-                                    e.target.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-                                    e.target.style.transform = 'translateY(-2px)';
-                                }
+                            onFocus={e => {
+                                e.target.style.borderColor = '#059669';
+                                e.target.style.boxShadow = '0 0 0 3px rgba(5, 150, 105, 0.1)';
                             }}
-                            onMouseLeave={e => {
-                                if (!isSelected) {
-                                    e.target.style.background = 'rgba(255, 255, 255, 0.8)';
-                                    e.target.style.borderColor = 'rgba(16, 185, 129, 0.2)';
-                                    e.target.style.transform = 'translateY(0)';
-                                }
+                            onBlur={e => {
+                                e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                e.target.style.boxShadow = 'none';
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <span style={{ fontSize: '1.2rem' }}>{category.icon}</span>
-                                <span>{categoryLabels[category.id] || category.name}</span>
-                            </div>
-                            <span style={{
-                                background: isSelected 
-                                    ? 'rgba(255, 255, 255, 0.2)' 
-                                    : 'rgba(16, 185, 129, 0.1)',
-                                color: isSelected ? 'white' : '#059669',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '12px',
-                                fontSize: '0.8rem',
-                                fontWeight: '700',
-                                minWidth: '24px',
-                                textAlign: 'center'
-                            }}>
-                                {count}
-                            </span>
-                        </button>
-                    );
-                })}
+                            {categories.map(category => (
+                                <option key={category.id} value={category.id}>
+                                    {getCategoryLabel(category.id)} ({getCategoryCount(category.id)})
+                                </option>
+                            ))}
+                        </select>
+                        <div style={{
+                            position: 'absolute',
+                            right: '0.75rem',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            pointerEvents: 'none',
+                            color: '#059669'
+                        }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6,9 12,15 18,9"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.5rem 1rem',
+                    background: 'rgba(5, 150, 105, 0.1)',
+                    borderRadius: '8px'
+                }}>
+                    <span style={{
+                        fontSize: '0.85rem',
+                        color: '#6b7280'
+                    }}>
+                        {t('medicalHistory.showing') || 'Showing'}:
+                    </span>
+                    <span style={{
+                        fontSize: '0.95rem',
+                        fontWeight: '600',
+                        color: '#059669'
+                    }}>
+                        {selectedCount} {selectedCount === 1 ? (t('medicalHistory.record') || 'record') : (t('medicalHistory.records') || 'records')}
+                    </span>
+                </div>
             </div>
         </section>
     );

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 const MedicalRecordModal = ({ 
     isOpen, 
@@ -6,6 +8,7 @@ const MedicalRecordModal = ({
     onSave, 
     patient = null 
 }) => {
+    const { t } = useTranslation();
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState(null);
     const [selectedType, setSelectedType] = useState('');
@@ -15,6 +18,25 @@ const MedicalRecordModal = ({
             setSelectedType('');
             setError(null);
         }
+    }, [isOpen]);
+
+    // Handle body scroll lock
+    useEffect(() => {
+        if (!isOpen) return;
+        
+        const originalOverflow = document.body.style.overflow;
+        const originalPaddingRight = document.body.style.paddingRight;
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        
+        document.body.style.overflow = 'hidden';
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+        }
+        
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            document.body.style.paddingRight = originalPaddingRight;
+        };
     }, [isOpen]);
 
     if (!isOpen || !patient) return null;
@@ -28,7 +50,7 @@ const MedicalRecordModal = ({
             const formData = new FormData(e.target);
             const recordData = {
                 patientId: patient.id,
-                type: formData.get('type'),
+                type: selectedType, // Use the React state directly instead of formData
                 title: formData.get('title'),
                 description: formData.get('description'),
                 diagnosis: formData.get('diagnosis'),
@@ -48,38 +70,49 @@ const MedicalRecordModal = ({
     };
 
     const recordTypes = [
-        { value: 'consultation', label: 'Consultation', icon: '💬' },
-        { value: 'test', label: 'Test/Lab Results', icon: '🧪' },
-        { value: 'procedure', label: 'Medical Procedure', icon: '⚕️' },
-        { value: 'checkup', label: 'Routine Checkup', icon: '🔍' },
-        { value: 'emergency', label: 'Emergency Visit', icon: '🚨' },
-        { value: 'followup', label: 'Follow-up Visit', icon: '📋' }
+        { value: 'consultation', label: t('medicalRecord.types.consultation') },
+        { value: 'test', label: t('medicalRecord.types.test') },
+        { value: 'procedure', label: t('medicalRecord.types.procedure') },
+        { value: 'checkup', label: t('medicalRecord.types.checkup') },
+        { value: 'emergency', label: t('medicalRecord.types.emergency') },
+        { value: 'followup', label: t('medicalRecord.types.followup') },
+        { value: 'prescription', label: t('medicalRecord.types.prescription') }
     ];
 
-    return (
-        <div style={{
+    const modalContent = (
+        <div 
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+            style={{
             position: 'fixed',
             top: 0,
             left: 0,
-            right: 0,
-            bottom: 0,
+                width: '100vw',
+                height: '100vh',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            zIndex: 1000,
-            padding: '1rem'
-        }}>
-            <div style={{
+                zIndex: 99999,
+                padding: '1rem',
+                boxSizing: 'border-box'
+            }}
+        >
+            <div 
+                onClick={(e) => e.stopPropagation()}
+                style={{
                 background: 'white',
                 borderRadius: '20px',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 30px rgba(34, 197, 94, 0.1)',
                 maxWidth: '700px',
                 width: '100%',
-                maxHeight: '90vh',
+                    maxHeight: '85vh',
                 overflowY: 'auto',
-                position: 'relative'
-            }}>
+                    position: 'relative',
+                    border: '1px solid rgba(34, 197, 94, 0.2)'
+                }}
+            >
                 <div style={{ padding: '2rem' }}>
                     <button
                         onClick={onClose}
@@ -123,7 +156,13 @@ const MedicalRecordModal = ({
                             margin: '0 auto 1rem',
                             color: 'white'
                         }}>
-                            📋
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14,2 14,8 20,8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10,9 9,9 8,9"/>
+                            </svg>
                         </div>
                         <h3 style={{
                             fontSize: '1.5rem',
@@ -131,10 +170,10 @@ const MedicalRecordModal = ({
                             color: '#374151',
                             margin: '0 0 0.5rem'
                         }}>
-                            Add Medical Record
+                            {t('medicalRecord.addTitle')}
                         </h3>
                         <p style={{ color: '#6b7280', margin: 0 }}>
-                            Create a new medical record for {patient.name}
+                            {t('medicalRecord.createFor', { name: patient.name })}
                         </p>
                     </div>
 
@@ -153,7 +192,7 @@ const MedicalRecordModal = ({
                                     color: '#374151',
                                     fontSize: '0.9rem'
                                 }}>
-                                    Record Type <span style={{ color: '#dc2626' }}>*</span>
+                                    {t('medicalRecord.recordType')} <span style={{ color: '#dc2626' }}>*</span>
                                 </label>
                                 <select
                                     name="type"
@@ -178,10 +217,10 @@ const MedicalRecordModal = ({
                                         e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
                                     }}
                                 >
-                                    <option value="">Select type...</option>
+                                    <option value="">{t('medicalRecord.selectType')}</option>
                                     {recordTypes.map(type => (
                                         <option key={type.value} value={type.value}>
-                                            {type.icon} {type.label}
+                                            {type.label}
                                         </option>
                                     ))}
                                 </select>
@@ -195,13 +234,13 @@ const MedicalRecordModal = ({
                                     color: '#374151',
                                     fontSize: '0.9rem'
                                 }}>
-                                    Title <span style={{ color: '#dc2626' }}>*</span>
+                                    {t('medicalRecord.title')} <span style={{ color: '#dc2626' }}>*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="title"
                                     required
-                                    placeholder="Enter record title"
+                                    placeholder={t('medicalRecord.titlePlaceholder')}
                                     style={{
                                         width: '100%',
                                         padding: '0.75rem',
@@ -222,7 +261,7 @@ const MedicalRecordModal = ({
                             </div>
                         </div>
 
-                        {selectedType === 'test' ? (
+                        {selectedType === 'prescription' ? (
                             <>
                                 <div style={{ marginBottom: '1.5rem' }}>
                                     <label style={{
@@ -232,13 +271,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Test Description <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.prescription.reason')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="description"
                                         required
                                         rows={3}
-                                        placeholder="Describe the test performed and patient symptoms"
+                                        placeholder={t('medicalRecord.prescription.reasonPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -268,13 +307,158 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Test Results <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.prescription.diagnosis')} <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="diagnosis"
+                                        required
+                                        rows={2}
+                                        placeholder={t('medicalRecord.prescription.diagnosisPlaceholder')}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '60px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        {t('medicalRecord.prescription.details')} <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="prescription"
+                                        required
+                                        rows={4}
+                                        placeholder={t('medicalRecord.prescription.detailsPlaceholder')}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '100px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        {t('medicalRecord.prescription.instructions')}
+                                    </label>
+                                    <textarea
+                                        name="treatment"
+                                        rows={3}
+                                        placeholder={t('medicalRecord.prescription.instructionsPlaceholder')}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        ) : selectedType === 'test' ? (
+                            <>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        {t('medicalRecord.test.description')} <span style={{ color: '#dc2626' }}>*</span>
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        required
+                                        rows={3}
+                                        placeholder={t('medicalRecord.test.descriptionPlaceholder')}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '2px solid rgba(5, 150, 105, 0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            minHeight: '80px',
+                                            transition: 'border-color 0.2s ease'
+                                        }}
+                                        onFocus={e => {
+                                            e.target.style.borderColor = '#059669';
+                                        }}
+                                        onBlur={e => {
+                                            e.target.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontWeight: '600',
+                                        color: '#374151',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        {t('medicalRecord.test.results')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="diagnosis"
                                         required
                                         rows={3}
-                                        placeholder="Enter test results, values, and reference ranges"
+                                        placeholder={t('medicalRecord.test.resultsPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -304,13 +488,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Interpretation <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.test.interpretation')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="treatment"
                                         required
                                         rows={3}
-                                        placeholder="Interpret the test results and clinical significance"
+                                        placeholder={t('medicalRecord.test.interpretationPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -342,13 +526,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Procedure Description <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.procedure.description')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="description"
                                         required
                                         rows={3}
-                                        placeholder="Describe the procedure performed or emergency situation"
+                                        placeholder={t('medicalRecord.procedure.descriptionPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -378,13 +562,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Findings/Outcome <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.procedure.findings')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="diagnosis"
                                         required
                                         rows={3}
-                                        placeholder="Enter findings, complications, or outcome of the procedure"
+                                        placeholder={t('medicalRecord.procedure.findingsPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -414,13 +598,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Post-Procedure Care <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.procedure.postCare')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="treatment"
                                         required
                                         rows={3}
-                                        placeholder="Describe post-procedure care, follow-up instructions, or recovery plan"
+                                        placeholder={t('medicalRecord.procedure.postCarePlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -450,12 +634,12 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Medications/Prescription
+                                        {t('medicalRecord.procedure.medications')}
                                     </label>
                                     <textarea
                                         name="prescription"
                                         rows={2}
-                                        placeholder="Enter any medications or prescriptions (optional)"
+                                        placeholder={t('medicalRecord.procedure.medicationsPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -487,13 +671,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Description <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.default.description')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="description"
                                         required
                                         rows={3}
-                                        placeholder="Describe the medical visit, symptoms, or consultation"
+                                        placeholder={t('medicalRecord.default.descriptionPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -523,13 +707,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Diagnosis <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.default.diagnosis')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="diagnosis"
                                         required
                                         rows={2}
-                                        placeholder="Enter the medical diagnosis"
+                                        placeholder={t('medicalRecord.default.diagnosisPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -559,13 +743,13 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Treatment Plan <span style={{ color: '#dc2626' }}>*</span>
+                                        {t('medicalRecord.default.treatment')} <span style={{ color: '#dc2626' }}>*</span>
                                     </label>
                                     <textarea
                                         name="treatment"
                                         required
                                         rows={3}
-                                        placeholder="Describe the treatment plan or recommendations"
+                                        placeholder={t('medicalRecord.default.treatmentPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -595,12 +779,12 @@ const MedicalRecordModal = ({
                                         color: '#374151',
                                         fontSize: '0.9rem'
                                     }}>
-                                        Prescription
+                                        {t('medicalRecord.default.prescription')}
                                     </label>
                                     <textarea
                                         name="prescription"
                                         rows={2}
-                                        placeholder="Enter prescription details (optional)"
+                                        placeholder={t('medicalRecord.default.prescriptionPlaceholder')}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -669,7 +853,7 @@ const MedicalRecordModal = ({
                                     }
                                 }}
                             >
-                                Cancel
+                                {t('medicalRecord.cancel')}
                             </button>
                             
                             <button
@@ -703,7 +887,7 @@ const MedicalRecordModal = ({
                                     }
                                 }}
                             >
-                                {isSaving ? 'Saving...' : 'Save Medical Record'}
+                                {isSaving ? t('medicalRecord.saving') : t('medicalRecord.save')}
                             </button>
                         </div>
                     </form>
@@ -711,6 +895,8 @@ const MedicalRecordModal = ({
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 };
 
 export default MedicalRecordModal;

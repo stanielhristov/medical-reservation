@@ -57,28 +57,33 @@ export const useDoctorPatients = () => {
                             const mapBackendTypeToCategory = (backendType) => {
                                 switch (backendType?.toLowerCase()) {
                                     case 'consultation':
+                                        return 'consultation';
                                     case 'checkup':
+                                        return 'checkup';
                                     case 'followup':
+                                        return 'followup';
                                     case 'visit':
                                         return 'visits';
                                     case 'lab_result':
                                     case 'test':
                                     case 'lab':
-                                        return 'tests';
+                                        return 'test';
                                     case 'procedure':
+                                        return 'procedure';
                                     case 'emergency':
+                                        return 'emergency';
                                     case 'surgery':
                                         return 'procedures';
                                     case 'prescription':
                                     case 'medication':
-                                        return 'prescriptions';
+                                        return 'prescription';
                                     case 'vaccination':
                                     case 'vaccine':
                                         return 'vaccines';
                                     case 'document':
                                         return 'documents';
                                     default:
-                                        return 'visits';
+                                        return backendType || 'consultation';
                                 }
                             };
                             
@@ -187,11 +192,13 @@ export const useDoctorPatients = () => {
             const mapTypeToBackend = (type) => {
                 switch (type?.toLowerCase()) {
                     case 'consultation':
+                        return 'consultation';
                     case 'checkup':
                     case 'routine checkup':
+                        return 'checkup';
                     case 'followup':
                     case 'follow-up visit':
-                        return 'consultation';
+                        return 'followup';
                     case 'test':
                     case 'lab':
                     case 'lab_result':
@@ -199,11 +206,14 @@ export const useDoctorPatients = () => {
                         return 'lab_result';
                     case 'procedure':
                     case 'medical procedure':
+                        return 'procedure';
                     case 'emergency':
                     case 'emergency visit':
-                        return 'procedure';
+                        return 'emergency';
+                    case 'prescription':
+                        return 'prescription';
                     default:
-                        return 'consultation';
+                        return type || 'consultation';
                 }
             };
             
@@ -230,28 +240,33 @@ export const useDoctorPatients = () => {
                 const mapBackendTypeToCategory = (backendType) => {
                     switch (backendType?.toLowerCase()) {
                         case 'consultation':
+                            return 'consultation';
                         case 'checkup':
+                            return 'checkup';
                         case 'followup':
+                            return 'followup';
                         case 'visit':
                             return 'visits';
                         case 'lab_result':
                         case 'test':
                         case 'lab':
-                            return 'tests';
+                            return 'test';
                         case 'procedure':
+                            return 'procedure';
                         case 'emergency':
+                            return 'emergency';
                         case 'surgery':
                             return 'procedures';
                         case 'prescription':
                         case 'medication':
-                            return 'prescriptions';
+                            return 'prescription';
                         case 'vaccination':
                         case 'vaccine':
                             return 'vaccines';
                         case 'document':
                             return 'documents';
                         default:
-                            return 'visits';
+                            return backendType || 'consultation';
                     }
                 };
                 

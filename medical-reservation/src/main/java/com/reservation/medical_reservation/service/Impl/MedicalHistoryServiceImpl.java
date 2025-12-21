@@ -62,6 +62,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         entity.setDiagnosis(medicalHistoryDTO.getDiagnosis());
         entity.setTreatment(medicalHistoryDTO.getTreatment());
         entity.setMedications(medicalHistoryDTO.getMedications());
+        entity.setRecordType(medicalHistoryDTO.getRecordType() != null ? medicalHistoryDTO.getRecordType() : "consultation");
         entity.setAttachmentUrl(medicalHistoryDTO.getAttachmentUrl());
         
         MedicalHistoryEntity saved = medicalHistoryRepository.save(entity);
@@ -107,6 +108,9 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         entity.setDiagnosis(medicalHistoryDTO.getDiagnosis());
         entity.setTreatment(medicalHistoryDTO.getTreatment());
         entity.setMedications(medicalHistoryDTO.getMedications());
+        if (medicalHistoryDTO.getRecordType() != null) {
+            entity.setRecordType(medicalHistoryDTO.getRecordType());
+        }
         entity.setAttachmentUrl(medicalHistoryDTO.getAttachmentUrl());
         
         MedicalHistoryEntity updated = medicalHistoryRepository.save(entity);
@@ -129,6 +133,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         dto.setDoctorId(entity.getDoctor().getId());
         dto.setDoctorName(entity.getDoctor().getUser().getFullName());
         dto.setDoctorSpecialization(entity.getDoctor().getSpecialization());
+        dto.setRecordType(entity.getRecordType() != null ? entity.getRecordType() : "consultation");
         
         if (entity.getAppointment() != null) {
             dto.setAppointmentId(entity.getAppointment().getId());
