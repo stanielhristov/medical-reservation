@@ -504,14 +504,14 @@ export default function RegisterForm() {
 
                     {formData.role === 'DOCTOR' && (
                         <PhoneInput
-                            label="Emergency Phone Number"
+                            label={t('auth.emergencyPhoneNumber')}
                             value={formData.emergencyPhone}
                             onChange={(e) => handleFormChange('emergencyPhone', e.target.value)}
                             countryCode={emergencyPhoneCountry}
                             onCountryChange={setEmergencyPhoneCountry}
                             disabled={loading}
                             required={false}
-                            placeholder="Enter emergency phone number"
+                            placeholder={t('auth.emergencyPhonePlaceholder')}
                         />
                     )}
 

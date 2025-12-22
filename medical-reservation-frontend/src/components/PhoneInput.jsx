@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { COUNTRIES, COUNTRY_MAP } from '../utils/countryData';
 import { translateCountryName } from '../utils/countryUtils';
+import CountrySelectorModal from './CountrySelectorModal';
 
 const PhoneInput = ({ 
     label, 
@@ -14,13 +15,15 @@ const PhoneInput = ({
     placeholder 
 }) => {
     const { t } = useTranslation();
+    const [isCountryModalOpen, setIsCountryModalOpen] = useState(false);
+    
     const selectedCountry = useMemo(() =>
         COUNTRY_MAP.get(countryCode) || COUNTRIES[0], 
         [countryCode]
     );
     
-    const handleCountryChange = useCallback((e) => {
-        onCountryChange(e.target.value);
+    const handleCountrySelect = useCallback((newCountryCode) => {
+        onCountryChange(newCountryCode);
     }, [onCountryChange]);
     
     return (
@@ -35,32 +38,45 @@ const PhoneInput = ({
                 {label} {required && <span style={{ color: '#dc2626' }}>*</span>}
             </label>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <div style={{ position: 'relative', minWidth: '120px' }}>
-                    <select
-                        value={countryCode}
-                        onChange={handleCountryChange}
-                        disabled={disabled}
-                        style={{
-                            width: '100%',
-                            padding: '0.875rem 0.5rem',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '12px',
-                            fontSize: '0.9rem',
-                            background: '#f9fafb',
-                            outline: 'none',
-                            boxSizing: 'border-box',
-                            color: '#374151',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease'
-                        }}
-                    >
-                        {COUNTRIES.map(country => (
-                            <option key={country.code} value={country.code}>
-                                {country.flag} {translateCountryName(country.code, country.name)}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <button
+                    type="button"
+                    onClick={() => !disabled && setIsCountryModalOpen(true)}
+                    disabled={disabled}
+                    style={{
+                        minWidth: '120px',
+                        padding: '0.875rem 0.75rem',
+                        border: '2px solid rgba(34, 197, 94, 0.2)',
+                        borderRadius: '12px',
+                        fontSize: '0.9rem',
+                        background: '#f9fafb',
+                        outline: 'none',
+                        boxSizing: 'border-box',
+                        color: '#374151',
+                        cursor: disabled ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        opacity: disabled ? 0.6 : 1
+                    }}
+                    onMouseEnter={e => {
+                        if (!disabled) {
+                            e.target.style.borderColor = '#22c55e';
+                            e.target.style.background = 'white';
+                        }
+                    }}
+                    onMouseLeave={e => {
+                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                        e.target.style.background = '#f9fafb';
+                    }}
+                >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '1.25rem' }}>{selectedCountry.flag}</span>
+                        <span style={{ fontWeight: '500' }}>{selectedCountry.phone}</span>
+                    </span>
+                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>▼</span>
+                </button>
                 
                 <input
                     type="tel"
@@ -71,7 +87,7 @@ const PhoneInput = ({
                     style={{
                         flex: 1,
                         padding: '0.875rem 1rem',
-                        border: '1px solid #e5e7eb',
+                        border: '2px solid rgba(34, 197, 94, 0.2)',
                         borderRadius: '12px',
                         fontSize: '0.95rem',
                         background: '#f9fafb',
@@ -80,17 +96,24 @@ const PhoneInput = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder={placeholder || 'Enter your phone number'}
+                    placeholder={placeholder || t('common.enterPhoneNumber')}
+                    onFocus={e => {
+                        e.target.style.borderColor = '#22c55e';
+                        e.target.style.background = 'white';
+                    }}
+                    onBlur={e => {
+                        e.target.style.borderColor = 'rgba(34, 197, 94, 0.2)';
+                        e.target.style.background = '#f9fafb';
+                    }}
                 />
             </div>
-            <div style={{
-                fontSize: '0.8rem',
-                color: '#6b7280',
-                marginTop: '0.25rem',
-                marginLeft: '0.5rem'
-            }}>
-                {t('common.selected')}: {selectedCountry.flag} {translateCountryName(selectedCountry.code, selectedCountry.name)} ({selectedCountry.phone})
-            </div>
+
+            <CountrySelectorModal
+                isOpen={isCountryModalOpen}
+                onClose={() => setIsCountryModalOpen(false)}
+                onSelect={handleCountrySelect}
+                selectedCountryCode={countryCode}
+            />
         </div>
     );
 };

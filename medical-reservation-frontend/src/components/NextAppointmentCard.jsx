@@ -21,13 +21,14 @@ const NextAppointmentCard = ({ appointment, onViewDetails }) => {
                 <div style={{
                     width: '80px',
                     height: '80px',
-                    background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+                    background: 'rgba(34, 197, 94, 0.1)',
                     borderRadius: '16px',
                     margin: '0 auto 1.5rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '2rem'
+                    fontSize: '2rem',
+                    color: '#22c55e'
                 }}>
                     📅
                 </div>

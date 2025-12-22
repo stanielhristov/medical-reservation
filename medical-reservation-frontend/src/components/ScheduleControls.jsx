@@ -12,10 +12,31 @@ const ScheduleControls = ({
     });
     const formatDateForView = () => {
         const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
+        
+        if (selectedView === 'week') {
+            // Calculate start and end of the week (7 days from current date)
+            const startDate = new Date(currentDate);
+            const endDate = new Date(currentDate);
+            endDate.setDate(endDate.getDate() + 6);
+            
+            const startDay = startDate.getDate();
+            const endDay = endDate.getDate();
+            const startMonth = startDate.toLocaleDateString(locale, { month: 'long' });
+            const endMonth = endDate.toLocaleDateString(locale, { month: 'long' });
+            const year = endDate.getFullYear();
+            
+            // If same month, show: "22 - 28 December 2025"
+            // If different months, show: "28 December - 3 January 2025"
+            if (startDate.getMonth() === endDate.getMonth()) {
+                return `${startDay} - ${endDay} ${startMonth} ${year}`;
+            } else {
+                return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`;
+            }
+        }
+        
         const options = { 
             year: 'numeric', 
-            month: 'long', 
-            ...(selectedView === 'week' && { day: 'numeric' })
+            month: 'long'
         };
         return currentDate.toLocaleDateString(locale, options);
     };
@@ -76,7 +97,7 @@ const ScheduleControls = ({
                             fontSize: '1.2rem',
                             fontWeight: '600',
                             color: '#374151',
-                            minWidth: '200px',
+                            minWidth: '280px',
                             textAlign: 'center'
                         }}>
                             {formatDateForView()}

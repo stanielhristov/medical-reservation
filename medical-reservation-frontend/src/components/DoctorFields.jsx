@@ -26,7 +26,7 @@ const DoctorFields = ({
                     color: '#374151',
                     fontSize: '0.9rem'
                 }}>
-                    Medical License Number <span style={{ color: '#dc2626' }}>*</span>
+                    {t('auth.medicalLicenseNumber')} <span style={{ color: '#dc2626' }}>*</span>
                 </label>
                 <input
                     type="text"
@@ -46,7 +46,7 @@ const DoctorFields = ({
                         color: '#374151',
                         transition: 'all 0.2s ease'
                     }}
-                    placeholder="Enter your medical license number"
+                    placeholder={t('auth.medicalLicensePlaceholder')}
                 />
             </div>
 
@@ -58,7 +58,7 @@ const DoctorFields = ({
                     color: '#374151',
                     fontSize: '0.9rem'
                 }}>
-                    Specialization <span style={{ color: '#dc2626' }}>*</span>
+                    {t('auth.specializationLabel')} <span style={{ color: '#dc2626' }}>*</span>
                 </label>
                 <select
                     value={specialization}
@@ -101,7 +101,7 @@ const DoctorFields = ({
                     color: '#374151',
                     fontSize: '0.9rem'
                 }}>
-                    Education
+                    {t('auth.educationLabel')}
                 </label>
                 <textarea
                     value={education}
@@ -122,7 +122,7 @@ const DoctorFields = ({
                         resize: 'vertical',
                         minHeight: '80px'
                     }}
-                    placeholder="Enter your medical education background"
+                    placeholder={t('auth.educationPlaceholder')}
                 />
             </div>
 
@@ -134,7 +134,7 @@ const DoctorFields = ({
                     color: '#374151',
                     fontSize: '0.9rem'
                 }}>
-                    Experience
+                    {t('auth.experienceLabel')}
                 </label>
                 <textarea
                     value={experience}
@@ -155,7 +155,7 @@ const DoctorFields = ({
                         resize: 'vertical',
                         minHeight: '80px'
                     }}
-                    placeholder="Describe your professional experience"
+                    placeholder={t('auth.experiencePlaceholder')}
                 />
             </div>
 
@@ -167,7 +167,7 @@ const DoctorFields = ({
                     color: '#374151',
                     fontSize: '0.9rem'
                 }}>
-                    Professional Bio
+                    {t('auth.professionalBio')}
                 </label>
                 <textarea
                     value={bio}
@@ -188,7 +188,7 @@ const DoctorFields = ({
                         resize: 'vertical',
                         minHeight: '100px'
                     }}
-                    placeholder="Write a brief professional bio for patients to read"
+                    placeholder={t('auth.professionalBioPlaceholder')}
                 />
             </div>
         </>

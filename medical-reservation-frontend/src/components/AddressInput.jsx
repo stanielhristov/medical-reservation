@@ -217,31 +217,6 @@ const AddressInput = ({
                 </button>
             </div>
             
-            <div style={{
-                fontSize: '0.8rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-                marginLeft: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-            }}>
-                <span style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    padding: '0.25rem 0.5rem',
-                    background: 'rgba(34, 197, 94, 0.1)',
-                    borderRadius: '6px',
-                    color: '#16a34a',
-                    fontWeight: '500'
-                }}>
-                    {selectedCountry.flag} {translateCountryName(selectedCountry.code, selectedCountry.name)}
-                </span>
-                <span style={{ color: '#9ca3af' }}>•</span>
-                <span>{t('countrySelector.clickToChange')}</span>
-            </div>
-
             <CountrySelectorModal
                 isOpen={isCountryModalOpen}
                 onClose={() => setIsCountryModalOpen(false)}

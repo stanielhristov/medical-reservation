@@ -35,6 +35,27 @@ const AppointmentBookingModal = ({
         }
     }, [isOpen, selectedDate]);
 
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
+        }
+    }, [isOpen]);
+
     const fetchAvailableSlots = async () => {
         if (!selectedDate || !doctor) return;
         
@@ -147,14 +168,13 @@ const AppointmentBookingModal = ({
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.6)',
-            backdropFilter: 'blur(5px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1000,
-            padding: '2rem'
-        }} onClick={handleClose}>
+            padding: '2rem',
+            pointerEvents: 'none'
+        }}>
             <div style={{
                 background: 'white',
                 borderRadius: '24px',
@@ -166,8 +186,9 @@ const AppointmentBookingModal = ({
                 boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
                 position: 'relative',
                 animation: 'fadeInUp 0.3s ease-out',
-                border: '1px solid rgba(34, 197, 94, 0.2)'
-            }} onClick={e => e.stopPropagation()}>
+                border: '1px solid rgba(34, 197, 94, 0.2)',
+                pointerEvents: 'auto'
+            }}>
                 <button
                     onClick={handleClose}
                     style={{

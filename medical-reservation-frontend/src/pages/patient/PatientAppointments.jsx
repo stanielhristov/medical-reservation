@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAppointments } from '../../hooks/useAppointments';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -13,8 +14,8 @@ import PatientRescheduleStatus from '../../components/PatientRescheduleStatus';
 const PatientAppointments = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('upcoming');
-    const [showBookingModal, setShowBookingModal] = useState(false);
     const [showRescheduleModal, setShowRescheduleModal] = useState(false);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
@@ -132,9 +133,9 @@ const PatientAppointments = () => {
                     
                     {selectedTab === 'upcoming' && (
                         <button
-                            onClick={() => setShowBookingModal(true)}
+                            onClick={() => navigate('/patient/doctors')}
                             style={{
-                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '16px',
@@ -143,7 +144,7 @@ const PatientAppointments = () => {
                                 fontWeight: '600',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                                boxShadow: '0 8px 20px rgba(34, 197, 94, 0.3)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.5rem'

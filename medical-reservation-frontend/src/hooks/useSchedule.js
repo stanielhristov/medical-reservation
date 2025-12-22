@@ -118,10 +118,13 @@ export const useSchedule = (doctorId) => {
 
     const getFilteredSchedules = useCallback((view, currentDate) => {
         const now = new Date();
+        
+        // For week view: 7 days starting from currentDate
         const startOfWeek = new Date(currentDate);
-        startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 7);
+        endOfWeek.setHours(0, 0, 0, 0);
 
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
@@ -131,7 +134,7 @@ export const useSchedule = (doctorId) => {
                 return schedules.filter(schedule => {
                     const scheduleDate = new Date(schedule.startTime);
                     return scheduleDate >= startOfWeek && scheduleDate < endOfWeek;
-                });
+                }).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
             case 'month':
                 return schedules.filter(schedule => {
                     const scheduleDate = new Date(schedule.startTime);

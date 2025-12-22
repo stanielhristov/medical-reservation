@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getDoctorScheduleWithStatusForDoctor } from '../api/schedule';
 
 const WeeklySlotDisplay = ({ doctorId, onClose }) => {
+    const { t, i18n } = useTranslation();
     const [weekSlots, setWeekSlots] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,8 +23,9 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
 
     const formatWeekRange = () => {
         const { startOfWeek, endOfWeek } = getCurrentWeekRange();
+        const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         const formatDate = (date) => {
-            return date.toLocaleDateString('en-US', { 
+            return date.toLocaleDateString(locale, { 
                 month: 'short', 
                 day: 'numeric' 
             });
@@ -55,24 +58,24 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                 setWeekSlots(slots || []);
             } catch (err) {
                 console.error('Error fetching week slots:', err);
-                setError('Failed to load week slots');
+                setError(t('schedule.failedToLoadWeekSlots'));
             } finally {
                 setLoading(false);
             }
         };
 
         fetchWeekSlots();
-    }, [doctorId]);
+    }, [doctorId, t]);
 
     const groupSlotsByDay = () => {
         const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
-        const dayLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const dayTranslationKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         
         const grouped = {};
         
         daysOfWeek.forEach((day, index) => {
             grouped[day] = {
-                label: dayLabels[index],
+                label: t(`schedule.${dayTranslationKeys[index]}`),
                 slots: []
             };
         });
@@ -109,11 +112,11 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
 
     const getSlotStatusText = (slot) => {
         switch (slot.status) {
-            case 'FREE': return 'Available';
-            case 'BOOKED': return 'Booked';
-            case 'BLOCKED': return slot.blockedReason || 'Blocked';
-            case 'PAST': return 'Past';
-            default: return 'Unavailable';
+            case 'FREE': return t('schedule.available');
+            case 'BOOKED': return t('schedule.booked');
+            case 'BLOCKED': return slot.blockedReason || t('schedule.blocked');
+            case 'PAST': return t('schedule.past');
+            default: return t('schedule.unavailable');
         }
     };
 
@@ -147,7 +150,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                         borderRadius: '50%',
                         animation: 'spin 1s linear infinite'
                     }} />
-                    <span>Loading week slots...</span>
+                    <span>{t('schedule.loadingWeekSlots')}</span>
                 </div>
             </div>
         );
@@ -193,7 +196,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                         fontSize: '1.5rem',
                         fontWeight: '600'
                     }}>
-                        📅 Week Slots Overview
+                        📅 {t('schedule.weekSlotsOverview')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -219,7 +222,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                     fontSize: '0.9rem',
                     color: '#166534'
                 }}>
-                    📅 Current Week: {formatWeekRange()} • Total Slots: {weekSlots.length}
+                    📅 {t('schedule.currentWeekLabel')}: {formatWeekRange()} • {t('schedule.totalSlots')}: {weekSlots.length}
                 </div>
 
                 {error && (
@@ -231,7 +234,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                         borderRadius: '8px',
                         marginBottom: '1rem'
                     }}>
-                        <strong>Error:</strong> {error}
+                        <strong>{t('schedule.error')}:</strong> {error}
                     </div>
                 )}
 
@@ -249,7 +252,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                                 fontSize: '1.1rem',
                                 fontWeight: '600'
                             }}>
-                                {dayData.label} ({dayData.slots.length} slots)
+                                {dayData.label} ({dayData.slots.length} {t('schedule.slots')})
                             </h3>
                             
                             {dayData.slots.length === 0 ? (
@@ -258,7 +261,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                                     fontStyle: 'italic',
                                     margin: 0 
                                 }}>
-                                    No slots available for this day
+                                    {t('schedule.noSlotsForDay')}
                                 </p>
                             ) : (
                                 <div style={{
@@ -313,7 +316,7 @@ const WeeklySlotDisplay = ({ doctorId, onClose }) => {
                             fontWeight: '500'
                         }}
                     >
-                        Close
+                        {t('common.close')}
                     </button>
                 </div>
             </div>
