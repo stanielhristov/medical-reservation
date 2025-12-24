@@ -25,7 +25,6 @@ const RatingModal = ({
         }
     }, [existingRating, isOpen]);
 
-    // Lock body scroll when modal is open
     useEffect(() => {
         if (isOpen) {
             const scrollY = window.scrollY;

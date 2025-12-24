@@ -80,13 +80,11 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
             onClick={() => onRecordClick(record)}
         >
             
-            {/* Main content - horizontal layout */}
             <div style={{
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '1rem'
             }}>
-                {/* Icon */}
                 <div style={{
                     width: '44px',
                     height: '44px',
@@ -102,9 +100,7 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                     {getTypeIcon(record.type, record.doctorGender)}
                 </div>
                 
-                {/* Content */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                    {/* Header row */}
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -157,7 +153,6 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                             </div>
                         </div>
                         
-                        {/* Status badge */}
                         <div style={{
                             background: statusColors.bg,
                             color: statusColors.color,
@@ -173,7 +168,6 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                         </div>
                     </div>
 
-                    {/* Summary */}
                     <p style={{
                         fontSize: '0.85rem',
                         color: '#6b7280',
@@ -187,7 +181,6 @@ const MedicalRecordCard = ({ record, getStatusColor, getTypeIcon, formatDate, on
                         {record.summary}
                     </p>
 
-                    {/* View details link */}
                     <div style={{
                         display: 'flex',
                         justifyContent: 'flex-end',

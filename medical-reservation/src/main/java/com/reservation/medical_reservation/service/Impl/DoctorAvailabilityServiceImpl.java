@@ -45,6 +45,10 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
         DoctorEntity doctor = doctorRepository.findById(availabilityDTO.getDoctorId())
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
+        if (!Boolean.TRUE.equals(doctor.getIsActive())) {
+            throw new IllegalArgumentException("Your account is not yet approved by an administrator. You cannot manage availability until your account is activated.");
+        }
+
         var existingAvailability = availabilityRepository.findByDoctorAndDayOfWeek(
                 doctor, availabilityDTO.getDayOfWeek());
 

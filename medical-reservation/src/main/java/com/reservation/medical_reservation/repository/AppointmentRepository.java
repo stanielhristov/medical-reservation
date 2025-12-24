@@ -66,4 +66,8 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
             @Param("doctor") DoctorEntity doctor,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
+    
+    void deleteByPatient(UserEntity patient);
+    
+    void deleteByDoctor(DoctorEntity doctor);
 }

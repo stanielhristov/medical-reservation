@@ -490,13 +490,13 @@ export default function RegisterForm() {
 
                     <AddressInput
                         street={addressData.street}
-                        onStreetChange={(e) => handleAddressChange('street', e.target.value)}
+                        onStreetChange={(value) => handleAddressChange('street', value)}
                         city={addressData.city}
-                        onCityChange={(e) => handleAddressChange('city', e.target.value)}
+                        onCityChange={(value) => handleAddressChange('city', value)}
                         stateProvince={addressData.stateProvince}
-                        onStateProvinceChange={(e) => handleAddressChange('stateProvince', e.target.value)}
+                        onStateProvinceChange={(value) => handleAddressChange('stateProvince', value)}
                         postalCode={addressData.postalCode}
-                        onPostalCodeChange={(e) => handleAddressChange('postalCode', e.target.value)}
+                        onPostalCodeChange={(value) => handleAddressChange('postalCode', value)}
                         countryCode={addressData.countryCode}
                         onCountryChange={(value) => handleAddressChange('countryCode', value)}
                         disabled={loading}

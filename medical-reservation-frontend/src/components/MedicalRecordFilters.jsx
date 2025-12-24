@@ -11,10 +11,8 @@ const MedicalRecordFilters = ({ selectedCategory, onCategoryChange, medicalRecor
     };
 
     const getCategoryLabel = (categoryId) => {
-        // Try the direct translation first
         const translatedLabel = t(`medicalHistory.category.${categoryId}`);
         
-        // If the translation returns the key itself, use the fallback from categories
         if (translatedLabel.includes('medicalHistory.category')) {
             const category = categories.find(c => c.id === categoryId);
             return category?.name || categoryId;

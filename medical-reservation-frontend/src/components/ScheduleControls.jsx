@@ -4,17 +4,14 @@ const ScheduleControls = ({
     selectedView, 
     currentDate, 
     onDateChange, 
-    onManageAvailability
+    onManageAvailability,
+    disabled = false
 }) => {
     const { t, i18n } = useTranslation();
-    console.log('ScheduleControls rendering with:', {
-        onManageAvailability: !!onManageAvailability
-    });
     const formatDateForView = () => {
         const locale = i18n.language === 'bg' ? 'bg-BG' : 'en-US';
         
         if (selectedView === 'week') {
-            // Calculate start and end of the week (7 days from current date)
             const startDate = new Date(currentDate);
             const endDate = new Date(currentDate);
             endDate.setDate(endDate.getDate() + 6);
@@ -25,8 +22,6 @@ const ScheduleControls = ({
             const endMonth = endDate.toLocaleDateString(locale, { month: 'long' });
             const year = endDate.getFullYear();
             
-            // If same month, show: "22 - 28 December 2025"
-            // If different months, show: "28 December - 3 January 2025"
             if (startDate.getMonth() === endDate.getMonth()) {
                 return `${startDay} - ${endDay} ${startMonth} ${year}`;
             } else {
@@ -143,31 +138,44 @@ const ScheduleControls = ({
                     <button
                         type="button"
                         onClick={() => {
-                            onManageAvailability();
+                            if (!disabled) {
+                                onManageAvailability();
+                            }
                         }}
+                        disabled={disabled}
                         style={{
-                            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                            background: disabled 
+                                ? 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' 
+                                : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                             border: 'none',
                             borderRadius: '8px',
                             padding: '0.75rem 1.5rem',
-                            cursor: 'pointer',
+                            cursor: disabled ? 'not-allowed' : 'pointer',
                             fontSize: '1rem',
                             color: 'white',
                             fontWeight: '600',
                             transition: 'all 0.2s ease',
-                            boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                            boxShadow: disabled 
+                                ? '0 4px 12px rgba(107, 114, 128, 0.3)' 
+                                : '0 4px 12px rgba(5, 150, 105, 0.3)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem'
+                            gap: '0.5rem',
+                            opacity: disabled ? 0.7 : 1
                         }}
                         onMouseEnter={e => {
-                            e.target.style.transform = 'translateY(-2px)';
-                            e.target.style.boxShadow = '0 6px 20px rgba(5, 150, 105, 0.4)';
+                            if (!disabled) {
+                                e.target.style.transform = 'translateY(-2px)';
+                                e.target.style.boxShadow = '0 6px 20px rgba(5, 150, 105, 0.4)';
+                            }
                         }}
                         onMouseLeave={e => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                            if (!disabled) {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                            }
                         }}
+                        title={disabled ? t('schedule.accountPendingApproval') : ''}
                     >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>

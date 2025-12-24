@@ -27,6 +27,12 @@ public class AdminServiceImpl implements AdminService {
     private final AppointmentRepository appointmentRepository;
     private final RoleRepository roleRepository;
     private final NotificationRepository notificationRepository;
+    private final DoctorRatingRepository doctorRatingRepository;
+    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final RescheduleRequestRepository rescheduleRequestRepository;
+    private final BlockedSlotRepository blockedSlotRepository;
+    private final DoctorAvailabilityRepository doctorAvailabilityRepository;
+    private final ScheduleRepository scheduleRepository;
     private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
@@ -36,6 +42,12 @@ public class AdminServiceImpl implements AdminService {
                           AppointmentRepository appointmentRepository,
                           RoleRepository roleRepository,
                           NotificationRepository notificationRepository,
+                          DoctorRatingRepository doctorRatingRepository,
+                          MedicalHistoryRepository medicalHistoryRepository,
+                          RescheduleRequestRepository rescheduleRequestRepository,
+                          BlockedSlotRepository blockedSlotRepository,
+                          DoctorAvailabilityRepository doctorAvailabilityRepository,
+                          ScheduleRepository scheduleRepository,
                           NotificationService notificationService,
                           ModelMapper modelMapper) {
         this.userRepository = userRepository;
@@ -44,6 +56,12 @@ public class AdminServiceImpl implements AdminService {
         this.appointmentRepository = appointmentRepository;
         this.roleRepository = roleRepository;
         this.notificationRepository = notificationRepository;
+        this.doctorRatingRepository = doctorRatingRepository;
+        this.medicalHistoryRepository = medicalHistoryRepository;
+        this.rescheduleRequestRepository = rescheduleRequestRepository;
+        this.blockedSlotRepository = blockedSlotRepository;
+        this.doctorAvailabilityRepository = doctorAvailabilityRepository;
+        this.scheduleRepository = scheduleRepository;
         this.notificationService = notificationService;
         this.modelMapper = modelMapper;
     }
@@ -90,6 +108,10 @@ public class AdminServiceImpl implements AdminService {
     public void deactivateUser(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (user.getRole().getName().toString().equals("ADMIN")) {
+            throw new IllegalArgumentException("Cannot deactivate admin users.");
+        }
         
         if (!user.getIsActive()) {
             throw new IllegalArgumentException("User is already deactivated");
@@ -136,19 +158,22 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (user.getRole().getName().toString().equals("ADMIN")) {
-            throw new IllegalArgumentException("Cannot delete admin users. Please deactivate instead.");
+            throw new IllegalArgumentException("Cannot delete admin users.");
         }
 
-        long patientAppointmentCount = appointmentRepository.countByPatientId(userId);
-        if (patientAppointmentCount > 0) {
-            throw new IllegalArgumentException("Cannot delete user with existing appointments. Please deactivate instead.");
-        }
+        doctorRatingRepository.deleteByUser(user);
+        rescheduleRequestRepository.deleteByAppointmentPatient(user);
+        medicalHistoryRepository.deleteByPatient(user);
+        appointmentRepository.deleteByPatient(user);
 
         doctorRepository.findByUserId(userId).ifPresent(doctor -> {
-            long doctorAppointmentCount = appointmentRepository.findByDoctorOrderByAppointmentTimeDesc(doctor).size();
-            if (doctorAppointmentCount > 0) {
-                throw new IllegalArgumentException("Cannot delete doctor with existing appointments. Please deactivate instead.");
-            }
+            rescheduleRequestRepository.deleteByDoctor(doctor);
+            medicalHistoryRepository.deleteByDoctor(doctor);
+            appointmentRepository.deleteByDoctor(doctor);
+            doctorRatingRepository.deleteByDoctor(doctor);
+            scheduleRepository.deleteByDoctor(doctor);
+            doctorAvailabilityRepository.deleteByDoctor(doctor);
+            blockedSlotRepository.deleteByDoctor(doctor);
             doctorRepository.delete(doctor);
         });
 

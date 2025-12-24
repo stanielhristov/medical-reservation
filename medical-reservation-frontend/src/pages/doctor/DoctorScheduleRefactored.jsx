@@ -17,6 +17,7 @@ const DoctorScheduleRefactored = () => {
     const [selectedView, setSelectedView] = useState('week');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [doctorId, setDoctorId] = useState(null);
+    const [isActive, setIsActive] = useState(true);
     const [showAvailabilityManager, setShowAvailabilityManager] = useState(false);
     const [clickedSlotData, setClickedSlotData] = useState(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState({
@@ -70,6 +71,7 @@ const DoctorScheduleRefactored = () => {
             }
 
             setDoctorId(doctorProfile.id);
+            setIsActive(doctorProfile.isActive === true);
         } catch (error) {
             console.error('Error fetching doctor profile:', error);
         } finally {
@@ -194,6 +196,55 @@ const DoctorScheduleRefactored = () => {
             }}>
                 <ScheduleHeader />
                 
+                {!isActive && (
+                    <div style={{
+                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                        border: '2px solid #f59e0b',
+                        borderRadius: '16px',
+                        padding: '1.5rem 2rem',
+                        marginBottom: '2rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)'
+                    }}>
+                        <div style={{
+                            background: '#f59e0b',
+                            borderRadius: '50%',
+                            width: '48px',
+                            height: '48px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                        }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 style={{
+                                margin: '0 0 0.5rem 0',
+                                color: '#92400e',
+                                fontSize: '1.1rem',
+                                fontWeight: '600'
+                            }}>
+                                {t('schedule.accountPendingApproval')}
+                            </h3>
+                            <p style={{
+                                margin: 0,
+                                color: '#a16207',
+                                fontSize: '0.95rem',
+                                lineHeight: '1.5'
+                            }}>
+                                {t('schedule.accountPendingApprovalMessage')}
+                            </p>
+                        </div>
+                    </div>
+                )}
+                
                 <ScheduleStats
                     schedules={schedules}
                     views={views}
@@ -207,9 +258,12 @@ const DoctorScheduleRefactored = () => {
                     currentDate={currentDate}
                     onDateChange={setCurrentDate}
                     onManageAvailability={() => {
-                        setClickedSlotData(null); 
-                        setShowAvailabilityManager(true);
+                        if (isActive) {
+                            setClickedSlotData(null); 
+                            setShowAvailabilityManager(true);
+                        }
                     }}
+                    disabled={!isActive}
                 />
 
                 <ScheduleList

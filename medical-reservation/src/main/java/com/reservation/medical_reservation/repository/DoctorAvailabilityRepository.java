@@ -18,4 +18,6 @@ public interface DoctorAvailabilityRepository extends JpaRepository<DoctorAvaila
     void deleteByDoctorAndDayOfWeek(DoctorEntity doctor, DayOfWeek dayOfWeek);
     
     boolean existsByDoctorAndDayOfWeek(DoctorEntity doctor, DayOfWeek dayOfWeek);
+    
+    void deleteByDoctor(DoctorEntity doctor);
 }

@@ -6,6 +6,7 @@ import com.reservation.medical_reservation.model.entity.RescheduleRequestEntity;
 import com.reservation.medical_reservation.model.entity.UserEntity;
 import com.reservation.medical_reservation.model.enums.RescheduleRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,4 +31,10 @@ public interface RescheduleRequestRepository extends JpaRepository<RescheduleReq
     
     @Query("SELECT COUNT(r) FROM RescheduleRequestEntity r WHERE r.appointment.doctor = :doctor AND r.status = :status")
     long countByDoctorAndStatus(@Param("doctor") DoctorEntity doctor, @Param("status") RescheduleRequestStatus status);
+    
+    void deleteByAppointmentPatient(UserEntity patient);
+    
+    @Modifying
+    @Query("DELETE FROM RescheduleRequestEntity r WHERE r.appointment.doctor = :doctor")
+    void deleteByDoctor(@Param("doctor") DoctorEntity doctor);
 }

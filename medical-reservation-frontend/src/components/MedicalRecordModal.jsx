@@ -20,7 +20,6 @@ const MedicalRecordModal = ({
         }
     }, [isOpen]);
 
-    // Handle body scroll lock
     useEffect(() => {
         if (!isOpen) return;
         

@@ -119,7 +119,6 @@ export const useSchedule = (doctorId) => {
     const getFilteredSchedules = useCallback((view, currentDate) => {
         const now = new Date();
         
-        // For week view: 7 days starting from currentDate
         const startOfWeek = new Date(currentDate);
         startOfWeek.setHours(0, 0, 0, 0);
         const endOfWeek = new Date(startOfWeek);

@@ -36,4 +36,6 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> 
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("currentTime") LocalDateTime currentTime);
+    
+    void deleteByDoctor(DoctorEntity doctor);
 }

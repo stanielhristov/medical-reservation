@@ -35,7 +35,6 @@ const AppointmentBookingModal = ({
         }
     }, [isOpen, selectedDate]);
 
-    // Lock body scroll when modal is open
     useEffect(() => {
         if (isOpen) {
             const scrollY = window.scrollY;

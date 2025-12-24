@@ -89,7 +89,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
     const typeColor = getRecordTypeColor(record.type);
     const recordType = (record.originalType || record.type)?.toLowerCase();
 
-    // Field component for consistent styling
     const Field = ({ label, value, isHighlighted, highlightColor }) => {
         if (!value || value === 'None' || value === 'No prescription') return null;
         
@@ -121,7 +120,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
         );
     };
 
-    // Render content based on record type - matching the add modal fields
     const renderRecordContent = () => {
         switch (recordType) {
             case 'prescription':
@@ -196,7 +194,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
             case 'emergency':
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {/* Emergency alert banner */}
                         <div style={{
                             background: 'rgba(239, 68, 68, 0.1)',
                             borderRadius: '12px',
@@ -236,7 +233,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
                     </div>
                 );
 
-            // Default for consultation, checkup, followup
             default:
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -297,7 +293,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
                     flexDirection: 'column'
                 }}
             >
-                {/* Header */}
                 <div style={{
                     padding: '1.5rem 2rem',
                     borderBottom: '1px solid #e5e7eb',
@@ -373,7 +368,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
                     </div>
                 </div>
 
-                {/* Content */}
                 <div style={{
                     padding: '1.5rem 2rem',
                     overflowY: 'auto',
@@ -382,7 +376,6 @@ const MedicalRecordViewModal = ({ isOpen, onClose, record }) => {
                     {renderRecordContent()}
                 </div>
 
-                {/* Footer */}
                 <div style={{
                     padding: '1rem 2rem',
                     borderTop: '1px solid #e5e7eb',

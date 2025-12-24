@@ -319,13 +319,73 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                     </td>
                                     
                                     <td style={{ padding: '1rem' }}>
-                                        <div style={{
-                                            display: 'flex',
-                                            gap: '0.5rem'
-                                        }}>
-                                            {user.isActive ? (
+                                        {user.role === 'ADMIN' ? (
+                                            <span style={{
+                                                color: '#6b7280',
+                                                fontSize: '0.75rem',
+                                                fontStyle: 'italic'
+                                            }}>
+                                                —
+                                            </span>
+                                        ) : (
+                                            <div style={{
+                                                display: 'flex',
+                                                gap: '0.5rem'
+                                            }}>
+                                                {user.isActive ? (
+                                                    <button
+                                                        onClick={() => onUserAction(user, 'deactivate')}
+                                                        style={{
+                                                            background: 'rgba(239, 68, 68, 0.1)',
+                                                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                                                            borderRadius: '6px',
+                                                            padding: '0.375rem 0.75rem',
+                                                            cursor: 'pointer',
+                                                            color: '#dc2626',
+                                                            fontSize: '0.75rem',
+                                                            fontWeight: '500',
+                                                            transition: 'all 0.2s ease',
+                                                            minWidth: '85px',
+                                                            textAlign: 'center'
+                                                        }}
+                                                        onMouseEnter={e => {
+                                                            e.target.style.background = 'rgba(239, 68, 68, 0.15)';
+                                                        }}
+                                                        onMouseLeave={e => {
+                                                            e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                                                        }}
+                                                    >
+                                                        {t('admin.deactivate')}
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => onUserAction(user, 'activate')}
+                                                        style={{
+                                                            background: 'rgba(34, 197, 94, 0.1)',
+                                                            border: '1px solid rgba(34, 197, 94, 0.2)',
+                                                            borderRadius: '6px',
+                                                            padding: '0.375rem 0.75rem',
+                                                            cursor: 'pointer',
+                                                            color: '#16a34a',
+                                                            fontSize: '0.75rem',
+                                                            fontWeight: '500',
+                                                            transition: 'all 0.2s ease',
+                                                            minWidth: '85px',
+                                                            textAlign: 'center'
+                                                        }}
+                                                        onMouseEnter={e => {
+                                                            e.target.style.background = 'rgba(34, 197, 94, 0.15)';
+                                                        }}
+                                                        onMouseLeave={e => {
+                                                            e.target.style.background = 'rgba(34, 197, 94, 0.1)';
+                                                        }}
+                                                    >
+                                                        {t('admin.activate')}
+                                                    </button>
+                                                )}
+                                                
                                                 <button
-                                                    onClick={() => onUserAction(user, 'deactivate')}
+                                                    onClick={() => onUserAction(user, 'delete')}
                                                     style={{
                                                         background: 'rgba(239, 68, 68, 0.1)',
                                                         border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -345,62 +405,12 @@ const UserTable = ({ users, onUserAction, loading }) => {
                                                     onMouseLeave={e => {
                                                         e.target.style.background = 'rgba(239, 68, 68, 0.1)';
                                                     }}
+                                                    title={t('admin.deleteUser')}
                                                 >
-                                                    {t('admin.deactivate')}
+                                                    {t('common.delete')}
                                                 </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => onUserAction(user, 'activate')}
-                                                    style={{
-                                                        background: 'rgba(34, 197, 94, 0.1)',
-                                                        border: '1px solid rgba(34, 197, 94, 0.2)',
-                                                        borderRadius: '6px',
-                                                        padding: '0.375rem 0.75rem',
-                                                        cursor: 'pointer',
-                                                        color: '#16a34a',
-                                                        fontSize: '0.75rem',
-                                                        fontWeight: '500',
-                                                        transition: 'all 0.2s ease',
-                                                        minWidth: '85px',
-                                                        textAlign: 'center'
-                                                    }}
-                                                    onMouseEnter={e => {
-                                                        e.target.style.background = 'rgba(34, 197, 94, 0.15)';
-                                                    }}
-                                                    onMouseLeave={e => {
-                                                        e.target.style.background = 'rgba(34, 197, 94, 0.1)';
-                                                    }}
-                                                >
-                                                    {t('admin.activate')}
-                                                </button>
-                                            )}
-                                            
-                                            <button
-                                                onClick={() => onUserAction(user, 'delete')}
-                                                style={{
-                                                    background: 'rgba(239, 68, 68, 0.1)',
-                                                    border: '1px solid rgba(239, 68, 68, 0.2)',
-                                                    borderRadius: '6px',
-                                                    padding: '0.375rem 0.75rem',
-                                                    cursor: 'pointer',
-                                                    color: '#dc2626',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: '500',
-                                                    transition: 'all 0.2s ease',
-                                                    minWidth: '85px',
-                                                    textAlign: 'center'
-                                                }}
-                                                onMouseEnter={e => {
-                                                    e.target.style.background = 'rgba(239, 68, 68, 0.15)';
-                                                }}
-                                                onMouseLeave={e => {
-                                                    e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                                                }}
-                                                title={t('admin.deleteUser')}
-                                            >
-                                                {t('common.delete')}
-                                            </button>
-                                        </div>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             );

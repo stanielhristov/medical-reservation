@@ -42,7 +42,6 @@ const PatientDetails = ({ patient, onAddRecord, onClose, onDeleteRecord }) => {
     };
 
     const getRecordTypeIcon = (type) => {
-        // Returns null - icons removed for cleaner look
         return null;
     };
 

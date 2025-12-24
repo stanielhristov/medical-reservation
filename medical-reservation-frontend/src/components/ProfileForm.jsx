@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import FormField from './FormField';
 import AddressInput from './AddressInput';
+import DateOfBirthInput from './DateOfBirthInput';
 
 const ProfileForm = ({ 
     profileData, 
@@ -122,12 +123,10 @@ const ProfileForm = ({
                     onChange={handleInputChange}
                 />
                 
-                <FormField
-                    label={t('profile.dateOfBirth')}
-                    name="dateOfBirth"
-                    type="date"
-                    value={profileData.dateOfBirth}
-                    onChange={handleInputChange}
+                <DateOfBirthInput
+                    value={profileData.dateOfBirth || ''}
+                    onChange={(e) => handleInputChange({ target: { name: 'dateOfBirth', value: e.target.value } })}
+                    disabled={saving}
                 />
 
                 {}

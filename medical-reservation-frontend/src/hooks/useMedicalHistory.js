@@ -70,7 +70,6 @@ export const useMedicalHistory = () => {
                     date: new Date(record.recordDate || record.createdAt),
                     summary: record.description || record.notes || 'No summary available',
                     details: record.treatment || record.medications || record.notes || 'No details available',
-                    // Include original fields for the view modal
                     description: record.description || '',
                     diagnosis: record.diagnosis || '',
                     treatment: record.treatment || '',
@@ -103,7 +102,6 @@ export const useMedicalHistory = () => {
                         date: appointmentDate,
                         summary: appointmentDescription,
                         details: `Appointment type: ${appointment.serviceName || appointment.type || 'Consultation'}\nDuration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,
-                        // Include fields for the view modal
                         description: appointmentDescription,
                         diagnosis: '',
                         treatment: `Duration: ${appointment.duration || '30 minutes'}\nLocation: ${appointment.doctorLocation || appointment.location || 'Not specified'}`,

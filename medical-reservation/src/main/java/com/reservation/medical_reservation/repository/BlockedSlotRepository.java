@@ -27,4 +27,6 @@ public interface BlockedSlotRepository extends JpaRepository<BlockedSlotEntity, 
             @Param("doctor") DoctorEntity doctor,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+    
+    void deleteByDoctor(DoctorEntity doctor);
 }

@@ -13,4 +13,7 @@ public interface MedicalHistoryRepository extends JpaRepository<MedicalHistoryEn
     List<MedicalHistoryEntity> findByPatientOrderByCreatedAtDesc(UserEntity patient);
     List<MedicalHistoryEntity> findByDoctorOrderByCreatedAtDesc(DoctorEntity doctor);
     List<MedicalHistoryEntity> findByPatientAndDoctorOrderByCreatedAtDesc(UserEntity patient, DoctorEntity doctor);
+    
+    void deleteByPatient(UserEntity patient);
+    void deleteByDoctor(DoctorEntity doctor);
 }

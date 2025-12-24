@@ -24,6 +24,8 @@ public interface DoctorRatingRepository extends JpaRepository<DoctorRatingEntity
     
     List<DoctorRatingEntity> findByUserOrderByCreatedAtDesc(UserEntity user);
     
+    List<DoctorRatingEntity> findByDoctor(DoctorEntity doctor);
+    
     Page<DoctorRatingEntity> findAllByOrderByCreatedAtDesc(Pageable pageable);
     
     @Query("SELECT AVG(r.rating) FROM DoctorRatingEntity r WHERE r.doctor.id = :doctorId")
@@ -33,4 +35,8 @@ public interface DoctorRatingRepository extends JpaRepository<DoctorRatingEntity
     Long countRatingsByDoctorId(@Param("doctorId") Long doctorId);
     
     boolean existsByDoctorIdAndUserId(Long doctorId, Long userId);
+    
+    void deleteByDoctor(DoctorEntity doctor);
+    
+    void deleteByUser(UserEntity user);
 }

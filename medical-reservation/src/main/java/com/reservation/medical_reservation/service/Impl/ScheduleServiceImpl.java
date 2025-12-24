@@ -54,6 +54,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         DoctorEntity doctor = doctorRepository.findById(scheduleDTO.getDoctorId())
                 .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
 
+        if (!Boolean.TRUE.equals(doctor.getIsActive())) {
+            throw new IllegalArgumentException("Your account is not yet approved by an administrator. You cannot manage schedule slots until your account is activated.");
+        }
+
         LocalDateTime now = LocalDateTime.now();
         if (scheduleDTO.getStartTime().isBefore(now)) {
             throw new IllegalArgumentException("Cannot create schedule slots for past dates or times. Please select a future date and time.");
@@ -301,11 +305,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public void generateScheduleFromAvailability(Long doctorId, LocalDate startDate, LocalDate endDate) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found"));
+        
+        if (!Boolean.TRUE.equals(doctor.getIsActive())) {
+            throw new IllegalArgumentException("Your account is not yet approved by an administrator. You cannot generate schedule slots until your account is activated.");
+        }
+        
         List<ScheduleDTO> generatedSlots = availabilityService.generateSlotsFromAvailability(doctorId, startDate, endDate);
         
         for (ScheduleDTO slot : generatedSlots) {
             ScheduleEntity schedule = new ScheduleEntity();
-            schedule.setDoctor(doctorRepository.findById(doctorId).orElseThrow());
+            schedule.setDoctor(doctor);
             schedule.setStartTime(slot.getStartTime());
             schedule.setEndTime(slot.getEndTime());
             schedule.setAvailable(true);

@@ -36,7 +36,6 @@ const CountrySelectorModal = ({
         }
     }, [isOpen]);
 
-    // Handle body scroll lock
     useEffect(() => {
         if (!isOpen) return;
         
@@ -55,7 +54,6 @@ const CountrySelectorModal = ({
         };
     }, [isOpen]);
 
-    // Handle escape key
     useEffect(() => {
         const handleEsc = (e) => {
             if (e.key === 'Escape') onClose();
@@ -68,7 +66,6 @@ const CountrySelectorModal = ({
         };
     }, [isOpen, onClose]);
 
-    // Filter and sort countries alphabetically
     const filteredCountries = useMemo(() => {
         let countries;
         const query = searchQuery.toLowerCase().trim();
@@ -88,7 +85,6 @@ const CountrySelectorModal = ({
             countries = COUNTRIES.filter(country => regionCodes.includes(country.code));
         }
         
-        // Sort alphabetically by translated name
         return countries.sort((a, b) => {
             const nameA = translateCountryName(a.code, a.name).toLowerCase();
             const nameB = translateCountryName(b.code, b.name).toLowerCase();
@@ -151,7 +147,6 @@ const CountrySelectorModal = ({
                     border: '1px solid rgba(34, 197, 94, 0.2)'
                 }}
             >
-                {/* Header */}
                 <div style={{
                     background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                     padding: '1.5rem',
@@ -215,7 +210,6 @@ const CountrySelectorModal = ({
                     </div>
                 </div>
 
-                {/* Search Bar */}
                 <div style={{ 
                     padding: '1rem',
                     borderBottom: '1px solid #e5e7eb',
@@ -287,7 +281,6 @@ const CountrySelectorModal = ({
                     </div>
                 </div>
 
-                {/* Region Tabs */}
                 {!searchQuery && (
                     <div style={{
                         padding: '0.75rem 1rem',
@@ -326,7 +319,6 @@ const CountrySelectorModal = ({
                     </div>
                 )}
 
-                {/* Countries List - Dropdown Style */}
                 <div 
                     ref={scrollContainerRef}
                     style={{
@@ -433,7 +425,6 @@ const CountrySelectorModal = ({
                     )}
                 </div>
 
-                {/* Footer */}
                 <div style={{
                     padding: '0.75rem 1rem',
                     borderTop: '1px solid #e5e7eb',
@@ -468,7 +459,6 @@ const CountrySelectorModal = ({
         </div>
     );
 
-    // Use portal to render modal at document body level
     return createPortal(modalContent, document.body);
 };
 
